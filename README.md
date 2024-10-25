@@ -16,6 +16,20 @@ Add the package to your project's pubspec.yaml file:
 
 ## Usage
 
+Example usage:
+
+```
+HollowSemiCircleMeter(
+    labelStatus: false, // Mnetion the boolean value for showing the default labels
+    percentage: 65, // Mention the percentage
+    activeColor: PrefColor.primaryColor, //Choose the color of the active segment
+    inactiveColor: Colors.grey.shade200, //Choose the color of the inactive segment
+    size: 300, //Choose the size of the chart
+    hollowRadius: 0.6, // Controls how hollow the center is (0.1 to 0.9)
+),
+
+```
+
 You can customize various properties of the meter:
 
 - `percentage`: The percentage value to display (0-100)
@@ -33,6 +47,6 @@ The widget supports animation when updating the percentage value.
 - It's designed to be flexible and customizable to fit various design needs.
 - Contributions and feature requests are welcome. Please file issues or pull requests on the GitHub repository.
 
-For more information about the package, including API documentation and example usage, please visit the [GitHub repository](https://github.com/your-github-username/hollow_semicircle_meter).
+For more information about the package, including API documentation and example usage, please visit the [GitHub repository](https://github.com/vishnudas-bluefox/material_charts).
 
 [![License](https://img.shields.io/badge/License-BSD_3--Clause-blue.svg)](https://opensource.org/licenses/BSD-3-Clause)
