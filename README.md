@@ -19,11 +19,11 @@ Add the package to your project's pubspec.yaml file:
 Example usage:
 
 ```
-HollowSemiCircleMeter(
+HollowSemiCircleChart(
     percentage: 75,
     size: 300,
     hollowRadius: 0.7,
-    style: MeterStyle(
+    style: ChartStyle(
     activeColor: Colors.green,
     inactiveColor: Colors.grey.shade200,
     textColor: Colors.green,
