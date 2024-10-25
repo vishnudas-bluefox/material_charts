@@ -20,17 +20,35 @@ Example usage:
 
 ```
 HollowSemiCircleMeter(
-    labelStatus: false, // Mnetion the boolean value for showing the default labels
-    percentage: 65, // Mention the percentage
-    activeColor: PrefColor.primaryColor, //Choose the color of the active segment
-    inactiveColor: Colors.grey.shade200, //Choose the color of the inactive segment
-    size: 300, //Choose the size of the chart
-    hollowRadius: 0.6, // Controls how hollow the center is (0.1 to 0.9)
+    percentage: 75,
+    size: 300,
+    hollowRadius: 0.7,
+    style: MeterStyle(
+    activeColor: Colors.green,
+    inactiveColor: Colors.grey.shade200,
+    textColor: Colors.green,
+    percentageStyle: TextStyle(
+        fontSize: 24,
+        fontWeight: FontWeight.w600,
+    ),
+    legendStyle: TextStyle(
+        fontSize: 16,
+        color: Colors.grey.shade700,
+    ),
+    animationDuration: Duration(milliseconds: 2000),
+    animationCurve: Curves.elasticOut,
+    percentageFormatter: (value) => '${value.toInt()}',
+    legendFormatter: (type, value) =>
+        '$type: ${value.toStringAsFixed(1)}%',
+    ),
+    onAnimationComplete: () => debugPrint('Animation completed!'),
 ),
 
 ```
 
-![Sample Meter with 65%](./images/demo_chart1.png)
+OutPut:
+
+![Sample Meter with 65%](https://github.com/vishnudas-bluefox/material_charts/blob/master/images/demo_chart1.png)
 
 You can customize various properties of the meter:
 
