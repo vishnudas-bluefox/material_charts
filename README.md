@@ -30,6 +30,8 @@ HollowSemiCircleMeter(
 
 ```
 
+![Sample Meter with 65%](./images/demo_chart1.png)
+
 You can customize various properties of the meter:
 
 - `percentage`: The percentage value to display (0-100)
