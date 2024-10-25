@@ -105,10 +105,10 @@ abstract class BaseChart extends StatefulWidget {
         assert(size > 0, 'Size must be greater than 0');
 }
 
-class HollowSemiCircleChart extends BaseChart {
+class MaterialChartHollowSemiCircle extends BaseChart {
   final double hollowRadius;
 
-  const HollowSemiCircleChart({
+  const MaterialChartHollowSemiCircle({
     super.key,
     required super.percentage,
     super.size = 200,
@@ -119,10 +119,12 @@ class HollowSemiCircleChart extends BaseChart {
             'Hollow radius must be between 0 and 1');
 
   @override
-  State<HollowSemiCircleChart> createState() => _HollowSemiCircleChartState();
+  State<MaterialChartHollowSemiCircle> createState() =>
+      _MaterialChartHollowSemiCircleState();
 }
 
-class _HollowSemiCircleChartState extends State<HollowSemiCircleChart>
+class _MaterialChartHollowSemiCircleState
+    extends State<MaterialChartHollowSemiCircle>
     with SingleTickerProviderStateMixin {
   late AnimationController _animationController;
   late Animation<double> _animation;
@@ -156,7 +158,7 @@ class _HollowSemiCircleChartState extends State<HollowSemiCircleChart>
   }
 
   @override
-  void didUpdateWidget(HollowSemiCircleChart oldWidget) {
+  void didUpdateWidget(MaterialChartHollowSemiCircle oldWidget) {
     super.didUpdateWidget(oldWidget);
     if (oldWidget.percentage != widget.percentage) {
       _animation = Tween<double>(
