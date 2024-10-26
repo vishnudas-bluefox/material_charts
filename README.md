@@ -1,7 +1,3 @@
-Here is the **complete README** with the **Bar Chart** added while retaining all the styling, usage, and feature information you provided.
-
----
-
 # Material Charts
 
 A comprehensive Flutter package offering a collection of customizable, animated charts with Material Design aesthetics. Perfect for data visualization in modern Flutter applications.
@@ -18,7 +14,6 @@ A comprehensive Flutter package offering a collection of customizable, animated 
 A beautiful, interactive, and animated bar chart, ideal for visualizing discrete data categories and comparisons.
 
 ![Bar Chart Example](https://raw.githubusercontent.com/vishnudas-bluefox/material_charts/refs/heads/master/images/bar_chart.gif)
-
 
 ---
 
@@ -42,37 +37,37 @@ A customizable progress meter in a hollow semi-circle format, ideal for displayi
 
 ### Common Features Across All Charts
 
-- 🎨 Material Design aesthetics  
-- ✨ Smooth animations with configurable duration and curves  
-- 📊 Responsive and adaptive layouts  
-- 🎭 Customizable color schemes  
-- 💫 Animation completion callbacks  
-- 📱 Mobile-friendly design  
-- ♿ Accessibility support  
+- 🎨 Material Design aesthetics
+- ✨ Smooth animations with configurable duration and curves
+- 📊 Responsive and adaptive layouts
+- 🎭 Customizable color schemes
+- 💫 Animation completion callbacks
+- 📱 Mobile-friendly design
+- ♿ Accessibility support
 
 ### Bar Chart Features
 
-- 📊 Animated bars with hover and tap interactions  
-- 🏷️ Customizable bar colors and labels  
-- 📏 Optional gridlines and padding  
-- 🕒 Animation support with curve control  
-- 🌈 Gradient or solid color options  
+- 📊 Animated bars with hover and tap interactions
+- 🏷️ Customizable bar colors and labels
+- 📏 Optional gridlines and padding
+- 🕒 Animation support with curve control
+- 🌈 Gradient or solid color options
 
 ### Line Chart Features
 
-- 📈 Interactive data points  
-- 📏 Optional gridlines  
-- 🏷️ Customizable labels  
-- 📊 Automatic scaling  
-- 🎯 Point highlighting  
+- 📈 Interactive data points
+- 📏 Optional gridlines
+- 🏷️ Customizable labels
+- 📊 Automatic scaling
+- 🎯 Point highlighting
 
 ### Hollow Semi Circle Features
 
-- 📊 Percentage display  
-- 🎯 Legend support  
-- 📏 Adjustable hollow radius  
-- 🎨 Active/inactive segment styling  
-- 📝 Custom formatters  
+- 📊 Percentage display
+- 🎯 Legend support
+- 📏 Adjustable hollow radius
+- 🎨 Active/inactive segment styling
+- 📝 Custom formatters
 
 ---
 
@@ -288,10 +283,12 @@ MaterialChartLine(
 ## Best Practices
 
 1. **Responsive Design**
+
    - Use flexible widths and heights.
    - Test on multiple screen sizes and orientations.
 
 2. **Performance**
+
    - Avoid datasets larger than 100 bars.
    - Use smooth animations to improve UX.
 
@@ -306,10 +303,12 @@ MaterialChartLine(
 ### Common Issues
 
 1. **Chart Not Rendering**
+
    - Verify that the `data` list is not empty.
    - Ensure valid size parameters are provided.
 
 2. **Animation Issues**
+
    - Check if animation duration is reasonable.
    - Confirm that the widget is disposed correctly.
 
@@ -322,11 +321,11 @@ MaterialChartLine(
 
 We welcome contributions! Follow these steps:
 
-1. Fork the repository.  
-2. Create a feature branch.  
-3. Commit your changes.  
-4. Push to your branch.  
-5. Open a Pull Request.  
+1. Fork the repository.
+2. Create a feature branch.
+3. Commit your changes.
+4. Push to your branch.
+5. Open a Pull Request.
 
 Refer to our [Contributing Guide](CONTRIBUTING.md) for details.
 
@@ -334,11 +333,11 @@ Refer to our [Contributing Guide](CONTRIBUTING.md) for details.
 
 ## Future Charts (Coming Soon)
 
-- 🥧 Pie Chart  
-- 📈 Area Chart  
-- 🎯 Radar Chart  
-- 📊 Scatter Plot  
-- 📈 Candlestick Chart  
+- 🥧 Pie Chart
+- 📈 Area Chart
+- 🎯 Radar Chart
+- 📊 Scatter Plot
+- 📈 Candlestick Chart
 
 ---
 
@@ -355,15 +354,15 @@ All rights reserved.
 
 ## Support
 
-- 📚 [Documentation](https://pub.dev/documentation/material_charts/latest/)  
-- 💬 [GitHub Issues](https://github.com/vishnudas-bluefox/material_charts/issues)  
-- 📧 [Email Support](mailto:vishnudas956783@gmail.com)  
+- 📚 [Documentation](https://pub.dev/documentation/material_charts/latest/)
+- 💬 [GitHub Issues](https://github.com/vishnudas-bluefox/material_charts/issues)
+- 📧 [Email Support](mailto:vishnudas956783@gmail.com)
 
 ---
 
 ## Credits
 
-Developed with 💙 by [vishnudas-bluefox]  
+Developed with 💙 by [vishnudas-bluefox]
 
 Special thanks to all [contributors](https://github.com/vishnudas-bluefox/material_charts/graphs/contributors)!
 
