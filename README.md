@@ -11,13 +11,13 @@ A comprehensive Flutter package offering a collection of customizable, animated 
 
 An animated line chart with customizable styling, perfect for showing trends and time series data.
 
-![Line Chart Example](https://github.com/vishnudas-bluefox/material_charts/blob/master/images/demo_chart1.png)
+![Line Chart Example](https://raw.githubusercontent.com/vishnudas-bluefox/material_charts/refs/heads/master/images/line_chart.gif)
 
 ### 2. Hollow Semi Circle
 
 A customizable progress meter in a hollow semi-circle format, ideal for displaying percentages and progress.
 
-![Hollow Semi Circle Example](https://github.com/vishnudas-bluefox/material_charts/blob/master/images/demo_chart1.png)
+![Hollow Semi Circle Example](https://raw.githubusercontent.com/vishnudas-bluefox/material_charts/refs/heads/master/images/hoolow_semi_circle.gif)
 
 ## Features
 
