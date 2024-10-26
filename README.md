@@ -1,23 +1,35 @@
+Here is the updated README with the new **Bar Chart** section:
+
+---
+
 # Material Charts
 
 A comprehensive Flutter package offering a collection of customizable, animated charts with Material Design aesthetics. Perfect for data visualization in modern Flutter applications.
 
-[![pub package](https://img.shields.io/pub/v/material_charts.svg)](https://pub.dev/packages/material_charts)
+[![pub package](https://img.shields.io/pub/v/material_charts.svg)](https://pub.dev/packages/material_charts)  
 [![License](https://img.shields.io/badge/License-BSD_3--Clause-blue.svg)](https://opensource.org/licenses/BSD-3-Clause)
 
 ## Available Charts
 
-### 1. Line Chart
+### 1. Bar Chart
+
+A beautiful, interactive, and animated bar chart, ideal for displaying discrete data categories.
+
+![bar Chart Example](https://raw.githubusercontent.com/vishnudas-bluefox/material_charts/refs/heads/master/images/bar_chart.gif)
+
+### 2. Line Chart
 
 An animated line chart with customizable styling, perfect for showing trends and time series data.
 
 ![Line Chart Example](https://raw.githubusercontent.com/vishnudas-bluefox/material_charts/refs/heads/master/images/line_chart.gif)
 
-### 2. Hollow Semi Circle
+### 3. Hollow Semi Circle
 
 A customizable progress meter in a hollow semi-circle format, ideal for displaying percentages and progress.
 
 ![Hollow Semi Circle Example](https://raw.githubusercontent.com/vishnudas-bluefox/material_charts/refs/heads/master/images/hoolow_semi_circle.gif)
+
+---
 
 ## Features
 
@@ -31,21 +43,15 @@ A customizable progress meter in a hollow semi-circle format, ideal for displayi
 - 📱 Mobile-friendly design
 - ♿ Accessibility support
 
-### Line Chart Features
+### Bar Chart Features
 
-- 📈 Interactive data points
-- 📏 Optional grid lines
-- 🏷️ Customizable labels
-- 📊 Automatic scaling
-- 🎯 Point highlighting
+- 📊 Animated bars with hover and tap interactions
+- 🏷️ Customizable bar colors and labels
+- 📏 Optional gridlines and padding
+- 🕒 Animation support with curve control
+- 🌈 Gradient or solid color options
 
-### Hollow Semi Circle Features
-
-- 📊 Percentage display
-- 🎯 Legend support
-- 📏 Adjustable hollow radius
-- 🎨 Active/inactive segment styling
-- 📝 Custom formatters
+---
 
 ## Installation
 
@@ -56,7 +62,39 @@ dependencies:
   material_charts: ^1.0.0
 ```
 
+---
+
 ## Usage
+
+### Bar Chart
+
+```dart
+final data = [
+  BarChartData(value: 10, label: 'Apples'),
+  BarChartData(value: 20, label: 'Bananas', color: Colors.yellow),
+  BarChartData(value: 15, label: 'Grapes', color: Colors.purple),
+];
+
+MaterialBarChart(
+  data: data,
+  width: 300,
+  height: 200,
+  style: BarChartStyle(
+      animationCurve: Curves.decelerate,
+      animationDuration: Duration(milliseconds: 3000),
+      barColor: Colors.red,
+      gradientEffect: true,
+      barSpacing: .8,
+      gradientColors: [Colors.red, Colors.green],
+      cornerRadius: 5.0,
+    );,
+  showGrid: false,
+  interactive: true,
+  onAnimationComplete: () {
+    print('Bar chart animation completed');
+  },
+);
+```
 
 ### Line Chart
 
@@ -65,181 +103,108 @@ final data = [
   ChartData(label: 'Jan', value: 30),
   ChartData(label: 'Feb', value: 45),
   ChartData(label: 'Mar', value: 35),
-  ChartData(label: 'Apr', value: 60),
 ];
 
 MaterialChartLine(
   data: data,
   width: 350,
   height: 200,
-  style: LineChartStyle(
-    lineColor: Colors.blue,
-    pointColor: Colors.blue,
-    strokeWidth: 2.0,
-  ),
-)
+  style: LineChartStyle(lineColor: Colors.blue, strokeWidth: 2.0),
+);
 ```
 
-### Hollow Semi Circle
-
-```dart
-MaterialChartHollowSemiCircle(
-  percentage: 75,
-  size: 300,
-  hollowRadius: 0.7,
-  style: ChartStyle(
-    activeColor: Colors.green,
-    inactiveColor: Colors.grey.shade200,
-    textColor: Colors.green,
-  ),
-)
-```
+---
 
 ## Styling
 
-### Common Style Properties
-
-All charts support a base set of style properties through the `ChartStyle` class:
+### Bar Chart Style
 
 ```dart
-ChartStyle(
-  animationDuration: Duration(milliseconds: 1500),
-  animationCurve: Curves.easeInOut,
-  // Chart-specific properties...
-)
-```
-
-### Line Chart Style
-
-```dart
-LineChartStyle(
-  lineColor: Colors.blue,
-  gridColor: Colors.grey.withOpacity(0.2),
-  pointColor: Colors.blue,
+BarChartStyle(
+  barColor: Colors.teal,
+  gridColor: Colors.grey.shade300,
   backgroundColor: Colors.white,
-  labelStyle: TextStyle(fontSize: 12),
-  strokeWidth: 2.0,
-  pointRadius: 4.0,
-)
+  cornerRadius: 8.0,
+  barSpacing: 0.1, // 10% spacing between bars
+  animationDuration: Duration(milliseconds: 1200),
+  animationCurve: Curves.easeInOut,
+  gradientEffect: true,
+  gradientColors: [Colors.teal, Colors.cyan],
+  labelStyle: TextStyle(fontSize: 12, color: Colors.black),
+  valueStyle: TextStyle(fontSize: 10, color: Colors.black87),
+);
 ```
 
-### Hollow Semi Circle Style
-
-```dart
-ChartStyle(
-  activeColor: Colors.green,
-  inactiveColor: Colors.grey.shade200,
-  textColor: Colors.green,
-  percentageStyle: TextStyle(fontSize: 24),
-  legendStyle: TextStyle(fontSize: 16),
-)
-```
+---
 
 ## Advanced Usage
 
-### Custom Data Models
+### Interactive Features
 
-Convert your data models to chart-compatible formats:
+The **Bar Chart** supports interaction with hover and tap detection:
 
 ```dart
-// For Line Chart
-List<ChartData> convertToLineData(List<YourModel> data) {
-  return data.map((item) => ChartData(
-    label: item.label,
+MaterialBarChart(
+  data: data,
+  interactive: true,
+  onAnimationComplete: () {
+    print('Chart animation completed!');
+  },
+);
+```
+
+### Custom Data Handling
+
+Convert your data models into the required `BarChartData` format:
+
+```dart
+List<BarChartData> convertToBarData(List<MyModel> data) {
+  return data.map((item) => BarChartData(
     value: item.value,
+    label: item.name,
+    color: item.color,
   )).toList();
 }
-
-// For Hollow Semi Circle
-double calculatePercentage(YourModel data) {
-  return (data.completed / data.total) * 100;
-}
 ```
 
-### Animation Control
-
-All charts support animation control:
-
-```dart
-MaterialChartLine(
-  // ... other properties
-  style: LineChartStyle(
-    animationDuration: Duration(milliseconds: 2000),
-    animationCurve: Curves.elasticOut,
-  ),
-  onAnimationComplete: () {
-    print('Animation completed!');
-  },
-)
-```
+---
 
 ## Examples
 
-### Line Chart Examples
-
-#### Basic Time Series
+### Bar Chart Example: Product Sales
 
 ```dart
-MaterialChartLine(
-  data: monthlyData,
-  width: 350,
-  height: 200,
-)
-```
-
-#### Stock Price Chart
-
-```dart
-MaterialChartLine(
-  data: stockPrices,
-  style: LineChartStyle(
-    lineColor: priceChange >= 0 ? Colors.green : Colors.red,
+MaterialBarChart(
+  data: salesData,
+  width: 400,
+  height: 300,
+  style: BarChartStyle(
+    barColor: Colors.orange,
+    gridColor: Colors.grey.shade300,
   ),
-)
+);
 ```
 
-### Hollow Semi Circle Examples
-
-#### Download Progress
-
-```dart
-MaterialChartHollowSemiCircle(
-  percentage: downloadProgress,
-  style: ChartStyle(
-    percentageFormatter: (value) => '${value.toInt()}% Downloaded',
-  ),
-)
-```
-
-#### Performance Meter
-
-```dart
-MaterialChartHollowSemiCircle(
-  percentage: performanceScore,
-  style: ChartStyle(
-    activeColor: performanceScore > 80 ? Colors.green : Colors.orange,
-  ),
-)
-```
+---
 
 ## Best Practices
 
 1. **Responsive Design**
 
-   - Use flexible widths when possible
-   - Consider screen orientation changes
-   - Test on different screen sizes
+   - Use flexible widths and heights when possible.
+   - Test on different screen sizes and orientations.
 
 2. **Performance**
 
-   - Keep data points reasonable (< 100 for line charts)
-   - Use appropriate animation durations
-   - Implement efficient data updates
+   - Avoid large datasets (> 100 bars) for better performance.
+   - Use smooth animations to improve UX.
 
 3. **Accessibility**
-   - Provide meaningful labels
-   - Use sufficient color contrast
-   - Include alternative text when necessary
+
+   - Use meaningful labels and colors with good contrast.
+   - Provide alternative text when needed.
+
+---
 
 ## Troubleshooting
 
@@ -247,41 +212,44 @@ MaterialChartHollowSemiCircle(
 
 1. **Chart Not Rendering**
 
-   - Verify data is not empty
-   - Check container constraints
-   - Ensure valid size parameters
+   - Ensure the `data` list is not empty.
+   - Verify the `width` and `height` are correctly set.
 
-2. **Animation Issues**
+2. **Animation Not Working**
 
-   - Verify animation duration is reasonable
-   - Check state management implementation
-   - Confirm widget is properly disposed
+   - Confirm animation duration is reasonable.
+   - Ensure the widget is properly disposed to avoid animation leaks.
 
 3. **Style Not Applying**
-   - Verify style object properties
-   - Check parent widget constraints
-   - Confirm theme inheritance
+
+   - Double-check style object properties.
+   - Verify parent widget constraints allow the chart to render fully.
+
+---
 
 ## Contributing
 
 We welcome contributions! Here's how you can help:
 
-1. Fork the repository
-2. Create your feature branch
-3. Commit your changes
-4. Push to the branch
-5. Create a Pull Request
+1. Fork the repository.
+2. Create your feature branch.
+3. Commit your changes.
+4. Push to the branch.
+5. Create a Pull Request.
 
-Please read our [Contributing Guide](CONTRIBUTING.md) for details.
+Please read our [Contributing Guide](CONTRIBUTING.md) for more details.
+
+---
 
 ## Future Charts (Coming Soon)
 
-- 📊 Bar Chart
 - 🥧 Pie Chart
 - 📈 Area Chart
 - 🎯 Radar Chart
 - 📊 Scatter Plot
 - 📈 Candlestick Chart
+
+---
 
 ## License
 
@@ -292,14 +260,22 @@ Copyright (c) 2024, Material Charts
 All rights reserved.
 ```
 
+---
+
 ## Support
 
 - 📚 [Documentation](https://pub.dev/documentation/material_charts/latest/)
 - 💬 [GitHub Issues](https://github.com/vishnudas-bluefox/material_charts/issues)
 - 📧 [Email Support](mailto:vishnudas956783@gmail.com)
 
+---
+
 ## Credits
 
 Developed with 💙 by [vishnudas-bluefox]
 
 Special thanks to all [contributors](https://github.com/vishnudas-bluefox/material_charts/graphs/contributors)!
+
+---
+
+This updated README introduces the **Bar Chart**, including its usage, styling options, and interactive features, keeping it consistent with the overall structure of the package documentation.
