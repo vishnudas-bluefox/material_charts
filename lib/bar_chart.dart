@@ -1,7 +1,6 @@
 import 'dart:math';
 import 'package:flutter/material.dart';
 import 'package:flutter/gestures.dart';
-import 'package:flutter/rendering.dart';
 
 /// Model class for bar chart data points
 class BarChartData {
