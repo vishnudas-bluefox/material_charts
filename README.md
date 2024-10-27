@@ -1,6 +1,6 @@
 # Material Charts
 
-A comprehensive Flutter package offering a collection of customizable, animated charts with Material Design aesthetics. Perfect for data visualization in modern Flutter applications.
+**Material Charts** is a Flutter package designed to offer versatile, customizable chart components that adapt to a variety of use cases. It supports **Line Charts**, **Hollow Semi-Circle Charts**, and **Bar Charts**, with extensive customization, smooth animations, and real-time data updates.
 
 [![pub package](https://img.shields.io/pub/v/material_charts.svg)](https://pub.dev/packages/material_charts)  
 [![License](https://img.shields.io/badge/License-BSD_3--Clause-blue.svg)](https://opensource.org/licenses/BSD-3-Clause)
@@ -71,212 +71,139 @@ A customizable progress meter in a hollow semi-circle format, ideal for displayi
 
 ---
 
-## Installation
+## **Installation**
 
-Add this to your package's `pubspec.yaml` file:
+Add the dependency to your `pubspec.yaml`:
 
 ```yaml
 dependencies:
-  material_charts: ^1.0.0
+  material_charts: latest_version
 ```
 
 ---
 
-## Usage
+## **Chart Types**
 
-### Bar Chart
+### **1. Line Chart**
 
-```dart
-final data = [
-  BarChartData(value: 10, label: 'Apples', color: Colors.red),
-  BarChartData(value: 20, label: 'Bananas', color: Colors.yellow),
-  BarChartData(value: 15, label: 'Grapes', color: Colors.purple),
-];
+Displays trends or data points over time with connected lines.
 
-MaterialBarChart(
-  data: data,
-  width: 300,
-  height: 200,
-  style: BarChartStyle(
-    barColor: Colors.blue,
-    gradientEffect: true,
-    gradientColors: [Colors.blue, Colors.lightBlueAccent],
-    animationCurve: Curves.easeOutBack,
-  ),
-  showGrid: true,
-  interactive: true,
-  onAnimationComplete: () {
-    print('Bar chart animation completed');
-  },
-);
-```
-
----
-
-### Line Chart
+#### **Code Usage**
 
 ```dart
-final data = [
-  ChartData(label: 'Jan', value: 30),
-  ChartData(label: 'Feb', value: 45),
-  ChartData(label: 'Mar', value: 35),
-  ChartData(label: 'Apr', value: 60),
-];
-
 MaterialChartLine(
-  data: data,
-  width: 350,
-  height: 200,
-  style: LineChartStyle(
-    lineColor: Colors.blue,
-    pointColor: Colors.blue,
-    strokeWidth: 2.0,
-  ),
+  data: [
+    ChartData(value: 50, label: 'Mon'),
+    ChartData(value: 30, label: 'Tue'),
+  ],
+  lineColor: Colors.blue,
+  gridColor: Colors.grey,
+  pointColor: Colors.red,
+  strokeWidth: 2.5,
+  animationCurve: Curves.easeInOut,
+  animationDuration: Duration(milliseconds: 1500),
 );
 ```
 
+### **Line Chart Properties and Style**
+
+| **Property**        | **Type**     | **Description**                      | **Default Value**  |
+| ------------------- | ------------ | ------------------------------------ | ------------------ |
+| `value`             | `double`     | Value represented by the data point. | **Required**       |
+| `label`             | `String`     | Label for the data point.            | **Required**       |
+| `lineColor`         | `Color`      | Color of the connecting line.        | `Colors.blue`      |
+| `gridColor`         | `Color`      | Grid line color.                     | `Colors.grey`      |
+| `pointColor`        | `Color`      | Color of data points.                | `Colors.red`       |
+| `backgroundColor`   | `Color`      | Background color of the chart.       | `Colors.white`     |
+| `labelStyle`        | `TextStyle?` | Style for point labels.              | `null`             |
+| `strokeWidth`       | `double`     | Thickness of the connecting line.    | `2.5`              |
+| `pointRadius`       | `double`     | Radius of data points.               | `4.0`              |
+| `animationDuration` | `Duration`   | Duration of the chart animation.     | `1500ms`           |
+| `animationCurve`    | `Curve`      | Animation curve for transitions.     | `Curves.easeInOut` |
+
 ---
 
-### Hollow Semi Circle
+### **2. Hollow Semi-Circle Chart**
+
+A semi-circle chart ideal for displaying progress or percentages.
+
+#### **Code Usage**
 
 ```dart
 MaterialChartHollowSemiCircle(
   percentage: 75,
-  size: 300,
-  hollowRadius: 0.7,
-  style: ChartStyle(
-    activeColor: Colors.green,
-    inactiveColor: Colors.grey.shade200,
-    textColor: Colors.green,
-  ),
-);
-```
-
----
-
-## Styling
-
-### Common Style Properties
-
-All charts support a base set of style properties through the `ChartStyle` class:
-
-```dart
-ChartStyle(
-  animationDuration: Duration(milliseconds: 1500),
-  animationCurve: Curves.easeInOut,
-  // Chart-specific properties...
-);
-```
-
----
-
-### Bar Chart Style
-
-```dart
-BarChartStyle(
-  barColor: Colors.teal,
-  gridColor: Colors.grey.shade300,
-  backgroundColor: Colors.white,
-  cornerRadius: 8.0,
-  barSpacing: 0.1, // 10% spacing between bars
-  animationDuration: Duration(milliseconds: 1200),
-  animationCurve: Curves.easeInOut,
-  gradientEffect: true,
-  gradientColors: [Colors.teal, Colors.cyan],
-  labelStyle: TextStyle(fontSize: 12, color: Colors.black),
-  valueStyle: TextStyle(fontSize: 10, color: Colors.black87),
-);
-```
-
----
-
-### Line Chart Style
-
-```dart
-LineChartStyle(
-  lineColor: Colors.blue,
-  gridColor: Colors.grey.withOpacity(0.2),
-  pointColor: Colors.blue,
-  backgroundColor: Colors.white,
-  labelStyle: TextStyle(fontSize: 12),
-  strokeWidth: 2.0,
-  pointRadius: 4.0,
-);
-```
-
----
-
-### Hollow Semi Circle Style
-
-```dart
-ChartStyle(
   activeColor: Colors.green,
-  inactiveColor: Colors.grey.shade200,
-  textColor: Colors.green,
-  percentageStyle: TextStyle(fontSize: 24),
-  legendStyle: TextStyle(fontSize: 16),
+  inactiveColor: Colors.grey,
+  textColor: Colors.black,
+  animationCurve: Curves.easeInOut,
+  animationDuration: Duration(milliseconds: 1500),
+  showPercentageText: true,
 );
 ```
 
----
+### **Hollow Semi-Circle Chart Properties and Style**
 
-## Advanced Usage
-
-### Custom Data Models
-
-Convert your data models into chart-compatible formats.
-
-**Bar Chart Example:**
-
-```dart
-List<BarChartData> convertToBarData(List<MyModel> data) {
-  return data.map((item) => BarChartData(
-    value: item.value,
-    label: item.name,
-    color: item.color,
-  )).toList();
-}
-```
-
-**Line Chart Example:**
-
-```dart
-List<ChartData> convertToLineData(List<MyModel> data) {
-  return data.map((item) => ChartData(
-    label: item.label,
-    value: item.value,
-  )).toList();
-}
-```
+| **Property**          | **Type**                   | **Description**                           | **Default Value**  |
+| --------------------- | -------------------------- | ----------------------------------------- | ------------------ |
+| `activeColor`         | `Color`                    | Color of the active (filled) portion.     | **Required**       |
+| `inactiveColor`       | `Color`                    | Color of the inactive (unfilled) portion. | `Colors.grey`      |
+| `textColor`           | `Color?`                   | Color of the percentage text.             | `null`             |
+| `percentageStyle`     | `TextStyle?`               | Style for percentage display.             | `null`             |
+| `legendStyle`         | `TextStyle?`               | Style for legend labels.                  | `null`             |
+| `animationDuration`   | `Duration`                 | Duration of the animation.                | `1500ms`           |
+| `animationCurve`      | `Curve`                    | Animation curve for transitions.          | `Curves.easeInOut` |
+| `showPercentageText`  | `bool`                     | Whether to display the percentage text.   | `true`             |
+| `showLegend`          | `bool`                     | Whether to show the legend.               | `true`             |
+| `percentageFormatter` | `Function(double)`         | Custom formatter for percentage text.     | `null`             |
+| `legendFormatter`     | `Function(String, double)` | Custom formatter for legend labels.       | `null`             |
 
 ---
 
-## Examples
+### **3. Bar Chart**
 
-### Bar Chart: Product Sales
+Used for comparing values across different categories.
+
+#### **Code Usage**
 
 ```dart
 MaterialBarChart(
-  data: salesData,
-  width: 400,
-  height: 300,
+  data: [
+    BarChartData(value: 70, label: 'Q1', color: Colors.blue),
+    BarChartData(value: 85, label: 'Q2', color: Colors.red),
+  ],
   style: BarChartStyle(
-    barColor: Colors.orange,
-    gridColor: Colors.grey.shade300,
+    barColor: Colors.blue,
+    gridColor: Colors.grey,
+    barSpacing: 16,
+    animationCurve: Curves.easeInOut,
   ),
+  showGrid: true,
+  showValues: true,
 );
 ```
 
-### Line Chart: Stock Prices
+### **Bar Chart: Properties and Style**
 
-```dart
-MaterialChartLine(
-  data: stockPrices,
-  style: LineChartStyle(
-    lineColor: priceChange >= 0 ? Colors.green : Colors.red,
-  ),
-);
-```
+| **Property**          | **Type**             | **Description**                      | **Default Value**  |
+| --------------------- | -------------------- | ------------------------------------ | ------------------ |
+| `data`                | `List<BarChartData>` | List of bar chart data.              | **Required**       |
+| `progress`            | `double`             | Progress percentage (0 to 100).      | `0.0`              |
+| `showGrid`            | `bool`               | Whether to display grid lines.       | `true`             |
+| `showValues`          | `bool`               | Whether to display bar values.       | `true`             |
+| `padding`             | `EdgeInsets`         | Padding around the chart.            | `EdgeInsets.zero`  |
+| `horizontalGridLines` | `int`                | Number of horizontal grid lines.     | `5`                |
+| `hoveredBarIndex`     | `int?`               | Index of the currently hovered bar.  | `null`             |
+| `barColor`            | `Color`              | Color of the bars.                   | `Colors.blue`      |
+| `gridColor`           | `Color`              | Color of the grid lines.             | `Colors.grey`      |
+| `backgroundColor`     | `Color`              | Background color of the chart.       | `Colors.white`     |
+| `labelStyle`          | `TextStyle?`         | Style for bar labels.                | `null`             |
+| `valueStyle`          | `TextStyle?`         | Style for bar values.                | `null`             |
+| `barSpacing`          | `double`             | Spacing between bars.                | `8.0`              |
+| `cornerRadius`        | `double`             | Corner radius of the bars.           | `4.0`              |
+| `animationDuration`   | `Duration`           | Duration of the animation.           | `1500ms`           |
+| `animationCurve`      | `Curve`              | Animation curve for bar transitions. | `Curves.easeInOut` |
+| `gradientEffect`      | `bool`               | Whether to apply a gradient effect.  | `false`            |
+| `gradientColors`      | `List<Color>?`       | Colors used for the gradient effect. | `null`             |
 
 ---
 
