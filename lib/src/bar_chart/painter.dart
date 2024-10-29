@@ -1,18 +1,23 @@
 import 'dart:math';
-
 import 'package:flutter/material.dart';
 import 'package:material_charts/src/bar_chart/models.dart';
 
+/// Custom painter for rendering a bar chart.
+///
+/// This class is responsible for drawing the bar chart, including bars, grid lines,
+/// and labels based on the provided data and styling options.
 class BarChartPainter extends CustomPainter {
-  final List<BarChartData> data;
-  final double progress;
-  final BarChartStyle style;
-  final bool showGrid;
-  final bool showValues;
-  final EdgeInsets padding;
-  final int horizontalGridLines;
-  final int? hoveredBarIndex;
+  final List<BarChartData> data; // Data points to be displayed in the chart
+  final double progress; // Animation progress from 0.0 to 1.0
+  final BarChartStyle style; // Styling options for the chart
+  final bool showGrid; // Flag to show or hide grid lines
+  final bool showValues; // Flag to show or hide bar values
+  final EdgeInsets padding; // Padding around the chart
+  final int horizontalGridLines; // Number of horizontal grid lines to draw
+  final int?
+      hoveredBarIndex; // Index of the bar currently hovered over (for interaction)
 
+  /// Creates an instance of [BarChartPainter].
   BarChartPainter({
     required this.data,
     required this.progress,
@@ -26,7 +31,7 @@ class BarChartPainter extends CustomPainter {
 
   @override
   void paint(Canvas canvas, Size size) {
-    if (data.isEmpty) return;
+    if (data.isEmpty) return; // Exit if there's no data to display
 
     final chartArea = Rect.fromLTWH(
       padding.left,
@@ -36,13 +41,14 @@ class BarChartPainter extends CustomPainter {
     );
 
     if (showGrid) {
-      _drawGrid(canvas, chartArea);
+      _drawGrid(canvas, chartArea); // Draw grid lines if enabled
     }
 
-    _drawBars(canvas, chartArea);
-    _drawLabels(canvas, chartArea);
+    _drawBars(canvas, chartArea); // Draw the bars
+    _drawLabels(canvas, chartArea); // Draw the labels
   }
 
+  /// Draws the grid lines on the chart.
   void _drawGrid(Canvas canvas, Rect chartArea) {
     final paint = Paint()
       ..color = style.gridColor.withOpacity(0.2)
@@ -59,8 +65,11 @@ class BarChartPainter extends CustomPainter {
     }
   }
 
+  /// Draws the bars on the chart.
   void _drawBars(Canvas canvas, Rect chartArea) {
-    final maxValue = data.map((point) => point.value).reduce(max);
+    final maxValue = data
+        .map((point) => point.value)
+        .reduce(max); // Find the max value for scaling
     final barWidth = (chartArea.width / data.length) * (1 - style.barSpacing);
     final spacing = (chartArea.width / data.length) * style.barSpacing;
 
@@ -77,25 +86,22 @@ class BarChartPainter extends CustomPainter {
 
       final paint = Paint()..style = PaintingStyle.fill;
 
-      // First check if this bar has a custom color
+      // Check for custom color or gradient
       if (data[i].color != null) {
         paint.color = data[i].color!;
       } else if (style.gradientEffect && style.gradientColors != null) {
-        // Only apply gradient if no custom color is specified
         paint.shader = LinearGradient(
           begin: Alignment.bottomCenter,
           end: Alignment.topCenter,
           colors: style.gradientColors!,
         ).createShader(rect.outerRect);
       } else {
-        // Use default bar color if no custom color or gradient
-        paint.color = style.barColor;
+        paint.color = style.barColor; // Default color
       }
 
-      // Apply hover effect
+      // Apply hover effect if applicable
       if (hoveredBarIndex == i) {
         if (paint.shader != null) {
-          // If using gradient, create a lighter version
           paint.shader = LinearGradient(
             begin: Alignment.bottomCenter,
             end: Alignment.topCenter,
@@ -103,8 +109,7 @@ class BarChartPainter extends CustomPainter {
                 style.gradientColors!.map((c) => c.withOpacity(0.8)).toList(),
           ).createShader(rect.outerRect);
         } else {
-          // If using solid color, make it lighter
-          paint.color = paint.color.withOpacity(0.8);
+          paint.color = paint.color.withOpacity(0.8); // Lighter color on hover
         }
 
         // Draw hover indicator
@@ -115,8 +120,9 @@ class BarChartPainter extends CustomPainter {
         canvas.drawRRect(rect, hoverPaint);
       }
 
-      canvas.drawRRect(rect, paint);
+      canvas.drawRRect(rect, paint); // Draw the bar
 
+      // Draw value labels above bars if enabled
       if (showValues) {
         final value = data[i].value.toStringAsFixed(1);
         final textStyle = style.valueStyle ??
@@ -142,6 +148,7 @@ class BarChartPainter extends CustomPainter {
     }
   }
 
+  /// Draws the labels for each bar on the chart.
   void _drawLabels(Canvas canvas, Rect chartArea) {
     final barWidth = (chartArea.width / data.length) * (1 - style.barSpacing);
     final spacing = (chartArea.width / data.length) * style.barSpacing;
@@ -172,6 +179,7 @@ class BarChartPainter extends CustomPainter {
 
   @override
   bool shouldRepaint(BarChartPainter oldDelegate) {
+    // Determines whether the painter should repaint when properties change
     return oldDelegate.progress != progress ||
         oldDelegate.data != data ||
         oldDelegate.style != style ||
