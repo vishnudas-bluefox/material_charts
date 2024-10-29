@@ -193,24 +193,7 @@ class GanttBasePainter extends CustomPainter {
             y - style.labelOffset - labelPainter.height),
       );
 
-      // Draw date range below the point
-      final datePainter = TextPainter(
-        text: TextSpan(
-          text: '${DateFormat.yMMMd().format(point.startDate)} - '
-              '${DateFormat.yMMMd().format(point.endDate)}',
-          style: style.dateStyle ??
-              const TextStyle(
-                color: Colors.grey,
-                fontSize: 12,
-              ),
-        ),
-        textDirection: ui.TextDirection.ltr,
-      )..layout();
-
-      // datePainter.paint(
-      //   canvas,
-      //   Offset(x - (datePainter.width / 2), y + style.labelOffset),
-      // );
+      
     }
   }
 
