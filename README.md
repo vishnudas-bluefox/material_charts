@@ -1,6 +1,6 @@
 # Material Charts
 
-**Material Charts** is a Flutter package designed to offer versatile, customizable chart components that adapt to a variety of use cases. It supports **Line Charts**, **Hollow Semi-Circle Charts**, and **Bar Charts**, with extensive customization, smooth animations, and real-time data updates.
+**Material Charts** is a Flutter package designed to offer versatile, customizable chart components that adapt to a variety of use cases. It supports **Line Charts**, **Hollow Semi-Circle Charts**, **Bar Charts**, and **Gantt Charts**, with extensive customization, smooth animations, and real-time data updates.
 
 [![pub package](https://img.shields.io/pub/v/material_charts.svg)](https://pub.dev/packages/material_charts)  
 [![License](https://img.shields.io/badge/License-BSD_3--Clause-blue.svg)](https://opensource.org/licenses/BSD-3-Clause)
@@ -31,9 +31,12 @@ A customizable progress meter in a hollow semi-circle format, ideal for displayi
 
 ![Hollow Semi Circle Example](https://raw.githubusercontent.com/vishnudas-bluefox/material_charts/refs/heads/master/images/hoolow_semi_circle.gif)
 
+---
+
 ### 4. Gantt Chart
 
 A versatile Gantt chart that visually represents task timelines and progress, featuring customizable colors and interactive elements.
+
 | ![Gantt Chart Example](https://raw.githubusercontent.com/vishnudas-bluefox/material_charts/refs/heads/master/images/gant_chart.gif) | ![Gantt Chart Example](https://raw.githubusercontent.com/vishnudas-bluefox/material_charts/refs/heads/master/images/gantt_chart_line.gif) |
 |:--:|:--:|
 
@@ -75,6 +78,20 @@ A versatile Gantt chart that visually represents task timelines and progress, fe
 - 📏 Adjustable hollow radius
 - 🎨 Active/inactive segment styling
 - 📝 Custom formatters
+
+
+### Gantt Chart Features
+
+- 🗓️ Task Timeline Visualization
+- 📊 Interactive Task Bars
+- 🏷️ Customizable Labels
+- 🔄 Drag-and-Drop Functionality
+- 🎨 Custom Color Schemes
+- 📅 Date Range Filtering
+- 🕒 Animation Support
+- ♿ Accessibility Support
+- 🎯 Highlighting Current Tasks
+- 🌟 Custom Milestones
 
 ---
 
