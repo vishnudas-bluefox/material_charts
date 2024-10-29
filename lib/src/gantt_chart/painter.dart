@@ -192,8 +192,6 @@ class GanttBasePainter extends CustomPainter {
         Offset(x - (labelPainter.width / 2),
             y - style.labelOffset - labelPainter.height),
       );
-
-      
     }
   }
 

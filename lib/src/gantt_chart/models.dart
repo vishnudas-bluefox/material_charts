@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 
-
 /// Exception thrown when Gantt chart data is invalid
 class GanttChartException implements Exception {
   final String message;
