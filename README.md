@@ -31,6 +31,13 @@ A customizable progress meter in a hollow semi-circle format, ideal for displayi
 
 ![Hollow Semi Circle Example](https://raw.githubusercontent.com/vishnudas-bluefox/material_charts/refs/heads/master/images/hoolow_semi_circle.gif)
 
+### 4. Gantt Chart
+
+A versatile Gantt chart that visually represents task timelines and progress, featuring customizable colors and interactive elements.
+| ![Gantt Chart Example](https://raw.githubusercontent.com/vishnudas-bluefox/material_charts/refs/heads/master/images/gant_chart.gif) | ![Gantt Chart Example](https://raw.githubusercontent.com/vishnudas-bluefox/material_charts/refs/heads/master/images/gantt_chart_line.gif) |
+|:--:|:--:|
+
+
 ---
 
 ## Features
@@ -82,128 +89,329 @@ dependencies:
 
 ---
 
-## **Chart Types**
+## **Chart Types and Usage**
 
-### **1. Line Chart**
+### **Bar Chart**
 
-Displays trends or data points over time with connected lines.
-
-#### **Code Usage**
+#### **Code Example**
 
 ```dart
-MaterialChartLine(
-  data: [
-    ChartData(value: 50, label: 'Mon'),
-    ChartData(value: 30, label: 'Tue'),
-  ],
-  lineColor: Colors.blue,
-  gridColor: Colors.grey,
-  pointColor: Colors.red,
-  strokeWidth: 2.5,
-  animationCurve: Curves.easeInOut,
-  animationDuration: Duration(milliseconds: 1500),
-);
-```
+import 'package:flutter/material.dart';
+import 'material_charts/bar_chart.dart';
 
-### **Line Chart Properties and Style**
-
-| **Property**        | **Type**     | **Description**                      | **Default Value**  |
-| ------------------- | ------------ | ------------------------------------ | ------------------ |
-| `value`             | `double`     | Value represented by the data point. | **Required**       |
-| `label`             | `String`     | Label for the data point.            | **Required**       |
-| `lineColor`         | `Color`      | Color of the connecting line.        | `Colors.blue`      |
-| `gridColor`         | `Color`      | Grid line color.                     | `Colors.grey`      |
-| `pointColor`        | `Color`      | Color of data points.                | `Colors.red`       |
-| `backgroundColor`   | `Color`      | Background color of the chart.       | `Colors.white`     |
-| `labelStyle`        | `TextStyle?` | Style for point labels.              | `null`             |
-| `strokeWidth`       | `double`     | Thickness of the connecting line.    | `2.5`              |
-| `pointRadius`       | `double`     | Radius of data points.               | `4.0`              |
-| `animationDuration` | `Duration`   | Duration of the chart animation.     | `1500ms`           |
-| `animationCurve`    | `Curve`      | Animation curve for transitions.     | `Curves.easeInOut` |
-
----
-
-### **2. Hollow Semi-Circle Chart**
-
-A semi-circle chart ideal for displaying progress or percentages.
-
-#### **Code Usage**
-
-```dart
-MaterialChartHollowSemiCircle(
-  percentage: 75,
-  activeColor: Colors.green,
-  inactiveColor: Colors.grey,
-  textColor: Colors.black,
-  animationCurve: Curves.easeInOut,
-  animationDuration: Duration(milliseconds: 1500),
-  showPercentageText: true,
-);
-```
-
-### **Hollow Semi-Circle Chart Properties and Style**
-
-| **Property**          | **Type**                   | **Description**                           | **Default Value**  |
-| --------------------- | -------------------------- | ----------------------------------------- | ------------------ |
-| `activeColor`         | `Color`                    | Color of the active (filled) portion.     | **Required**       |
-| `inactiveColor`       | `Color`                    | Color of the inactive (unfilled) portion. | `Colors.grey`      |
-| `textColor`           | `Color?`                   | Color of the percentage text.             | `null`             |
-| `percentageStyle`     | `TextStyle?`               | Style for percentage display.             | `null`             |
-| `legendStyle`         | `TextStyle?`               | Style for legend labels.                  | `null`             |
-| `animationDuration`   | `Duration`                 | Duration of the animation.                | `1500ms`           |
-| `animationCurve`      | `Curve`                    | Animation curve for transitions.          | `Curves.easeInOut` |
-| `showPercentageText`  | `bool`                     | Whether to display the percentage text.   | `true`             |
-| `showLegend`          | `bool`                     | Whether to show the legend.               | `true`             |
-| `percentageFormatter` | `Function(double)`         | Custom formatter for percentage text.     | `null`             |
-| `legendFormatter`     | `Function(String, double)` | Custom formatter for legend labels.       | `null`             |
-
----
-
-### **3. Bar Chart**
-
-Used for comparing values across different categories.
-
-#### **Code Usage**
-
-```dart
 MaterialBarChart(
   data: [
-    BarChartData(value: 70, label: 'Q1', color: Colors.blue),
-    BarChartData(value: 85, label: 'Q2', color: Colors.red),
+    BarChartData(value: 30, label: 'Apples', color: Colors.red),
+    BarChartData(value: 70, label: 'Oranges'),
+    BarChartData(value: 50, label: 'Bananas', color: Colors.yellow),
   ],
   style: BarChartStyle(
-    barColor: Colors.blue,
-    gridColor: Colors.grey,
-    barSpacing: 16,
-    animationCurve: Curves.easeInOut,
+    gridColor: Colors.grey.shade300,
+    backgroundColor: Colors.white,
+    labelStyle: TextStyle(fontSize: 14, color: Colors.black),
+    valueStyle: TextStyle(fontSize: 12, color: Colors.blueGrey),
+    barSpacing: 0.3,
+    cornerRadius: 6.0,
+    gradientEffect: true,
+    gradientColors: [Colors.purple, Colors.cyan],
+    animationDuration: Duration(milliseconds: 1200),
   ),
   showGrid: true,
   showValues: true,
 );
 ```
 
-### **Bar Chart: Properties and Style**
+---
 
-| **Property**          | **Type**             | **Description**                      | **Default Value**  |
-| --------------------- | -------------------- | ------------------------------------ | ------------------ |
-| `data`                | `List<BarChartData>` | List of bar chart data.              | **Required**       |
-| `progress`            | `double`             | Progress percentage (0 to 100).      | `0.0`              |
-| `showGrid`            | `bool`               | Whether to display grid lines.       | `true`             |
-| `showValues`          | `bool`               | Whether to display bar values.       | `true`             |
-| `padding`             | `EdgeInsets`         | Padding around the chart.            | `EdgeInsets.zero`  |
-| `horizontalGridLines` | `int`                | Number of horizontal grid lines.     | `5`                |
-| `hoveredBarIndex`     | `int?`               | Index of the currently hovered bar.  | `null`             |
-| `barColor`            | `Color`              | Color of the bars.                   | `Colors.blue`      |
-| `gridColor`           | `Color`              | Color of the grid lines.             | `Colors.grey`      |
-| `backgroundColor`     | `Color`              | Background color of the chart.       | `Colors.white`     |
-| `labelStyle`          | `TextStyle?`         | Style for bar labels.                | `null`             |
-| `valueStyle`          | `TextStyle?`         | Style for bar values.                | `null`             |
-| `barSpacing`          | `double`             | Spacing between bars.                | `8.0`              |
-| `cornerRadius`        | `double`             | Corner radius of the bars.           | `4.0`              |
-| `animationDuration`   | `Duration`           | Duration of the animation.           | `1500ms`           |
-| `animationCurve`      | `Curve`              | Animation curve for bar transitions. | `Curves.easeInOut` |
-| `gradientEffect`      | `bool`               | Whether to apply a gradient effect.  | `false`            |
-| `gradientColors`      | `List<Color>?`       | Colors used for the gradient effect. | `null`             |
+#### **BarChartData Properties**
+
+| **Property** | **Type** | **Description**  | **Default**   |
+| ------------ | -------- | ---------------- | ------------- |
+| `value`      | `double` | Value of the bar | **Required**  |
+| `label`      | `String` | Name of the bar  | **Required**  |
+| `color`      | `Color?` | Color of the bar | `Colors.blue` |
+
+---
+
+#### **BarChartStyle Properties**
+
+| **Property**        | **Type**       | **Description**                  | **Default**                    |
+| ------------------- | -------------- | -------------------------------- | ------------------------------ |
+| `gridColor`         | `Color`        | Color of the grid                | `Colors.grey`                  |
+| `backgroundColor`   | `Color`        | Chart background color           | `Colors.white`                 |
+| `labelStyle`        | `TextStyle?`   | Text style for bar labels        | `null`                         |
+| `valueStyle`        | `TextStyle?`   | Text style for bar values        | `null`                         |
+| `barSpacing`        | `double`       | Spacing between bars (0.0 - 1.0) | `0.2`                          |
+| `cornerRadius`      | `double`       | Corner radius of bars            | `4.0`                          |
+| `barColor`          | `Color`        | Default color for bars           | `Colors.blue`                  |
+| `gradientEffect`    | `bool`         | Enables gradient on bars         | `false`                        |
+| `gradientColors`    | `List<Color>?` | Colors for gradient effect       | `null`                         |
+| `animationDuration` | `Duration`     | Animation duration for the bars  | `Duration(milliseconds: 1500)` |
+| `animationCurve`    | `Curve`        | Animation curve for transitions  | `Curves.easeInOut`             |
+
+---
+
+### **2. Line Chart**
+
+#### **Code Usage**
+
+```dart
+import 'package:flutter/material.dart';
+
+void main() => runApp(MyApp());
+
+class MyApp extends StatelessWidget {
+  @override
+  Widget build(BuildContext context) {
+    return MaterialApp(
+      home: Scaffold(
+        appBar: AppBar(title: Text('Line Chart Example')),
+        body: LineChartWidget(),
+      ),
+    );
+  }
+}
+
+class LineChartWidget extends StatelessWidget {
+  final List<ChartData> data = [
+    ChartData(value: 10, label: 'Jan'),
+    ChartData(value: 30, label: 'Feb'),
+    ChartData(value: 50, label: 'Mar'),
+    ChartData(value: 40, label: 'Apr'),
+  ];
+
+  final LineChartStyle style = LineChartStyle(
+    lineColor: Colors.green,
+    pointColor: Colors.red,
+    strokeWidth: 3.0,
+    animationDuration: Duration(milliseconds: 1000),
+    animationCurve: Curves.fastOutSlowIn,
+  );
+
+  @override
+  Widget build(BuildContext context) {
+    return Center(
+      child: Text(
+        'Line Chart Placeholder',
+        style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
+      ),
+    );
+  }
+}
+```
+
+#### **Line Chart Properties**
+
+| **Property** | **Type** | **Description**                      | **Default**  |
+| ------------ | -------- | ------------------------------------ | ------------ |
+| `value`      | `double` | Value of the data point              | **Required** |
+| `label`      | `String` | Label associated with the data point | **Required** |
+
+---
+
+### **LineChartStyle Properties**
+
+| **Property**        | **Type**     | **Description**                      | **Default**                    |
+| ------------------- | ------------ | ------------------------------------ | ------------------------------ |
+| `lineColor`         | `Color`      | Color of the chart line              | `Colors.blue`                  |
+| `gridColor`         | `Color`      | Color of the chart grid              | `Colors.grey`                  |
+| `pointColor`        | `Color`      | Color of the data points             | `Colors.blue`                  |
+| `backgroundColor`   | `Color`      | Background color of the chart        | `Colors.white`                 |
+| `labelStyle`        | `TextStyle?` | Text style for labels                | `null`                         |
+| `strokeWidth`       | `double`     | Width of the chart line              | `2.0`                          |
+| `pointRadius`       | `double`     | Radius of the data points            | `4.0`                          |
+| `animationDuration` | `Duration`   | Duration of the line chart animation | `Duration(milliseconds: 1500)` |
+| `animationCurve`    | `Curve`      | Curve for animation transitions      | `Curves.easeInOut`             |
+
+---
+
+### **3. Hollow Semi-Circle Chart**
+
+#### **Code Usage**
+
+```dart
+import 'package:flutter/material.dart';
+import 'material_charts/hollow_semi_circle.dart';
+
+MaterialChartHollowSemiCircle(
+  percentage: 75,
+  size: 200,
+  style: ChartStyle(
+    activeColor: Colors.green,
+    inactiveColor: Colors.grey.shade300,
+    percentageStyle: TextStyle(fontSize: 24, color: Colors.black),
+    animationDuration: Duration(milliseconds: 1000),
+    animationCurve: Curves.fastOutSlowIn,
+  ),
+  onAnimationComplete: () {
+    print('Animation Completed');
+  },
+);
+```
+
+#### **Hollow Semi-Circle Properties**
+
+| **Property**          | **Type**        | **Description**                            | **Default**    |
+| --------------------- | --------------- | ------------------------------------------ | -------------- |
+| `percentage`          | `double`        | The percentage value to display            | **Required**   |
+| `size`                | `double`        | Diameter of the chart                      | **Required**   |
+| `style`               | `ChartStyle`    | Configuration for styling the chart        | `ChartStyle()` |
+| `onAnimationComplete` | `VoidCallback?` | Callback invoked after animation completes | `null`         |
+
+### **ChartStyle Properties**
+
+| **Property**          | **Type**                           | **Description**                           | **Default**                    |
+| --------------------- | ---------------------------------- | ----------------------------------------- | ------------------------------ |
+| `activeColor`         | `Color`                            | Color for the active segment of the chart | `Colors.blue`                  |
+| `inactiveColor`       | `Color`                            | Color for the inactive portion            | `Color(0xFFE0E0E0)`            |
+| `textColor`           | `Color?`                           | Optional color for percentage text        | `null`                         |
+| `percentageStyle`     | `TextStyle?`                       | Style for percentage text                 | `null`                         |
+| `legendStyle`         | `TextStyle?`                       | Style for the legend text                 | `null`                         |
+| `animationDuration`   | `Duration`                         | Duration of the animation                 | `Duration(milliseconds: 1500)` |
+| `animationCurve`      | `Curve`                            | Curve used for animation                  | `Curves.easeInOut`             |
+| `showPercentageText`  | `bool`                             | Whether to show the percentage text       | `true`                         |
+| `showLegend`          | `bool`                             | Whether to display a legend               | `true`                         |
+| `percentageFormatter` | `String Function(double)?`         | Formatter for percentage text             | `null`                         |
+| `legendFormatter`     | `String Function(String, double)?` | Formatter for legend entries              | `null`                         |
+
+---
+
+### **4. Gantt Chart**
+
+Gantt charts visualize **tasks or events** over a timeline, indicating **start and end dates**. This chart supports **interactive content** on tap.
+
+#### **Code Usage**
+
+```dart
+import 'package:flutter/material.dart';
+import 'package:material_charts_tests/material_charts.dart';
+
+MaterialGanttChart exampleChart() {
+  // Example timeline data points
+  final timelineData = [
+    GanttData(
+      startDate: DateTime(2024, 1, 1),
+      endDate: DateTime(2024, 1, 15),
+      label: 'Project Start',
+      description: 'Initial project planning phase',
+      color: Colors.blue,
+      icon: Icons.start,
+
+      tapContent:
+          'Additional details for the project start phase...', // Optional tap content
+    ),
+    GanttData(
+      startDate: DateTime(2024, 1, 16),
+      endDate: DateTime(2024, 1, 20),
+      label: 'Kickoff Meeting',
+      description: 'Project initiation and goal setting.',
+      color: Colors.blue,
+      icon: Icons.event,
+    ),
+    GanttData(
+      startDate: DateTime(2024, 1, 20),
+      endDate: DateTime(2024, 2, 1),
+      label: 'Design Phase',
+      description: 'UI/UX design and prototype creation.',
+      color: Colors.orange,
+      icon: Icons.design_services,
+    ),
+    GanttData(
+      startDate: DateTime(2024, 2, 1),
+      endDate: DateTime(2024, 3, 20),
+      label: 'Development Phase',
+      description: 'Implementation of core features.',
+      color: Colors.green,
+      icon: Icons.code,
+    ),
+    GanttData(
+      startDate: DateTime(2024, 3, 21),
+      endDate: DateTime(2024, 4, 5),
+      label: 'Testing & QA',
+      description: 'Bug fixing and quality checks.',
+      color: Colors.red,
+      icon: Icons.bug_report,
+    ),
+    GanttData(
+      startDate: DateTime(2024, 4, 6),
+      endDate: DateTime(2024, 4, 15),
+      tapContent: "Tap",
+      label: 'Release',
+      description: 'Deployment and client delivery.',
+      color: Colors.purple,
+      icon: Icons.rocket_launch,
+    ),
+  ];
+
+  // Timeline chart styling
+  const style = GanttChartStyle(
+    lineColor: Color.fromRGBO(96, 125, 139, 1),
+    lineWidth: 8,
+    pointRadius: 6,
+    connectionLineWidth: 3,
+    showConnections: true,
+    pointColor: Colors.blue,
+    connectionLineColor: Colors.grey,
+    backgroundColor: Colors.white,
+    labelStyle: TextStyle(
+        fontSize: 14, fontWeight: FontWeight.bold, color: Colors.black87),
+    dateStyle: TextStyle(fontSize: 12, color: Colors.grey),
+    animationDuration: Duration(seconds: 2),
+    animationCurve: Curves.easeInOut,
+    verticalSpacing: 90.0, // Adjust spacing for readability
+    // horizontalPadding: 120.0,
+  );
+
+  // Create the timeline chart widget
+  return MaterialGanttChart(
+    data: timelineData,
+    width: 700,
+    height: 800,
+    style: style,
+    onPointTap: (point) {
+      debugPrint('Tapped on ${point.label}');
+    },
+  );
+}
+
+```
+
+### **GanttData Properties**
+
+| **Property**  | **Type**    | **Description**                         | **Default**  |
+| ------------- | ----------- | --------------------------------------- | ------------ |
+| `startDate`   | `DateTime`  | Start date of the task                  | **Required** |
+| `endDate`     | `DateTime`  | End date of the task                    | **Required** |
+| `label`       | `String`    | Name or label of the task               | **Required** |
+| `description` | `String?`   | Optional description of the task        | `null`       |
+| `color`       | `Color?`    | Color used to represent the task        | `null`       |
+| `icon`        | `IconData?` | Icon associated with the task           | `null`       |
+| `tapContent`  | `String?`   | Content displayed when tapping the task | `null`       |
+
+---
+
+### **GanttChartStyle Properties**
+
+| **Property**          | **Type**      | **Description**                                  | **Default**                    |
+| --------------------- | ------------- | ------------------------------------------------ | ------------------------------ |
+| `lineColor`           | `Color`       | Color of the timeline lines                      | `Colors.blue`                  |
+| `pointColor`          | `Color`       | Color of data points along the timeline          | `Colors.blue`                  |
+| `connectionLineColor` | `Color`       | Color of connecting lines between tasks          | `Colors.grey`                  |
+| `backgroundColor`     | `Color`       | Background color of the chart                    | `Colors.white`                 |
+| `labelStyle`          | `TextStyle?`  | Text style for task labels                       | `null`                         |
+| `dateStyle`           | `TextStyle?`  | Text style for date labels                       | `null`                         |
+| `descriptionStyle`    | `TextStyle?`  | Text style for task descriptions                 | `null`                         |
+| `lineWidth`           | `double`      | Thickness of the timeline lines                  | `2.0`                          |
+| `pointRadius`         | `double`      | Radius of data points                            | `4.0`                          |
+| `connectionLineWidth` | `double`      | Width of connecting lines                        | `1.0`                          |
+| `animationDuration`   | `Duration`    | Duration of animation transitions                | `Duration(milliseconds: 1500)` |
+| `animationCurve`      | `Curve`       | Curve used for animations                        | `Curves.easeInOut`             |
+| `showConnections`     | `bool`        | Whether to display connections between tasks     | `true`                         |
+| `dateFormat`          | `DateFormat?` | Format for displaying dates                      | `null`                         |
+| `verticalSpacing`     | `double`      | Space between timeline rows                      | `120.0`                        |
+| `horizontalPadding`   | `double`      | Padding between tasks and chart boundaries       | `32.0`                         |
+| `labelOffset`         | `double`      | Offset for task labels                           | `25.0`                         |
+| `timelineYOffset`     | `double`      | Offset for the vertical position of the timeline | `60.0`                         |
 
 ---
 
