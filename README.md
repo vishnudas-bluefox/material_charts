@@ -621,7 +621,7 @@ MaterialGanttChart exampleChart() {
 
 ---
 
-### **5. CandleStick Chart**
+### **6. CandleStick Chart**
 
 #### **Code Usage**
 
