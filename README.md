@@ -1,6 +1,6 @@
 # Material Charts
 
-**Material Charts** is a Flutter package designed to offer versatile, customizable chart components that adapt to a variety of use cases. It supports **Line Charts**, **Hollow Semi-Circle Charts**, **Bar Charts**, and **Gantt Charts**, with extensive customization, smooth animations, and real-time data updates.
+**Material Charts** is a Flutter package designed to offer versatile, customizable chart components that adapt to a variety of use cases. It supports **Line Charts**, **Hollow Semi-Circle Charts**, **Bar Charts**, **Stacked Bar Charts**, and **Gantt Charts**, with extensive customization, smooth animations, and real-time data updates.
 
 [![pub package](https://img.shields.io/pub/v/material_charts.svg)](https://pub.dev/packages/material_charts)  
 [![License](https://img.shields.io/badge/License-BSD_3--Clause-blue.svg)](https://opensource.org/licenses/BSD-3-Clause)
@@ -15,9 +15,15 @@ A beautiful, interactive, and animated bar chart, ideal for visualizing discrete
 
 ![Bar Chart Example](https://raw.githubusercontent.com/vishnudas-bluefox/material_charts/refs/heads/master/images/bar_chart.gif)
 
+### 2. Stacked Bar Chart
+
+A versatile bar chart that visually represents comparisons, progress, featuring customizable colors and interactive elements.
+
+![Stacked Bar Chart Example](https://raw.githubusercontent.com/vishnudas-bluefox/material_charts/refs/heads/master/images/stacked_bar_chart.gif)
+
 ---
 
-### 2. Line Chart
+### 3. Line Chart
 
 An animated line chart with customizable styling, perfect for showing trends and time series data.
 
@@ -25,7 +31,7 @@ An animated line chart with customizable styling, perfect for showing trends and
 
 ---
 
-### 3. Hollow Semi Circle
+### 4. Hollow Semi Circle
 
 A customizable progress meter in a hollow semi-circle format, ideal for displaying percentages and progress.
 
@@ -33,13 +39,12 @@ A customizable progress meter in a hollow semi-circle format, ideal for displayi
 
 ---
 
-### 4. Gantt Chart
+### 5. Gantt Chart
 
 A versatile Gantt chart that visually represents task timelines and progress, featuring customizable colors and interactive elements.
 
 | ![Gantt Chart Example](https://raw.githubusercontent.com/vishnudas-bluefox/material_charts/refs/heads/master/images/gant_chart.gif) | ![Gantt Chart Example](https://raw.githubusercontent.com/vishnudas-bluefox/material_charts/refs/heads/master/images/gantt_chart_line.gif) |
-|:--:|:--:|
-
+| :---------------------------------------------------------------------------------------------------------------------------------: | :---------------------------------------------------------------------------------------------------------------------------------------: |
 
 ---
 
@@ -63,6 +68,19 @@ A versatile Gantt chart that visually represents task timelines and progress, fe
 - 🕒 Animation support with curve control
 - 🌈 Gradient or solid color options
 
+### Stacked Bar Chart Features
+
+- 📊 Dynamic Stacking
+- 🎨 Customizable Segment Colors
+- 🏷️ Segment Labels
+- 📏 Adjustable Bar Widths and Spacing
+- 📅 Animation Support
+- 📏 Optional Gridlines
+- 📐 Padding Control
+- 🌈 Gradient and Solid Color Options
+- 🛠️ Custom Y-axis Configuration
+- 📊 Responsive Sizing
+
 ### Line Chart Features
 
 - 📈 Interactive data points
@@ -78,7 +96,6 @@ A versatile Gantt chart that visually represents task timelines and progress, fe
 - 📏 Adjustable hollow radius
 - 🎨 Active/inactive segment styling
 - 📝 Custom formatters
-
 
 ### Gantt Chart Features
 
@@ -165,6 +182,158 @@ MaterialBarChart(
 | `gradientColors`    | `List<Color>?` | Colors for gradient effect       | `null`                         |
 | `animationDuration` | `Duration`     | Animation duration for the bars  | `Duration(milliseconds: 1500)` |
 | `animationCurve`    | `Curve`        | Animation curve for transitions  | `Curves.easeInOut`             |
+
+---
+
+### **Stacked Bar Chart**
+
+#### **Code Example**
+
+```dart
+import 'package:flutter/material.dart';
+import 'package:material_charts_tests/material_charts.dart';
+
+final data = [
+  const StackedBarData(
+    label: 'Q1',
+    segments: [
+      StackedBarSegment(
+          value: 30,
+          color: Color.fromRGBO(46, 142, 149, 1),
+          label: 'Product A'),
+      StackedBarSegment(
+          value: 35,
+          color: Color.fromRGBO(46, 142, 149, 0.342),
+          label: 'Product B'),
+    ],
+  ),
+  const StackedBarData(
+    label: 'Q2',
+    segments: [
+      StackedBarSegment(
+          value: 50, color: Color(0xFF605e70), label: 'Product A'),
+      StackedBarSegment(
+          value: 20, color: Color(0xFFa19dc7), label: 'Product B'),
+      StackedBarSegment(
+          value: 15, color: Color(0xFFf3f2fe), label: 'Product C'),
+    ],
+  ),
+  const StackedBarData(
+    label: 'Q3',
+    segments: [
+      StackedBarSegment(
+          value: 40,
+          color: Color.fromRGBO(46, 142, 149, 1),
+          label: 'Product A'),
+      StackedBarSegment(
+          value: 15,
+          color: Color.fromRGBO(46, 142, 149, 0.342),
+          label: 'Product B'),
+    ],
+  ),
+  const StackedBarData(
+    label: 'Q4',
+    segments: [
+      StackedBarSegment(
+          value: 20, color: Color(0xFF605e70), label: 'Product A'),
+      StackedBarSegment(
+          value: 50, color: Color(0xFFa19dc7), label: 'Product B'),
+      StackedBarSegment(
+          value: 25, color: Color(0xFFf3f2fe), label: 'Product C'),
+    ],
+  ),
+  // Add more StackedBarData items...
+];
+MaterialStackedBarChart(
+  showGrid: true,
+  horizontalGridLines: 5,
+  showValues: true,
+  data: data,
+  width: 400,
+  height: 300,
+  style: StackedBarChartStyle(
+    gridColor: Colors.black,
+    // showSegmentLabels: true,
+    cornerRadius: 3,
+    barSpacing: .7,
+    valueStyle: const TextStyle(
+      // backgroundColor: Color.fromARGB(68, 255, 255, 255),
+      color: Colors.black87,
+    ),
+    labelStyle: const TextStyle(
+      color: Colors.grey,
+    ),
+    yAxisConfig: YAxisConfig(
+      minValue: 0,
+      maxValue: 100,
+      divisions: 5,
+      showGridLines: false,
+      labelFormatter: (value) => '${value.toInt()}',
+      labelStyle: TextStyle(
+        fontSize: 12,
+        color: Colors.grey[600],
+      ),
+    ),
+  ),
+);
+
+```
+
+---
+
+#### **StackedBarChartData Properties**
+
+| **Class**              | **Description**                                                                                                         |
+| ---------------------- | ----------------------------------------------------------------------------------------------------------------------- |
+| `StackedBarSegment`    | Represents a single segment in a stacked bar, defined by its value, color, and an optional label.                       |
+| `StackedBarData`       | Represents the complete data for a single bar, consisting of multiple segments with a common label.                     |
+| `YAxisConfig`          | Configuration class for customizing the Y-axis, including min/max values, grid lines, and label styles.                 |
+| `StackedBarChartStyle` | Configuration class for customizing the appearance of the stacked bar chart, including colors, spacing, and animations. |
+
+## Detailed Component Description
+
+### **StackedBarSegment**
+
+| **Property** | **Type**  | **Description**                                                       |
+| ------------ | --------- | --------------------------------------------------------------------- |
+| `value`      | `double`  | The numerical value of the segment contributing to the total.         |
+| `color`      | `Color`   | The color used to render this segment in the chart.                   |
+| `label`      | `String?` | An optional label to describe the segment, used for tooltips/legends. |
+
+### **StackedBarData**
+
+| **Property** | **Type**                  | **Description**                                                |
+| ------------ | ------------------------- | -------------------------------------------------------------- |
+| `label`      | `String`                  | Label describing the entire bar, often used for X-axis/legend. |
+| `segments`   | `List<StackedBarSegment>` | List of segments that make up this bar.                        |
+| `totalValue` | `double`                  | Computes the total value by summing all segment values.        |
+
+### **YAxisConfig**
+
+| **Property**     | **Type**                  | **Description**                                                    |
+| ---------------- | ------------------------- | ------------------------------------------------------------------ |
+| `minValue`       | `double?`                 | Minimum value displayed on the Y-axis (default: 0).                |
+| `maxValue`       | `double?`                 | Maximum value displayed on the Y-axis (defaults to largest total). |
+| `divisions`      | `int`                     | Number of divisions on the Y-axis (default: 5).                    |
+| `showAxisLine`   | `bool`                    | Whether to display the vertical axis line (default: true).         |
+| `showGridLines`  | `bool`                    | Whether to display horizontal grid lines (default: true).          |
+| `labelStyle`     | `TextStyle?`              | Text style for Y-axis labels.                                      |
+| `axisWidth`      | `double`                  | Width allocated for rendering the Y-axis (default: 50.0).          |
+| `labelFormatter` | `String Function(double)` | Custom formatter for Y-axis values.                                |
+
+### **StackedBarChartStyle**
+
+| **Property**        | **Type**       | **Description**                                                         |
+| ------------------- | -------------- | ----------------------------------------------------------------------- |
+| `gridColor`         | `Color`        | Color of the grid lines (default: `Colors.grey`).                       |
+| `backgroundColor`   | `Color`        | Background color of the chart container (default: `Colors.white`).      |
+| `labelStyle`        | `TextStyle?`   | Text style for bar labels.                                              |
+| `valueStyle`        | `TextStyle?`   | Text style for value labels displayed on segments.                      |
+| `barSpacing`        | `double`       | Spacing between bars as a fraction (default: 0.2).                      |
+| `cornerRadius`      | `double`       | Corner radius applied to bars (default: 4.0).                           |
+| `animationDuration` | `Duration`     | Duration of the animation when rendering bars (default: 1500ms).        |
+| `animationCurve`    | `Curve`        | Animation curve applied during rendering (default: `Curves.easeInOut`). |
+| `yAxisConfig`       | `YAxisConfig?` | Optional Y-axis configuration for detailed control.                     |
 
 ---
 
