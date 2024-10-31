@@ -39,6 +39,14 @@ A customizable Flutter widget for displaying multiple line series in a chart, wi
 
 ---
 
+### PieChart / Donut Chart
+
+A customizable Flutter widget for displaying a pie chart with multiple segments, supporting animations, interactivity, and customizable styling options.
+
+![Pie Chart Example](https://raw.githubusercontent.com/vishnudas-bluefox/material_charts/refs/heads/master/images/pie_chart.gif)
+
+---
+
 ### Hollow Semi Circle
 
 A customizable progress meter in a hollow semi-circle format, ideal for displaying percentages and progress.
@@ -115,6 +123,19 @@ A Flutter widget that represents financial data in the form of candlestick chart
 - 🔄 Animated Drawing of Lines
 - 🗓️ Crosshair for Precision Tracking
 - 📅 X and Y-Axis Label Customization
+
+### Pie Chart Features
+
+- 📊 Segment Visualization
+- 🎨 Customizable Colors
+- 🔄 Smooth Animations
+- 📏 Interactive Hover Effects
+- 🏷️ Dynamic Labels and Values
+- 📋 Legend Support
+- 🔗 Connector Lines
+- 📅 Animation Duration Customization
+- 🗺️ Label Positioning
+- ♿ Accessibility Features
 
 ### Hollow Semi Circle Features
 
@@ -619,6 +640,97 @@ final series = [
 | `onChartTap` | `ValueChanged<Offset>?`         | Callback for tapping anywhere on the chart. |
 | `enableZoom` | `bool`                          | Enables zoom functionality on the chart.    |
 | `enablePan`  | `bool`                          | Enables pan functionality on the chart.     |
+
+### **Pie Chart / Donut Chart**
+
+#### **Code Usage**
+
+```dart
+final data = [
+    PieChartData(
+        value: 30,
+        label: 'Category A',
+        color: Color.fromARGB(255, 24, 86, 136)),
+    PieChartData(
+        value: 20, label: 'Category B', color: Color.fromARGB(255, 28, 60, 87)),
+    PieChartData(
+        value: 15, label: 'Category C', color: Color.fromARGB(255, 15, 27, 37)),
+  ];
+
+  return MaterialPieChart(
+    data: data,
+    width: 400,
+    height: 300,
+    padding: EdgeInsets.all(50),
+    style: PieChartStyle(
+      backgroundColor: const Color.fromARGB(255, 223, 219, 219),
+      // holeRadius: 0.5, // Creates a donut chart
+      showLabels: true,
+      showValues: true,
+      showLegend: true,
+    ),
+  );
+```
+
+#### **PieChart Properties**
+
+| **Class**          | **Description**                                                                                    |
+| ------------------ | -------------------------------------------------------------------------------------------------- |
+| `PieChartData`     | Represents a single segment of the pie chart, including value, label, and optional color.          |
+| `PieChartStyle`    | Configures the appearance and behavior of the pie chart, including colors, labels, and animations. |
+| `LabelPosition`    | Enum defining the position of labels (inside or outside the pie segments).                         |
+| `MaterialPieChart` | The main widget for rendering the pie chart with interactive and styling options.                  |
+
+## Detailed Component Description
+
+### PieChartData
+
+| **Property** | **Type** | **Description**                            |
+| ------------ | -------- | ------------------------------------------ |
+| `value`      | `double` | The value represented by the pie segment.  |
+| `label`      | `String` | The label associated with the pie segment. |
+| `color`      | `Color?` | Optional color for the pie segment.        |
+
+### PieChartStyle
+
+| **Property**               | **Type**        | **Description**                                          |
+| -------------------------- | --------------- | -------------------------------------------------------- |
+| `defaultColors`            | `List<Color>`   | Default colors used for the pie segments.                |
+| `backgroundColor`          | `Color`         | Background color for the pie chart.                      |
+| `labelStyle`               | `TextStyle?`    | Style for segment labels.                                |
+| `valueStyle`               | `TextStyle?`    | Style for segment values.                                |
+| `startAngle`               | `double`        | Starting angle for the first pie segment.                |
+| `holeRadius`               | `double`        | Radius for a donut hole (0 for a full pie chart).        |
+| `animationDuration`        | `Duration`      | Duration of the animation for rendering the chart.       |
+| `animationCurve`           | `Curve`         | Curve of the animation.                                  |
+| `showLabels`               | `bool`          | Whether to show labels on the segments.                  |
+| `showValues`               | `bool`          | Whether to show values on the segments.                  |
+| `labelOffset`              | `double`        | Offset distance for labels from the segments.            |
+| `showLegend`               | `bool`          | Whether to display the legend.                           |
+| `legendPadding`            | `EdgeInsets`    | Padding around the legend.                               |
+| `labelPosition`            | `LabelPosition` | Position of the labels (inside or outside).              |
+| `showConnectorLines`       | `bool`          | Whether to show connector lines from segments to labels. |
+| `connectorLineColor`       | `Color`         | Color of the connector lines.                            |
+| `connectorLineStrokeWidth` | `double`        | Width of the connector lines.                            |
+
+### LabelPosition
+
+| **Property** | **Type**        | **Description**                             |
+| ------------ | --------------- | ------------------------------------------- |
+| `inside`     | `LabelPosition` | Label is displayed inside the pie segment.  |
+| `outside`    | `LabelPosition` | Label is displayed outside the pie segment. |
+
+### MaterialPieChart
+
+| **Property**          | **Type**             | **Description**                               |
+| --------------------- | -------------------- | --------------------------------------------- |
+| `data`                | `List<PieChartData>` | List of pie chart segments.                   |
+| `width`               | `double`             | Width of the pie chart widget.                |
+| `height`              | `double`             | Height of the pie chart widget.               |
+| `style`               | `PieChartStyle`      | Styling configuration for the pie chart.      |
+| `padding`             | `EdgeInsets`         | Padding around the pie chart.                 |
+| `onAnimationComplete` | `VoidCallback?`      | Callback for when the animation completes.    |
+| `interactive`         | `bool`               | Whether the pie chart supports interactivity. |
 
 ### **Hollow Semi-Circle Chart**
 
