@@ -734,8 +734,8 @@ class MultiLineChartPainter extends CustomPainter {
   /// within the given chart area. The points are normalized based on the
   /// chart's value range and position.
   List<Offset> _getSeriesPoints(Rect chartArea, ChartSeries seriesData) {
-    if (seriesData.dataPoints.isEmpty)
-      return []; // Return empty if no data points
+    // if (seriesData.dataPoints.isEmpty)
+    //   return []; // Return empty if no data points
 
     final maxValue = _getMaxValue(); // Get the maximum value in the series
     final minValue = _getMinValue(); // Get the minimum value in the series

@@ -188,9 +188,6 @@ class _MultiLineChartState extends State<MultiLineChart>
   ///
   /// Updates the scale factor and pan offset based on user interactions.
   void _handleScaleUpdate(ScaleUpdateDetails details) {
-    if (_containerSize == null)
-      return; // Ensure the container size is available.
-
     setState(() {
       if (widget.enableZoom) {
         // Update scale first, clamping it to the defined limits.
