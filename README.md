@@ -521,7 +521,6 @@ final series = [
 | **Class**         | **Description**                                                                           |
 | ----------------- | ----------------------------------------------------------------------------------------- |
 | `ChartDataPoint`  | Represents a single data point with a value, optional label, and color.                   |
-| `TooltipData`     | Represents data for tooltips, including the data point, series name, color, and position. |
 | `TooltipStyle`    | Configures the appearance of tooltips shown on the chart.                                 |
 | `ChartSeries`     | Represents a series of data points, with optional line smoothing, colors, and line width. |
 | `ChartStyle`      | Styling configuration for the chart, including colors, grid settings, and animations.     |
@@ -540,15 +539,6 @@ final series = [
 | `value`      | `double`  | The Y-axis value of the data point.            |
 | `label`      | `String?` | Optional label associated with the data point. |
 | `color`      | `Color?`  | Optional color for the data point.             |
-
-### TooltipData
-
-| **Property** | **Type**         | **Description**                                   |
-| ------------ | ---------------- | ------------------------------------------------- |
-| `seriesName` | `String`         | The name of the series the data point belongs to. |
-| `dataPoint`  | `ChartDataPoint` | The data point being displayed in the tooltip.    |
-| `color`      | `Color`          | The color of the tooltip.                         |
-| `position`   | `Offset`         | The position of the tooltip on the chart.         |
 
 ### TooltipStyle
 
