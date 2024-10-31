@@ -641,6 +641,8 @@ final series = [
 | `enableZoom` | `bool`                          | Enables zoom functionality on the chart.    |
 | `enablePan`  | `bool`                          | Enables pan functionality on the chart.     |
 
+---
+
 ### **Pie Chart / Donut Chart**
 
 #### **Code Usage**
@@ -731,6 +733,8 @@ final data = [
 | ------------ | --------------- | ------------------------------------------- |
 | `inside`     | `LabelPosition` | Label is displayed inside the pie segment.  |
 | `outside`    | `LabelPosition` | Label is displayed outside the pie segment. |
+
+---
 
 ### **Hollow Semi-Circle Chart**
 
