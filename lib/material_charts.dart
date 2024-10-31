@@ -19,6 +19,9 @@ export 'src/candlestick_chart/widgets.dart';
 export 'src/multi_line_chart/models.dart';
 export 'src/multi_line_chart/widgets.dart';
 
+export 'src/pie_chart/models.dart';
+export 'src/pie_chart/widgets.dart';
+
 /// Created by: Vishnudas V
 /// GitHub: [vishnudas-bluefox](https://github.com/vishnudas-bluefox/material_charts)
 /// Email: [vishnudas956783@gmail.com](mailto:vishnudas956783@gmail.com)
