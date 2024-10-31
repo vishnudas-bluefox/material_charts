@@ -9,13 +9,13 @@
 
 ## Available Charts
 
-### 1. Bar Chart
+### Bar Chart
 
 A beautiful, interactive, and animated bar chart, ideal for visualizing discrete data categories and comparisons.
 
 ![Bar Chart Example](https://raw.githubusercontent.com/vishnudas-bluefox/material_charts/refs/heads/master/images/bar_chart.gif)
 
-### 2. Stacked Bar Chart
+### Stacked Bar Chart
 
 A versatile bar chart that visually represents comparisons, progress, featuring customizable colors and interactive elements.
 
@@ -23,7 +23,7 @@ A versatile bar chart that visually represents comparisons, progress, featuring 
 
 ---
 
-### 3. Line Chart
+### Line Chart
 
 An animated line chart with customizable styling, perfect for showing trends and time series data.
 
@@ -31,7 +31,15 @@ An animated line chart with customizable styling, perfect for showing trends and
 
 ---
 
-### 4. Hollow Semi Circle
+### MultiLine Chart
+
+A customizable Flutter widget for displaying multiple line series in a chart, with support for tooltips, legends, animations, and interactions like zoom and pan.
+
+![MultiLine Chart Example](https://raw.githubusercontent.com/vishnudas-bluefox/material_charts/refs/heads/master/images/multi_line_chart.gif)
+
+---
+
+### Hollow Semi Circle
 
 A customizable progress meter in a hollow semi-circle format, ideal for displaying percentages and progress.
 
@@ -39,7 +47,7 @@ A customizable progress meter in a hollow semi-circle format, ideal for displayi
 
 ---
 
-### 5. Gantt Chart
+### Gantt Chart
 
 A versatile Gantt chart that visually represents task timelines and progress, featuring customizable colors and interactive elements.
 
@@ -48,13 +56,11 @@ A versatile Gantt chart that visually represents task timelines and progress, fe
 
 ---
 
-### 6. CandleStick Chart
+### CandleStick Chart
 
 A Flutter widget that represents financial data in the form of candlestick charts, suitable for visualizing stock price movements over time.
 
-![Hollow Semi Circle Example](https://raw.githubusercontent.com/vishnudas-bluefox/material_charts/refs/heads/master/images/candle_chart.gif)
-
----
+## ![Hollow Semi Circle Example](https://raw.githubusercontent.com/vishnudas-bluefox/material_charts/refs/heads/master/images/candle_chart.gif)
 
 ## Features
 
@@ -96,6 +102,19 @@ A Flutter widget that represents financial data in the form of candlestick chart
 - 🏷️ Customizable labels
 - 📊 Automatic scaling
 - 🎯 Point highlighting
+
+### Multi-Line Chart Features
+
+- 📈 Multiple Series Support
+- ✨ Smooth Line Transitions
+- 🎨 Customizable Color Palettes
+- 🔍 Interactive Tooltips
+- 📊 Clickable Legends for Series Selection
+- 🗺️ Panning and Zooming Capabilities
+- 📏 Grid Lines for Easy Reading
+- 🔄 Animated Drawing of Lines
+- 🗓️ Crosshair for Precision Tracking
+- 📅 X and Y-Axis Label Customization
 
 ### Hollow Semi Circle Features
 
@@ -359,7 +378,7 @@ MaterialStackedBarChart(
 
 ---
 
-### **2. Line Chart**
+### **Line Chart**
 
 #### **Code Usage**
 
@@ -433,7 +452,185 @@ class LineChartWidget extends StatelessWidget {
 
 ---
 
-### **3. Hollow Semi-Circle Chart**
+### **MultiLineChart**
+
+#### **Code Usage**
+
+```dart
+final series = [
+    const ChartSeries(
+      name: 'Revenue',
+      dataPoints: [
+        ChartDataPoint(value: 40, label: 'Jan'),
+        ChartDataPoint(value: 50, label: 'Feb'),
+        ChartDataPoint(value: 20, label: 'Mar'),
+        ChartDataPoint(value: 50, label: 'Jan'),
+        ChartDataPoint(value: 40, label: 'Feb'),
+        ChartDataPoint(value: 60, label: 'Mar'),
+      ],
+      color: Color.fromRGBO(116, 46, 149, 1),
+    ),
+    const ChartSeries(
+      name: 'Profit',
+      dataPoints: [
+        ChartDataPoint(value: 20, label: 'Jan'),
+        ChartDataPoint(value: 60, label: 'Feb'),
+        ChartDataPoint(value: 55, label: 'Mar'),
+        ChartDataPoint(value: 20, label: 'Jan'),
+        ChartDataPoint(value: 60, label: 'Feb'),
+        ChartDataPoint(value: 55, label: 'Mar'),
+      ],
+      color: Color.fromRGBO(46, 142, 149, 1),
+    ),
+  ];
+
+  final style = ChartStyle(
+    backgroundColor: Colors.white,
+    colors: [Colors.blue, Colors.green, Colors.red],
+    smoothLines: true,
+    showPoints: true,
+    animation: const ChartAnimation(
+      duration: Duration(milliseconds: 5000),
+    ),
+    tooltipStyle: const TooltipStyle(
+      threshold: 20,
+    ),
+    forceYAxisFromZero: false,
+    crosshair: CrosshairConfig(
+      enabled: true,
+      lineColor: Colors.grey.withOpacity(0.5),
+    ),
+  );
+
+  return MultiLineChart(
+    series: series,
+    style: style,
+    height: 700,
+    width: 800,
+    enableZoom: true,
+    enablePan: true,
+    // startYAxisFromZero: true,
+    onPointTap: (point) {
+      print('Tapped point: ${point.value}');
+    },
+  );
+```
+
+### **MultiLineChart Properties**
+
+| **Class**         | **Description**                                                                           |
+| ----------------- | ----------------------------------------------------------------------------------------- |
+| `ChartDataPoint`  | Represents a single data point with a value, optional label, and color.                   |
+| `TooltipData`     | Represents data for tooltips, including the data point, series name, color, and position. |
+| `TooltipStyle`    | Configures the appearance of tooltips shown on the chart.                                 |
+| `ChartSeries`     | Represents a series of data points, with optional line smoothing, colors, and line width. |
+| `ChartStyle`      | Styling configuration for the chart, including colors, grid settings, and animations.     |
+| `_LegendItem`     | Internal class representing a legend item with text and color.                            |
+| `LegendPosition`  | Enum defining the position of the legend (top, bottom, left, right).                      |
+| `ChartAnimation`  | Configures animation settings for the chart rendering.                                    |
+| `CrosshairConfig` | Configures crosshair display settings, including color, width, and label visibility.      |
+| `MultiLineChart`  | The main widget for displaying multiple line series with interactive and styling options. |
+
+## Detailed Component Description
+
+### ChartDataPoint
+
+| **Property** | **Type**  | **Description**                                |
+| ------------ | --------- | ---------------------------------------------- |
+| `value`      | `double`  | The Y-axis value of the data point.            |
+| `label`      | `String?` | Optional label associated with the data point. |
+| `color`      | `Color?`  | Optional color for the data point.             |
+
+### TooltipData
+
+| **Property** | **Type**         | **Description**                                   |
+| ------------ | ---------------- | ------------------------------------------------- |
+| `seriesName` | `String`         | The name of the series the data point belongs to. |
+| `dataPoint`  | `ChartDataPoint` | The data point being displayed in the tooltip.    |
+| `color`      | `Color`          | The color of the tooltip.                         |
+| `position`   | `Offset`         | The position of the tooltip on the chart.         |
+
+### TooltipStyle
+
+| **Property**       | **Type**    | **Description**                                 |
+| ------------------ | ----------- | ----------------------------------------------- |
+| `textStyle`        | `TextStyle` | Style for tooltip text.                         |
+| `backgroundColor`  | `Color`     | Background color for the tooltip.               |
+| `padding`          | `double`    | Padding inside the tooltip.                     |
+| `threshold`        | `double`    | Distance threshold for showing tooltip.         |
+| `borderRadius`     | `double`    | Radius for rounded tooltip corners.             |
+| `shadowColor`      | `Color`     | Color of the tooltip shadow.                    |
+| `shadowBlurRadius` | `double`    | Blur radius for tooltip shadow.                 |
+| `indicatorHeight`  | `double`    | Height of the indicator shown on tooltip hover. |
+
+### ChartSeries
+
+| **Property** | **Type**               | **Description**                            |
+| ------------ | ---------------------- | ------------------------------------------ |
+| `name`       | `String`               | Name of the series.                        |
+| `dataPoints` | `List<ChartDataPoint>` | List of data points in the series.         |
+| `color`      | `Color?`               | Color of the series line.                  |
+| `showPoints` | `bool?`                | Whether to show points on the line.        |
+| `smoothLine` | `bool?`                | Whether to smooth the line between points. |
+| `lineWidth`  | `double?`              | Width of the line.                         |
+| `pointSize`  | `double?`              | Size of points if `showPoints` is enabled. |
+
+### ChartStyle
+
+| **Property**          | **Type**           | **Description**                      |
+| --------------------- | ------------------ | ------------------------------------ |
+| `colors`              | `List<Color>`      | Colors used for multiple series.     |
+| `defaultLineWidth`    | `double`           | Default width for series lines.      |
+| `defaultPointSize`    | `double`           | Default size for data points.        |
+| `gridColor`           | `Color`            | Color of grid lines.                 |
+| `backgroundColor`     | `Color`            | Background color for the chart area. |
+| `labelStyle`          | `TextStyle?`       | Style for axis labels.               |
+| `legendStyle`         | `TextStyle?`       | Style for legend text.               |
+| `smoothLines`         | `bool`             | Enable smooth lines for all series.  |
+| `padding`             | `EdgeInsets`       | Padding around the chart.            |
+| `showPoints`          | `bool`             | Whether to display points on lines.  |
+| `showGrid`            | `bool`             | Whether to show grid lines.          |
+| `showLegend`          | `bool`             | Whether to show the legend.          |
+| `gridLineWidth`       | `double`           | Width of grid lines.                 |
+| `horizontalGridLines` | `int`              | Number of horizontal grid lines.     |
+| `animation`           | `ChartAnimation`   | Configuration for chart animations.  |
+| `legendPosition`      | `LegendPosition`   | Position of the legend on the chart. |
+| `crosshair`           | `CrosshairConfig?` | Configuration for crosshair display. |
+| `forceYAxisFromZero`  | `bool`             | Whether to start Y-axis from zero.   |
+| `tooltipStyle`        | `TooltipStyle`     | Style configuration for tooltips.    |
+
+### ChartAnimation
+
+| **Property** | **Type**   | **Description**                          |
+| ------------ | ---------- | ---------------------------------------- |
+| `duration`   | `Duration` | Duration of the animation for rendering. |
+| `curve`      | `Curve`    | Curve of the animation.                  |
+| `enabled`    | `bool`     | Whether to enable the animation.         |
+
+### CrosshairConfig
+
+| **Property** | **Type**     | **Description**                         |
+| ------------ | ------------ | --------------------------------------- |
+| `lineColor`  | `Color`      | Color of the crosshair line.            |
+| `lineWidth`  | `double`     | Width of the crosshair line.            |
+| `enabled`    | `bool`       | Whether to enable the crosshair.        |
+| `showLabel`  | `bool`       | Whether to display labels on crosshair. |
+| `labelStyle` | `TextStyle?` | Style for crosshair labels.             |
+
+### MultiLineChart
+
+| **Property** | **Type**                        | **Description**                             |
+| ------------ | ------------------------------- | ------------------------------------------- |
+| `series`     | `List<ChartSeries>`             | List of series to display in the chart.     |
+| `style`      | `ChartStyle`                    | Styling configuration for the chart.        |
+| `height`     | `double?`                       | Height of the chart widget.                 |
+| `width`      | `double?`                       | Width of the chart widget.                  |
+| `onPointTap` | `ValueChanged<ChartDataPoint>?` | Callback for point tap interaction.         |
+| `onChartTap` | `ValueChanged<Offset>?`         | Callback for tapping anywhere on the chart. |
+| `enableZoom` | `bool`                          | Enables zoom functionality on the chart.    |
+| `enablePan`  | `bool`                          | Enables pan functionality on the chart.     |
+
+### **Hollow Semi-Circle Chart**
 
 #### **Code Usage**
 
@@ -457,7 +654,7 @@ MaterialChartHollowSemiCircle(
 );
 ```
 
-#### **4. Hollow Semi-Circle Properties**
+#### **Hollow Semi-Circle Properties**
 
 | **Property**          | **Type**        | **Description**                            | **Default**    |
 | --------------------- | --------------- | ------------------------------------------ | -------------- |
@@ -484,7 +681,7 @@ MaterialChartHollowSemiCircle(
 
 ---
 
-### **5. Gantt Chart**
+### **Gantt Chart**
 
 #### **Code Usage**
 
@@ -621,7 +818,7 @@ MaterialGanttChart exampleChart() {
 
 ---
 
-### **6. CandleStick Chart**
+### **CandleStick Chart**
 
 #### **Code Usage**
 
