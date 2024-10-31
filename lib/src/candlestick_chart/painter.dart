@@ -130,7 +130,7 @@ class CandlestickChartPainter extends CustomPainter {
   /// Returns the index of the candle or null if none is found
   int? _getCandleIndexAtPosition(double x, Rect chartArea) {
     final candleWidth = style.candleWidth;
-    final totalCandleWidth = candleWidth * (1 + style.spacing);
+    // final totalCandleWidth = candleWidth * (1 + style.spacing);
 
     // Calculate which candle's position is at x
     for (int i = 0; i < data.length; i++) {

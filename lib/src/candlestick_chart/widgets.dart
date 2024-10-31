@@ -86,10 +86,10 @@ class _MaterialCandlestickChartState extends State<MaterialCandlestickChart>
   Offset? _hoverPosition;
 
   /// Stores the initial touch position for pan gesture
-  double? _lastFocalPointX;
+  // double? _lastFocalPointX;
 
   /// Base scroll offset when starting a pan gesture
-  double _baseScrollOffset = 0.0;
+  // double _baseScrollOffset = 0.0;
 
   @override
   void initState() {
@@ -140,10 +140,10 @@ class _MaterialCandlestickChartState extends State<MaterialCandlestickChart>
 
   /// Handles the start of a pan gesture
   /// Stores initial position for calculating delta
-  void _handlePanStart(DragStartDetails details) {
-    _lastFocalPointX = details.globalPosition.dx;
-    _baseScrollOffset = _scrollOffset;
-  }
+  // void _handlePanStart(DragStartDetails details) {
+  //   _lastFocalPointX = details.globalPosition.dx;
+  //   _baseScrollOffset = _scrollOffset;
+  // }
 
   /// Handles pan gesture updates
   /// Updates scroll position based on drag delta
@@ -163,17 +163,17 @@ class _MaterialCandlestickChartState extends State<MaterialCandlestickChart>
   }
 
   /// Cleans up pan gesture state
-  void _handlePanEnd(DragEndDetails details) {
-    _lastFocalPointX = null;
-  }
+  // void _handlePanEnd(DragEndDetails details) {
+  //   _lastFocalPointX = null;
+  // }
 
   @override
   Widget build(BuildContext context) {
     return GestureDetector(
       behavior: HitTestBehavior.opaque, // Capture all touch interactions
-      onPanStart: _handlePanStart,
+      // onPanStart: _handlePanStart,
       onPanUpdate: _handlePanUpdate,
-      onPanEnd: _handlePanEnd,
+      // onPanEnd: _handlePanEnd,
       child: MouseRegion(
         onEnter: (_) => setState(() => _hoverPosition = null), // Reset hover
         onHover: (details) {
