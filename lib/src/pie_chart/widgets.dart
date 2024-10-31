@@ -102,7 +102,7 @@ class _MaterialPieChartState extends State<MaterialPieChart>
   /// Returns the index of the hovered segment or null if not hovering over any segment.
   int? _getHoveredSegment(Offset localPosition) {
     // Center of the pie chart
-    final center = Offset(widget.width / 2, widget.height / 2);
+    final center = Offset(widget.width , widget.height);
 
     // Calculate distance from the center to the mouse position
     final dx = localPosition.dx - center.dx;
@@ -111,8 +111,8 @@ class _MaterialPieChartState extends State<MaterialPieChart>
 
     // Get outer and inner radius
     final outerRadius = min(
-      (widget.width - widget.padding.horizontal) / 2,
-      (widget.height - widget.padding.vertical) / 2,
+      (widget.width - widget.padding.horizontal),
+      (widget.height - widget.padding.vertical),
     );
     final innerRadius = outerRadius * widget.style.holeRadius;
 
