@@ -683,6 +683,18 @@ final data = [
 
 ## Detailed Component Description
 
+### MaterialPieChart
+
+| **Property**          | **Type**             | **Description**                               |
+| --------------------- | -------------------- | --------------------------------------------- |
+| `data`                | `List<PieChartData>` | List of pie chart segments.                   |
+| `width`               | `double`             | Width of the pie chart widget.                |
+| `height`              | `double`             | Height of the pie chart widget.               |
+| `style`               | `PieChartStyle`      | Styling configuration for the pie chart.      |
+| `padding`             | `EdgeInsets`         | Padding around the pie chart.                 |
+| `onAnimationComplete` | `VoidCallback?`      | Callback for when the animation completes.    |
+| `interactive`         | `bool`               | Whether the pie chart supports interactivity. |
+
 ### PieChartData
 
 | **Property** | **Type** | **Description**                            |
@@ -719,18 +731,6 @@ final data = [
 | ------------ | --------------- | ------------------------------------------- |
 | `inside`     | `LabelPosition` | Label is displayed inside the pie segment.  |
 | `outside`    | `LabelPosition` | Label is displayed outside the pie segment. |
-
-### MaterialPieChart
-
-| **Property**          | **Type**             | **Description**                               |
-| --------------------- | -------------------- | --------------------------------------------- |
-| `data`                | `List<PieChartData>` | List of pie chart segments.                   |
-| `width`               | `double`             | Width of the pie chart widget.                |
-| `height`              | `double`             | Height of the pie chart widget.               |
-| `style`               | `PieChartStyle`      | Styling configuration for the pie chart.      |
-| `padding`             | `EdgeInsets`         | Padding around the pie chart.                 |
-| `onAnimationComplete` | `VoidCallback?`      | Callback for when the animation completes.    |
-| `interactive`         | `bool`               | Whether the pie chart supports interactivity. |
 
 ### **Hollow Semi-Circle Chart**
 
