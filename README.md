@@ -1,6 +1,6 @@
 # Material Charts
 
-**Material Charts** is a Flutter package designed to offer versatile, customizable chart components that adapt to a variety of use cases. It supports **Line Charts**, **Hollow Semi-Circle Charts**, **Bar Charts**, **Stacked Bar Charts**, and **Gantt Charts**, with extensive customization, smooth animations, and real-time data updates.
+**Material Charts** is a Flutter package designed to offer versatile, customizable chart components that adapt to a variety of use cases. It supports **Line Charts**, **Pie Charts**, **Bar Charts**, **CandleStick Charts**, and **Gantt Charts**, with extensive customization, smooth animations, and real-time data updates.
 
 [![pub package](https://img.shields.io/pub/v/material_charts.svg)](https://pub.dev/packages/material_charts)  
 [![License](https://img.shields.io/badge/License-BSD_3--Clause-blue.svg)](https://opensource.org/licenses/BSD-3-Clause)
