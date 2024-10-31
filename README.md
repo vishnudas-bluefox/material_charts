@@ -484,7 +484,7 @@ final series = [
     ),
   ];
 
-  final style = ChartStyle(
+  final style = MultiLineChartStyle(
     backgroundColor: Colors.white,
     colors: [Colors.blue, Colors.green, Colors.red],
     smoothLines: true,
@@ -492,7 +492,7 @@ final series = [
     animation: const ChartAnimation(
       duration: Duration(milliseconds: 5000),
     ),
-    tooltipStyle: const TooltipStyle(
+    tooltipStyle: const MultiLineTooltipStyle(
       threshold: 20,
     ),
     forceYAxisFromZero: false,
@@ -518,17 +518,17 @@ final series = [
 
 ### **MultiLineChart Properties**
 
-| **Class**         | **Description**                                                                           |
-| ----------------- | ----------------------------------------------------------------------------------------- |
-| `ChartDataPoint`  | Represents a single data point with a value, optional label, and color.                   |
-| `TooltipStyle`    | Configures the appearance of tooltips shown on the chart.                                 |
-| `ChartSeries`     | Represents a series of data points, with optional line smoothing, colors, and line width. |
-| `ChartStyle`      | Styling configuration for the chart, including colors, grid settings, and animations.     |
-| `_LegendItem`     | Internal class representing a legend item with text and color.                            |
-| `LegendPosition`  | Enum defining the position of the legend (top, bottom, left, right).                      |
-| `ChartAnimation`  | Configures animation settings for the chart rendering.                                    |
-| `CrosshairConfig` | Configures crosshair display settings, including color, width, and label visibility.      |
-| `MultiLineChart`  | The main widget for displaying multiple line series with interactive and styling options. |
+| **Class**               | **Description**                                                                           |
+| ----------------------- | ----------------------------------------------------------------------------------------- |
+| `ChartDataPoint`        | Represents a single data point with a value, optional label, and color.                   |
+| `MultiLineTooltipStyle` | Configures the appearance of tooltips shown on the chart.                                 |
+| `ChartSeries`           | Represents a series of data points, with optional line smoothing, colors, and line width. |
+| `MultiLineChartStyle`   | Styling configuration for the chart, including colors, grid settings, and animations.     |
+| `_LegendItem`           | Internal class representing a legend item with text and color.                            |
+| `LegendPosition`        | Enum defining the position of the legend (top, bottom, left, right).                      |
+| `ChartAnimation`        | Configures animation settings for the chart rendering.                                    |
+| `CrosshairConfig`       | Configures crosshair display settings, including color, width, and label visibility.      |
+| `MultiLineChart`        | The main widget for displaying multiple line series with interactive and styling options. |
 
 ## Detailed Component Description
 
@@ -540,7 +540,7 @@ final series = [
 | `label`      | `String?` | Optional label associated with the data point. |
 | `color`      | `Color?`  | Optional color for the data point.             |
 
-### TooltipStyle
+### MultiLineTooltipStyle
 
 | **Property**       | **Type**    | **Description**                                 |
 | ------------------ | ----------- | ----------------------------------------------- |
@@ -565,7 +565,7 @@ final series = [
 | `lineWidth`  | `double?`              | Width of the line.                         |
 | `pointSize`  | `double?`              | Size of points if `showPoints` is enabled. |
 
-### ChartStyle
+### MultiLineChartStyle
 
 | **Property**          | **Type**           | **Description**                      |
 | --------------------- | ------------------ | ------------------------------------ |
