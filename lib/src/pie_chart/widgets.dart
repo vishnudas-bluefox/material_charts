@@ -111,9 +111,9 @@ class _MaterialPieChartState extends State<MaterialPieChart>
 
     // Get outer and inner radius
     final outerRadius = min(
-      (widget.width - widget.padding.horizontal),
-      (widget.height - widget.padding.vertical),
-    );
+      (widget.width - widget.padding.horizontal * 2),
+      (widget.height - widget.padding.vertical * 2),
+    ) / 2;
     final innerRadius = outerRadius * widget.style.holeRadius;
 
     // Check if the mouse is within the outer radius but outside the inner radius
