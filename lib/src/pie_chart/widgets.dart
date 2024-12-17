@@ -111,9 +111,10 @@ class _MaterialPieChartState extends State<MaterialPieChart>
 
     // Get outer and inner radius
     final outerRadius = min(
-      (widget.width - widget.padding.horizontal),
-      (widget.height - widget.padding.vertical),
-    ) / 2;
+          (widget.width - widget.padding.horizontal),
+          (widget.height - widget.padding.vertical),
+        ) /
+        2;
     final innerRadius = outerRadius * widget.style.holeRadius;
 
     // Check if the mouse is within the outer radius but outside the inner radius
@@ -163,28 +164,37 @@ class _MaterialPieChartState extends State<MaterialPieChart>
       onExit: widget.interactive
           ? (_) => setState(() => _hoveredSegmentIndex = null)
           : null,
-      child: Container(
-        width: widget.width, // Set the width of the pie chart.
-        height: widget.height, // Set the height of the pie chart.
-        color: widget
-            .style.backgroundColor, // Set the background color from style.
-        child: AnimatedBuilder(
-          // Build the pie chart with animation.
-          animation: _animation,
-          builder: (context, _) {
-            return CustomPaint(
-              size: Size(
-                  widget.width, widget.height), // Size of the custom painter.
-              painter: PieChartPainter(
-                data: widget.data, // Pass the data for pie chart segments.
-                progress: _animation.value, // Pass the animation progress.
-                style: widget.style, // Pass the style configurations.
-                padding: widget.padding, // Pass the padding.
-                hoveredSegmentIndex:
-                    _hoveredSegmentIndex, // Pass the index of the hovered segment.
-              ),
-            );
-          },
+      child: GestureDetector(
+        onTap: _hoveredSegmentIndex != null
+            ? widget.data[_hoveredSegmentIndex!].onTap
+            : null,
+        child: Container(
+          width: widget.width, // Set the width of the pie chart.
+          height: widget.height, // Set the height of the pie chart.
+          color: widget
+              .style.backgroundColor, // Set the background color from style.
+          child: AnimatedBuilder(
+            // Build the pie chart with animation.
+            animation: _animation,
+            builder: (context, _) {
+              return CustomPaint(
+                size: Size(
+                    widget.width, widget.height), // Size of the custom painter.
+                painter: PieChartPainter(
+                  data: widget.data,
+                  // Pass the data for pie chart segments.
+                  progress: _animation.value,
+                  // Pass the animation progress.
+                  style: widget.style,
+                  // Pass the style configurations.
+                  padding: widget.padding,
+                  // Pass the padding.
+                  hoveredSegmentIndex:
+                      _hoveredSegmentIndex, // Pass the index of the hovered segment.
+                ),
+              );
+            },
+          ),
         ),
       ),
     );
