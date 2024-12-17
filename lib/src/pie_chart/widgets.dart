@@ -111,8 +111,8 @@ class _MaterialPieChartState extends State<MaterialPieChart>
 
     // Get outer and inner radius
     final outerRadius = min(
-      (widget.width - widget.padding.horizontal * 2),
-      (widget.height - widget.padding.vertical * 2),
+      (widget.width - widget.padding.horizontal),
+      (widget.height - widget.padding.vertical),
     ) / 2;
     final innerRadius = outerRadius * widget.style.holeRadius;
 
