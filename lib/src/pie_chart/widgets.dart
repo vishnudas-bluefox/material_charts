@@ -13,6 +13,9 @@ class MaterialPieChart extends StatefulWidget {
   /// The data points to be represented in the pie chart.
   final List<PieChartData> data;
 
+  /// Set a minimal percent size for the PieChartData representation
+  final double minSizePercent;
+
   /// The width of the pie chart.
   final double width;
 
@@ -41,6 +44,7 @@ class MaterialPieChart extends StatefulWidget {
     required this.data,
     required this.width,
     required this.height,
+    this.minSizePercent = 0.0,
     this.style = const PieChartStyle(),
     this.padding = const EdgeInsets.all(24),
     this.onAnimationComplete,
@@ -97,6 +101,40 @@ class _MaterialPieChartState extends State<MaterialPieChart>
     super.dispose();
   }
 
+  /// Set the size of pie slices
+  /// 
+  /// Set the size of each pie slice based on minSizePercent,
+  /// if 0, essentialy nothing is changed
+  List<double> _setSizes(double total) {
+    // Minimal value that all slices must have
+    double minValue = total * widget.minSizePercent / 100;
+    // List os all values for easy change and access
+    Iterable<double> values = widget.data.map((item) => item.value);
+
+    // Looped verification for cases where resizing sets a previously valid value 
+    // to a invalid one
+    while (true) {
+      // Quantiti of slices to scale up
+      final qttToScaleUp = values.where((item) => item < minValue).length;
+      // Sum of all values of valid slices
+      final validTotal = values.where((item) => item >= minValue).fold(0.0, (sum, item) => sum + item);
+      // New minimal value based on reconfigured values
+      final newMinValue = validTotal /
+          (1 - (qttToScaleUp * widget.minSizePercent / 100)) * widget.minSizePercent / 100;
+      // When true, this means that all the proporsions are over the minial
+      if (newMinValue == minValue) break;
+      // Sets the minValue to the new one for the next loop verification
+      minValue = newMinValue;
+    }
+    // Sets the invalid values to the minimal one
+    values = values.map((item) => max(item, minValue));
+    // Gets the new total for further resizing
+    final newTotal = values.fold(0.0, (sum, item) => sum + item);
+    // Resizes all values in proporsion to the old one
+    values = values.map((item) => item * (total / newTotal));
+    return values.toList();
+  }
+
   /// Determines which segment of the pie chart is hovered based on the mouse position.
   ///
   /// Returns the index of the hovered segment or null if not hovering over any segment.
@@ -113,8 +151,7 @@ class _MaterialPieChartState extends State<MaterialPieChart>
     final outerRadius = min(
           (widget.width - widget.padding.horizontal),
           (widget.height - widget.padding.vertical),
-        ) /
-        2;
+    ) / 2;
     final innerRadius = outerRadius * widget.style.holeRadius;
 
     // Check if the mouse is within the outer radius but outside the inner radius
@@ -133,10 +170,11 @@ class _MaterialPieChartState extends State<MaterialPieChart>
     final total = widget.data.fold(0.0, (sum, item) => sum + item.value);
     var currentAngle = 0.0;
 
+    final sizesList = _setSizes(total);
+
     for (int i = 0; i < widget.data.length; i++) {
       // Calculate sweep angle using value * 3.6
-      final sweepAngle =
-          (widget.data[i].value / total) * 360; // Calculate sweep angle
+      final sweepAngle = (sizesList[i] / total) * 360; // Calculate sweep angle
       if (angle >= currentAngle && angle < currentAngle + sweepAngle) {
         return i; // Return the index of the hovered segment
       }
@@ -164,37 +202,29 @@ class _MaterialPieChartState extends State<MaterialPieChart>
       onExit: widget.interactive
           ? (_) => setState(() => _hoveredSegmentIndex = null)
           : null,
-      child: GestureDetector(
-        onTap: _hoveredSegmentIndex != null
-            ? widget.data[_hoveredSegmentIndex!].onTap
-            : null,
-        child: Container(
-          width: widget.width, // Set the width of the pie chart.
-          height: widget.height, // Set the height of the pie chart.
-          color: widget
-              .style.backgroundColor, // Set the background color from style.
-          child: AnimatedBuilder(
-            // Build the pie chart with animation.
-            animation: _animation,
-            builder: (context, _) {
-              return CustomPaint(
-                size: Size(
-                    widget.width, widget.height), // Size of the custom painter.
-                painter: PieChartPainter(
-                  data: widget.data,
-                  // Pass the data for pie chart segments.
-                  progress: _animation.value,
-                  // Pass the animation progress.
-                  style: widget.style,
-                  // Pass the style configurations.
-                  padding: widget.padding,
-                  // Pass the padding.
-                  hoveredSegmentIndex:
-                      _hoveredSegmentIndex, // Pass the index of the hovered segment.
-                ),
-              );
-            },
-          ),
+      child: Container(
+        width: widget.width, // Set the width of the pie chart.
+        height: widget.height, // Set the height of the pie chart.
+        color: widget
+            .style.backgroundColor, // Set the background color from style.
+        child: AnimatedBuilder(
+          // Build the pie chart with animation.
+          animation: _animation,
+          builder: (context, _) {
+            return CustomPaint(
+              size: Size(
+                  widget.width, widget.height), // Size of the custom painter.
+              painter: PieChartPainter(
+                data: widget.data, // Pass the data for pie chart segments.
+                sliceSizes: _setSizes(widget.data.fold(0.0, (sum, item) => sum + item.value)),
+                progress: _animation.value, // Pass the animation progress.
+                style: widget.style, // Pass the style configurations.
+                padding: widget.padding, // Pass the padding.
+                hoveredSegmentIndex:
+                    _hoveredSegmentIndex, // Pass the index of the hovered segment.
+              ),
+            );
+          },
         ),
       ),
     );
