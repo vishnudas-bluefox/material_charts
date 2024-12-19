@@ -11,14 +11,19 @@ class PieChartData {
   /// The color of the slice. It can be null, in which case a default color will be used.
   final Color? color;
 
+  /// The action on tap for the slice.
+  final VoidCallback? onTap;
+
   /// Constructor for [PieChartData].
   ///
   /// Requires [value] and [label] to be provided.
   /// [color] is optional and can be null.
+  /// [onTap] is optional and can be null.
   const PieChartData({
     required this.value,
     required this.label,
     this.color,
+    this.onTap,
   });
 }
 

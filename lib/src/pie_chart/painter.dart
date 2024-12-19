@@ -13,6 +13,9 @@ class PieChartPainter extends CustomPainter {
   /// Style properties for customizing the appearance of the pie chart.
   final PieChartStyle style;
 
+  /// List of all the sizes that each slice will take
+  final List<double> sliceSizes;
+
   /// Padding around the pie chart.
   final EdgeInsets padding;
 
@@ -27,6 +30,7 @@ class PieChartPainter extends CustomPainter {
     required this.data,
     required this.progress,
     required this.style,
+    required this.sliceSizes,
     required this.padding,
     required this.hoveredSegmentIndex,
   });
@@ -64,7 +68,7 @@ class PieChartPainter extends CustomPainter {
     // Iterate through each data point to draw the respective pie slice.
     for (int i = 0; i < data.length; i++) {
       // Calculate the sweep angle for the current slice based on its value.
-      final sweepAngle = (data[i].value / total) * 2 * pi * progress;
+      final sweepAngle = (sliceSizes[i] / total) * 2 * pi * progress;
       // Determine the color for the segment, falling back to default colors if necessary.
       final segmentColor =
           data[i].color ?? style.defaultColors[i % style.defaultColors.length];
