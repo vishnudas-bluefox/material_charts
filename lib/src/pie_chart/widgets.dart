@@ -31,6 +31,9 @@ class MaterialPieChart extends StatefulWidget {
   /// Determines whether the pie chart supports interactivity (hover effects).
   final bool interactive;
 
+  /// Bool for showing the label only on hover
+  final bool showLabelOnlyOnHover;
+
   /// Creates an instance of [MaterialPieChart].
   ///
   /// Requires [data], [width], and [height]. Optional parameters include [style],
@@ -45,6 +48,7 @@ class MaterialPieChart extends StatefulWidget {
     this.padding = const EdgeInsets.all(24),
     this.onAnimationComplete,
     this.interactive = true,
+    this.showLabelOnlyOnHover = false,
   });
 
   @override
@@ -186,6 +190,8 @@ class _MaterialPieChartState extends State<MaterialPieChart>
                   progress: _animation.value,
                   // Pass the animation progress.
                   style: widget.style,
+                  // Pass the show label configuration
+                  showLabelOnlyOnHover: widget.showLabelOnlyOnHover,
                   // Pass the style configurations.
                   padding: widget.padding,
                   // Pass the padding.

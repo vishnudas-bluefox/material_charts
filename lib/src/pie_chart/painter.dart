@@ -19,6 +19,9 @@ class PieChartPainter extends CustomPainter {
   /// Index of the currently hovered segment, if any.
   final int? hoveredSegmentIndex;
 
+  /// Bool for showing the label only on hover
+  final bool showLabelOnlyOnHover;
+
   /// Constructor for [PieChartPainter].
   ///
   /// Requires [data], [progress], [style], [padding], and an optional
@@ -29,6 +32,7 @@ class PieChartPainter extends CustomPainter {
     required this.style,
     required this.padding,
     required this.hoveredSegmentIndex,
+    required this.showLabelOnlyOnHover,
   });
 
   @override
@@ -66,8 +70,7 @@ class PieChartPainter extends CustomPainter {
       // Calculate the sweep angle for the current slice based on its value.
       final sweepAngle = (data[i].value / total) * 2 * pi * progress;
       // Determine the color for the segment, falling back to default colors if necessary.
-      final segmentColor =
-          data[i].color ?? style.defaultColors[i % style.defaultColors.length];
+      final segmentColor = data[i].color ?? style.defaultColors[i % style.defaultColors.length];
 
       // Create a paint object with the segment color.
       final paint = Paint()
@@ -98,7 +101,7 @@ class PieChartPainter extends CustomPainter {
       }
 
       // Draw labels and values if enabled in the style.
-      if (style.showLabels || style.showValues) {
+      if ((style.showLabels || style.showValues) && (!showLabelOnlyOnHover || hoveredSegmentIndex == i)) {
         _drawLabelsAndValues(
           canvas,
           center,
@@ -140,8 +143,7 @@ class PieChartPainter extends CustomPainter {
     if (style.labelPosition == LabelPosition.inside) {
       labelRadius = radius * 0.7; // Place label inside the segment
     } else {
-      labelRadius =
-          radius + style.labelOffset; // Place label outside with offset
+      labelRadius = radius + style.labelOffset; // Place label outside with offset
     }
 
     // Calculate label position using polar coordinates.
@@ -151,18 +153,14 @@ class PieChartPainter extends CustomPainter {
     // Define text styles for labels and values, applying defaults if necessary.
     final labelStyle = style.labelStyle ??
         TextStyle(
-          color: style.labelPosition == LabelPosition.inside
-              ? Colors.white
-              : Colors.black87,
+          color: style.labelPosition == LabelPosition.inside ? Colors.white : Colors.black87,
           fontSize: 12,
           fontWeight: FontWeight.w500,
         );
 
     final valueStyle = style.valueStyle ??
         TextStyle(
-          color: style.labelPosition == LabelPosition.inside
-              ? Colors.white
-              : Colors.black87,
+          color: style.labelPosition == LabelPosition.inside ? Colors.white : Colors.black87,
           fontSize: 10,
           fontWeight: FontWeight.bold,
         );
@@ -207,8 +205,7 @@ class PieChartPainter extends CustomPainter {
     final textSpan = TextSpan(
       children: [
         TextSpan(text: data[index].label, style: labelStyle),
-        if (style.showValues)
-          TextSpan(text: ' ($percentage%)', style: valueStyle),
+        if (style.showValues) TextSpan(text: ' ($percentage%)', style: valueStyle),
       ],
     );
 
@@ -224,8 +221,7 @@ class PieChartPainter extends CustomPainter {
     if (style.labelPosition == LabelPosition.inside) {
       textX = x - textPainter.width / 2; // Center the text inside the segment
     } else {
-      textX =
-          isRightSide ? x + 25 : x - textPainter.width - 25; // Offset outside
+      textX = isRightSide ? x + 25 : x - textPainter.width - 25; // Offset outside
     }
 
     // Draw the text on the canvas.
@@ -242,17 +238,14 @@ class PieChartPainter extends CustomPainter {
     const double iconSize = 16; // Size of the color box in the legend
 
     var currentY = padding.top; // Start Y position for the legend
-    final legendLeft =
-        size.width - padding.right - 120; // Calculate legend position
+    final legendLeft = size.width - padding.right - 120; // Calculate legend position
 
     // Iterate through each data point to create legend entries.
     for (int i = 0; i < data.length; i++) {
       // Determine color for the legend item.
-      final color =
-          data[i].color ?? style.defaultColors[i % style.defaultColors.length];
+      final color = data[i].color ?? style.defaultColors[i % style.defaultColors.length];
 
-      final isHovered =
-          hoveredSegmentIndex == i; // Check if the item is hovered
+      final isHovered = hoveredSegmentIndex == i; // Check if the item is hovered
       final boxPaint = Paint()
         ..color = isHovered ? _lightenColor(color) : color
         ..style = PaintingStyle.fill;
