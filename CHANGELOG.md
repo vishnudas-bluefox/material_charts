@@ -1,3 +1,8 @@
+## 0.0.24
+
+Area Chart Added
+Pie chart Center calculation and Radius Caluculation Updated
+
 ## 0.0.23
 
 Pie chart Added
