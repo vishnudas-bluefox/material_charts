@@ -102,7 +102,7 @@ class _MaterialPieChartState extends State<MaterialPieChart>
   }
 
   /// Set the size of pie slices
-  /// 
+  ///
   /// Set the size of each pie slice based on minSizePercent,
   /// if 0, essentialy nothing is changed
   List<double> _setSizes(double total) {
@@ -111,16 +111,20 @@ class _MaterialPieChartState extends State<MaterialPieChart>
     // List os all values for easy change and access
     Iterable<double> values = widget.data.map((item) => item.value);
 
-    // Looped verification for cases where resizing sets a previously valid value 
+    // Looped verification for cases where resizing sets a previously valid value
     // to a invalid one
     while (true) {
       // Quantiti of slices to scale up
       final qttToScaleUp = values.where((item) => item < minValue).length;
       // Sum of all values of valid slices
-      final validTotal = values.where((item) => item >= minValue).fold(0.0, (sum, item) => sum + item);
+      final validTotal = values
+          .where((item) => item >= minValue)
+          .fold(0.0, (sum, item) => sum + item);
       // New minimal value based on reconfigured values
       final newMinValue = validTotal /
-          (1 - (qttToScaleUp * widget.minSizePercent / 100)) * widget.minSizePercent / 100;
+          (1 - (qttToScaleUp * widget.minSizePercent / 100)) *
+          widget.minSizePercent /
+          100;
       // When true, this means that all the proporsions are over the minial
       if (newMinValue == minValue) break;
       // Sets the minValue to the new one for the next loop verification
@@ -151,7 +155,8 @@ class _MaterialPieChartState extends State<MaterialPieChart>
     final outerRadius = min(
           (widget.width - widget.padding.horizontal),
           (widget.height - widget.padding.vertical),
-    ) / 2;
+        ) /
+        2;
     final innerRadius = outerRadius * widget.style.holeRadius;
 
     // Check if the mouse is within the outer radius but outside the inner radius
@@ -216,7 +221,8 @@ class _MaterialPieChartState extends State<MaterialPieChart>
                   widget.width, widget.height), // Size of the custom painter.
               painter: PieChartPainter(
                 data: widget.data, // Pass the data for pie chart segments.
-                sliceSizes: _setSizes(widget.data.fold(0.0, (sum, item) => sum + item.value)),
+                sliceSizes: _setSizes(
+                    widget.data.fold(0.0, (sum, item) => sum + item.value)),
                 progress: _animation.value, // Pass the animation progress.
                 style: widget.style, // Pass the style configurations.
                 padding: widget.padding, // Pass the padding.
