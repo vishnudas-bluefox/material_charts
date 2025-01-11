@@ -7,7 +7,6 @@ A comprehensive Flutter charting library offering beautiful, animated, and custo
 
 ## Table of Contents
 
-- [Features](https://vishnudas-bluefox.github.io/material_charts_docs/)
 - [Installation](https://vishnudas-bluefox.github.io/material_charts_docs/docs/installation/)
 - [Overview](https://vishnudas-bluefox.github.io/material_charts_docs/docs/overview/)
 - [Available Charts](https://vishnudas-bluefox.github.io/material_charts_docs/docs/overview/)
