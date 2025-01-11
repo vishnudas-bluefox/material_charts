@@ -3,7 +3,7 @@
 [![pub package](https://img.shields.io/pub/v/material_charts.svg)](https://pub.dev/packages/material_charts)
 [![License](https://img.shields.io/badge/License-BSD_3--Clause-blue.svg)](https://opensource.org/licenses/BSD-3-Clause)
 
-A comprehensive Flutter charting library offering beautiful, animated, and customizable charts with Material Design aesthetics.
+A comprehensive Flutter charting library offering beautiful, animated, and customizable charts with Material Design aesthetics. [Docs](https://vishnudas-bluefox.github.io/material_charts_docs/)
 
 ## Table of Contents
 
