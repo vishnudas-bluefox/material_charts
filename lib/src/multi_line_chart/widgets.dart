@@ -208,16 +208,4 @@ class _MultiLineChartState extends State<MultiLineChart>
       }
     });
   }
-
-  /// Handles tap down events on the chart.
-  ///
-  /// Updates the crosshair position and triggers the onChartTap callback.
-  void _handleTapDown(TapDownDetails details) {
-    setState(() {
-      _crosshairPosition =
-          details.localPosition; // Set the crosshair position on tap.
-    });
-    widget.onChartTap
-        ?.call(details.localPosition); // Trigger the callback if available.
-  }
 }
