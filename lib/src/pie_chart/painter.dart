@@ -22,6 +22,9 @@ class PieChartPainter extends CustomPainter {
   /// Index of the currently hovered segment, if any.
   final int? hoveredSegmentIndex;
 
+  /// Bool for showing the label only on hover
+  final bool showLabelOnlyOnHover;
+
   /// Constructor for [PieChartPainter].
   ///
   /// Requires [data], [progress], [style], [padding], and an optional
@@ -33,6 +36,7 @@ class PieChartPainter extends CustomPainter {
     required this.sliceSizes,
     required this.padding,
     required this.hoveredSegmentIndex,
+    required this.showLabelOnlyOnHover,
   });
 
   @override
@@ -102,7 +106,7 @@ class PieChartPainter extends CustomPainter {
       }
 
       // Draw labels and values if enabled in the style.
-      if (style.showLabels || style.showValues) {
+      if ((style.showLabels || style.showValues) && (!showLabelOnlyOnHover || hoveredSegmentIndex == i)) {
         _drawLabelsAndValues(
           canvas,
           center,

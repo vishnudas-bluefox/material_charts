@@ -34,6 +34,9 @@ class MaterialPieChart extends StatefulWidget {
   /// Determines whether the pie chart supports interactivity (hover effects).
   final bool interactive;
 
+  /// Bool for showing the label only on hover
+  final bool showLabelOnlyOnHover;
+
   /// Creates an instance of [MaterialPieChart].
   ///
   /// Requires [data], [width], and [height]. Optional parameters include [style],
@@ -49,6 +52,7 @@ class MaterialPieChart extends StatefulWidget {
     this.padding = const EdgeInsets.all(24),
     this.onAnimationComplete,
     this.interactive = true,
+    this.showLabelOnlyOnHover = false,
   });
 
   @override
@@ -207,30 +211,38 @@ class _MaterialPieChartState extends State<MaterialPieChart>
       onExit: widget.interactive
           ? (_) => setState(() => _hoveredSegmentIndex = null)
           : null,
-      child: Container(
-        width: widget.width, // Set the width of the pie chart.
-        height: widget.height, // Set the height of the pie chart.
-        color: widget
-            .style.backgroundColor, // Set the background color from style.
-        child: AnimatedBuilder(
-          // Build the pie chart with animation.
-          animation: _animation,
-          builder: (context, _) {
-            return CustomPaint(
-              size: Size(
-                  widget.width, widget.height), // Size of the custom painter.
-              painter: PieChartPainter(
-                data: widget.data, // Pass the data for pie chart segments.
-                sliceSizes: _setSizes(
+      child: GestureDetector(
+        onTap: _hoveredSegmentIndex != null
+            ? widget.data[_hoveredSegmentIndex!].onTap
+            : null,
+        child: Container(
+          width: widget.width, // Set the width of the pie chart.
+          height: widget.height, // Set the height of the pie chart.
+          color: widget
+              .style.backgroundColor, // Set the background color from style.
+          child: AnimatedBuilder(
+            // Build the pie chart with animation.
+            animation: _animation,
+            builder: (context, _) {
+              return CustomPaint(
+                size: Size(
+                    widget.width, widget.height), // Size of the custom painter.
+                painter: PieChartPainter(
+                  data: widget.data, // Pass the data for pie chart segments.
+                  sliceSizes: _setSizes(
                     widget.data.fold(0.0, (sum, item) => sum + item.value)),
-                progress: _animation.value, // Pass the animation progress.
-                style: widget.style, // Pass the style configurations.
-                padding: widget.padding, // Pass the padding.
-                hoveredSegmentIndex:
-                    _hoveredSegmentIndex, // Pass the index of the hovered segment.
-              ),
-            );
-          },
+                  // Pass the sizes of the piechart slices
+                  progress: _animation.value, // Pass the animation progress.
+                  style: widget.style, // Pass the style configurations.
+                  showLabelOnlyOnHover: widget.showLabelOnlyOnHover, 
+                   // Pass the show label configuration
+                  padding: widget.padding, // Pass the padding.
+                  hoveredSegmentIndex:
+                      _hoveredSegmentIndex, // Pass the index of the hovered segment.
+                ),
+              );
+            },
+          ),
         ),
       ),
     );
