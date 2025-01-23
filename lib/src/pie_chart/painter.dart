@@ -45,14 +45,26 @@ class PieChartPainter extends CustomPainter {
     if (data.isEmpty) return;
 
     // Calculate the center and radius of the pie chart.
-    final center = Offset(size.width / 2, size.height / 2);
     final radius = min(
       (size.width - padding.horizontal) / 2,
       (size.height - padding.vertical) / 2,
     );
 
+    final position = Offset(
+      switch (style.chartAlignment.horizontal) {
+        Horizontal.center => size.width / 2,
+        Horizontal.left => radius + padding.left,
+        Horizontal.right => size.width - (padding.right + radius),
+      },
+      switch (style.chartAlignment.vertical) {
+        Vertical.center => size.height / 2,
+        Vertical.top => radius + padding.top,
+        Vertical.bottom => size.height - (padding.bottom + radius),
+      },
+    );
+
     // Draw the segments of the pie chart.
-    _drawSegments(canvas, center, radius);
+    _drawSegments(canvas, position, radius);
 
     // Draw the legend if it is enabled in the style.
     if (style.showLegend) {
