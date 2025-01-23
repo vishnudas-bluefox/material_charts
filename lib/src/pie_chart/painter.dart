@@ -25,6 +25,9 @@ class PieChartPainter extends CustomPainter {
   /// Bool for showing the label only on hover
   final bool showLabelOnlyOnHover;
 
+  /// Radius of the pie chart
+  final double chartRadius;
+
   /// Constructor for [PieChartPainter].
   ///
   /// Requires [data], [progress], [style], [padding], and an optional
@@ -37,6 +40,7 @@ class PieChartPainter extends CustomPainter {
     required this.padding,
     required this.hoveredSegmentIndex,
     required this.showLabelOnlyOnHover,
+    required this.chartRadius,
   });
 
   @override
@@ -45,10 +49,11 @@ class PieChartPainter extends CustomPainter {
     if (data.isEmpty) return;
 
     // Calculate the center and radius of the pie chart.
-    final radius = min(
+    final radius = [
       (size.width - padding.horizontal) / 2,
       (size.height - padding.vertical) / 2,
-    );
+      chartRadius,
+    ].reduce(min);
 
     final position = Offset(
       switch (style.chartAlignment.horizontal) {

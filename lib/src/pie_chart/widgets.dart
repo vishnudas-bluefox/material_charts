@@ -37,6 +37,11 @@ class MaterialPieChart extends StatefulWidget {
   /// Bool for showing the label only on hover
   final bool showLabelOnlyOnHover;
 
+  /// Radius of the pie chart
+  /// Started as [double.maxFinite] because it will take part in the min function
+  /// at the painter class that calculates the radius
+  final double chartRadius;
+
   /// Creates an instance of [MaterialPieChart].
   ///
   /// Requires [data], [width], and [height]. Optional parameters include [style],
@@ -53,6 +58,7 @@ class MaterialPieChart extends StatefulWidget {
     this.onAnimationComplete,
     this.interactive = true,
     this.showLabelOnlyOnHover = false,
+    this.chartRadius = double.maxFinite,
   });
 
   @override
@@ -147,21 +153,32 @@ class _MaterialPieChartState extends State<MaterialPieChart>
   ///
   /// Returns the index of the hovered segment or null if not hovering over any segment.
   int? _getHoveredSegment(Offset localPosition) {
+    // Get outer and inner radius
+    final outerRadius = [
+      (widget.width - widget.padding.horizontal) / 2,
+      (widget.height - widget.padding.vertical) / 2,
+      widget.chartRadius,
+    ].reduce(min);
+    final innerRadius = outerRadius * widget.style.holeRadius;
+
     // Center of the pie chart
-    final center = Offset(widget.width / 2, widget.height / 2);
+    final position = Offset(
+      switch (widget.style.chartAlignment.horizontal) {
+        Horizontal.center => widget.width / 2,
+        Horizontal.left => outerRadius + widget.padding.left,
+        Horizontal.right => widget.width - (widget.padding.right + outerRadius),
+      },
+      switch (widget.style.chartAlignment.vertical) {
+        Vertical.center => widget.height / 2,
+        Vertical.top => outerRadius + widget.padding.top,
+        Vertical.bottom => widget.height - (widget.padding.bottom + outerRadius),
+      },
+    );
 
     // Calculate distance from the center to the mouse position
-    final dx = localPosition.dx - center.dx;
-    final dy = localPosition.dy - center.dy;
+    final dx = localPosition.dx - position.dx;
+    final dy = localPosition.dy - position.dy;
     final distance = sqrt(dx * dx + dy * dy);
-
-    // Get outer and inner radius
-    final outerRadius = min(
-          (widget.width - widget.padding.horizontal),
-          (widget.height - widget.padding.vertical),
-        ) /
-        2;
-    final innerRadius = outerRadius * widget.style.holeRadius;
 
     // Check if the mouse is within the outer radius but outside the inner radius
     if (distance < innerRadius || distance > outerRadius) {
@@ -239,6 +256,7 @@ class _MaterialPieChartState extends State<MaterialPieChart>
                   padding: widget.padding, // Pass the padding.
                   hoveredSegmentIndex:
                       _hoveredSegmentIndex, // Pass the index of the hovered segment.
+                  chartRadius: widget.chartRadius, // Pass the chart radius
                 ),
               );
             },
