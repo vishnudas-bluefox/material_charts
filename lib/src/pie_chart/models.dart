@@ -83,6 +83,9 @@ class PieChartStyle {
   /// The position that the chart will be placed
   final ChartAlignment chartAlignment;
 
+  /// The position of the chart legend
+  final PieChartLegendPosition legendPosition;
+
   /// Constructor for [PieChartStyle].
   ///
   /// All parameters have default values, allowing for flexible customization.
@@ -113,6 +116,7 @@ class PieChartStyle {
     this.connectorLineColor = Colors.black54, // Default connector line color
     this.connectorLineStrokeWidth = 1.0, // Default connector line stroke width
     this.chartAlignment = ChartAlignment.center, // Default vertical position
+    this.legendPosition = PieChartLegendPosition.right
   });
 }
 
@@ -148,4 +152,9 @@ enum ChartAlignment {
   final Horizontal horizontal;
   final Vertical vertical;
   const ChartAlignment(this.vertical, this.horizontal);
+}
+
+enum PieChartLegendPosition {
+  right,
+  bottom;
 }
