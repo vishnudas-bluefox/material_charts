@@ -73,7 +73,7 @@ class PieChartPainter extends CustomPainter {
 
     // Draw the legend if it is enabled in the style.
     if (style.showLegend) {
-      _drawLegend(canvas, size);
+      _drawLegend(canvas, size, radius);
     }
   }
 
@@ -261,14 +261,20 @@ class PieChartPainter extends CustomPainter {
   }
 
   /// Draws the legend for the pie chart, displaying the color and label for each segment.
-  void _drawLegend(Canvas canvas, Size size) {
+  void _drawLegend(Canvas canvas, Size size, double radius) {
     const double itemHeight = 24; // Height of each legend item
     const double itemSpacing = 8; // Spacing between legend items
     const double iconSize = 16; // Size of the color box in the legend
 
-    var currentY = padding.top; // Start Y position for the legend
-    final legendLeft =
-        size.width - padding.right - 120; // Calculate legend position
+    var currentY = switch(style.legendPosition){
+      PieChartLegendPosition.right => padding.top,
+      PieChartLegendPosition.bottom => padding.vertical + radius * 2,
+    }; // Start Y position for the legend
+
+    final legendLeft = switch(style.legendPosition){
+      PieChartLegendPosition.right => size.width - padding.right - 120,
+      PieChartLegendPosition.bottom => padding.left,
+    }; // Calculate legend position
 
     // Iterate through each data point to create legend entries.
     for (int i = 0; i < data.length; i++) {
