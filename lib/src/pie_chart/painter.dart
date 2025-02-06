@@ -268,7 +268,7 @@ class PieChartPainter extends CustomPainter {
 
     var currentY = switch(style.legendPosition){
       PieChartLegendPosition.right => padding.top,
-      PieChartLegendPosition.bottom => padding.vertical + radius * 2,
+      PieChartLegendPosition.bottom => padding.vertical + radius * 2 + 24,
     }; // Start Y position for the legend
 
     final legendLeft = switch(style.legendPosition){

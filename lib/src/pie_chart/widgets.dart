@@ -213,6 +213,7 @@ class _MaterialPieChartState extends State<MaterialPieChart>
   @override
   Widget build(BuildContext context) {
     return MouseRegion(
+      opaque: false,
       // Handle mouse hover events for interactivity.
       onHover: widget.interactive
           ? (event) {
@@ -228,9 +229,17 @@ class _MaterialPieChartState extends State<MaterialPieChart>
       onExit: widget.interactive
           ? (_) => setState(() => _hoveredSegmentIndex = null)
           : null,
-      child: GestureDetector(
-        onTap: _hoveredSegmentIndex != null
-            ? widget.data[_hoveredSegmentIndex!].onTap
+      child: InkWell(
+        onTapUp: widget.interactive ?
+          (event) {
+              // Get the index of the currently hovered segment based on mouse position.
+              final newIndex = _getHoveredSegment(event.localPosition);
+              // Update state only if the hovered segment has changed.
+              if (newIndex != _hoveredSegmentIndex) {
+                setState(() => _hoveredSegmentIndex = newIndex);
+              }
+              (widget.data[_hoveredSegmentIndex!].onTap ?? () {})();
+            }
             : null,
         child: Container(
           width: widget.width, // Set the width of the pie chart.
