@@ -80,12 +80,6 @@ class PieChartStyle {
   /// The stroke width of the connector lines.
   final double connectorLineStrokeWidth;
 
-  /// The position that the chart will be placed
-  final ChartAlignment chartAlignment;
-
-  /// The position of the chart legend
-  final PieChartLegendPosition legendPosition;
-
   /// Constructor for [PieChartStyle].
   ///
   /// All parameters have default values, allowing for flexible customization.
@@ -104,7 +98,8 @@ class PieChartStyle {
     this.valueStyle, // Optional text style for values
     this.startAngle = -90, // Default starting angle for the first slice
     this.holeRadius = 0, // No hole by default (full pie chart)
-    this.animationDuration = const Duration(milliseconds: 1500), // Default animation duration
+    this.animationDuration =
+        const Duration(milliseconds: 1500), // Default animation duration
     this.animationCurve = Curves.easeInOut, // Default animation curve
     this.showLabels = true, // Labels are shown by default
     this.showValues = true, // Values are shown by default
@@ -115,8 +110,6 @@ class PieChartStyle {
     this.showConnectorLines = true, // Connector lines are shown by default
     this.connectorLineColor = Colors.black54, // Default connector line color
     this.connectorLineStrokeWidth = 1.0, // Default connector line stroke width
-    this.chartAlignment = ChartAlignment.center, // Default vertical position
-    this.legendPosition = PieChartLegendPosition.right
   });
 }
 
@@ -124,37 +117,4 @@ class PieChartStyle {
 enum LabelPosition {
   inside, // Labels are inside the slices
   outside, // Labels are outside the slices
-}
-
-enum Vertical {
-  center, // Graph is placed in the vertical center
-  top, // Graph is placed in the top
-  bottom; // Graph is placed in the bottom
-}
-
-enum Horizontal {
-  center, // Graph is placed in the horizontal center
-  left, // Graph is placed in the left
-  right; // Graph is placed in the right
-}
-
-enum ChartAlignment {
-  bottomCenter(Vertical.bottom, Horizontal.center),
-  bottomLeft(Vertical.bottom, Horizontal.left),
-  bottomRight(Vertical.bottom, Horizontal.right),
-  center(Vertical.center, Horizontal.center),
-  centerLeft(Vertical.center, Horizontal.left),
-  centerRight(Vertical.center, Horizontal.right),
-  topCenter(Vertical.top, Horizontal.center),
-  topLeft(Vertical.top, Horizontal.left),
-  topRight(Vertical.top, Horizontal.right);
-
-  final Horizontal horizontal;
-  final Vertical vertical;
-  const ChartAlignment(this.vertical, this.horizontal);
-}
-
-enum PieChartLegendPosition {
-  right,
-  bottom;
 }

@@ -34,14 +34,6 @@ class MaterialPieChart extends StatefulWidget {
   /// Determines whether the pie chart supports interactivity (hover effects).
   final bool interactive;
 
-  /// Bool for showing the label only on hover
-  final bool showLabelOnlyOnHover;
-
-  /// Radius of the pie chart
-  /// Started as [double.maxFinite] because it will take part in the min function
-  /// at the painter class that calculates the radius
-  final double chartRadius;
-
   /// Creates an instance of [MaterialPieChart].
   ///
   /// Requires [data], [width], and [height]. Optional parameters include [style],
@@ -57,8 +49,6 @@ class MaterialPieChart extends StatefulWidget {
     this.padding = const EdgeInsets.all(24),
     this.onAnimationComplete,
     this.interactive = true,
-    this.showLabelOnlyOnHover = false,
-    this.chartRadius = double.maxFinite,
   });
 
   @override
@@ -153,32 +143,21 @@ class _MaterialPieChartState extends State<MaterialPieChart>
   ///
   /// Returns the index of the hovered segment or null if not hovering over any segment.
   int? _getHoveredSegment(Offset localPosition) {
-    // Get outer and inner radius
-    final outerRadius = [
-      (widget.width - widget.padding.horizontal) / 2,
-      (widget.height - widget.padding.vertical) / 2,
-      widget.chartRadius,
-    ].reduce(min);
-    final innerRadius = outerRadius * widget.style.holeRadius;
-
     // Center of the pie chart
-    final position = Offset(
-      switch (widget.style.chartAlignment.horizontal) {
-        Horizontal.center => widget.width / 2,
-        Horizontal.left => outerRadius + widget.padding.left,
-        Horizontal.right => widget.width - (widget.padding.right + outerRadius),
-      },
-      switch (widget.style.chartAlignment.vertical) {
-        Vertical.center => widget.height / 2,
-        Vertical.top => outerRadius + widget.padding.top,
-        Vertical.bottom => widget.height - (widget.padding.bottom + outerRadius),
-      },
-    );
+    final center = Offset(widget.width / 2, widget.height / 2);
 
     // Calculate distance from the center to the mouse position
-    final dx = localPosition.dx - position.dx;
-    final dy = localPosition.dy - position.dy;
+    final dx = localPosition.dx - center.dx;
+    final dy = localPosition.dy - center.dy;
     final distance = sqrt(dx * dx + dy * dy);
+
+    // Get outer and inner radius
+    final outerRadius = min(
+          (widget.width - widget.padding.horizontal),
+          (widget.height - widget.padding.vertical),
+        ) /
+        2;
+    final innerRadius = outerRadius * widget.style.holeRadius;
 
     // Check if the mouse is within the outer radius but outside the inner radius
     if (distance < innerRadius || distance > outerRadius) {
@@ -213,7 +192,6 @@ class _MaterialPieChartState extends State<MaterialPieChart>
   @override
   Widget build(BuildContext context) {
     return MouseRegion(
-      opaque: false,
       // Handle mouse hover events for interactivity.
       onHover: widget.interactive
           ? (event) {
@@ -229,47 +207,30 @@ class _MaterialPieChartState extends State<MaterialPieChart>
       onExit: widget.interactive
           ? (_) => setState(() => _hoveredSegmentIndex = null)
           : null,
-      child: InkWell(
-        onTapUp: widget.interactive ?
-          (event) {
-              // Get the index of the currently hovered segment based on mouse position.
-              final newIndex = _getHoveredSegment(event.localPosition);
-              // Update state only if the hovered segment has changed.
-              if (newIndex != _hoveredSegmentIndex) {
-                setState(() => _hoveredSegmentIndex = newIndex);
-              }
-              (widget.data[_hoveredSegmentIndex!].onTap ?? () {})();
-            }
-            : null,
-        child: Container(
-          width: widget.width, // Set the width of the pie chart.
-          height: widget.height, // Set the height of the pie chart.
-          color: widget
-              .style.backgroundColor, // Set the background color from style.
-          child: AnimatedBuilder(
-            // Build the pie chart with animation.
-            animation: _animation,
-            builder: (context, _) {
-              return CustomPaint(
-                size: Size(
-                    widget.width, widget.height), // Size of the custom painter.
-                painter: PieChartPainter(
-                  data: widget.data, // Pass the data for pie chart segments.
-                  sliceSizes: _setSizes(
+      child: Container(
+        width: widget.width, // Set the width of the pie chart.
+        height: widget.height, // Set the height of the pie chart.
+        color: widget
+            .style.backgroundColor, // Set the background color from style.
+        child: AnimatedBuilder(
+          // Build the pie chart with animation.
+          animation: _animation,
+          builder: (context, _) {
+            return CustomPaint(
+              size: Size(
+                  widget.width, widget.height), // Size of the custom painter.
+              painter: PieChartPainter(
+                data: widget.data, // Pass the data for pie chart segments.
+                sliceSizes: _setSizes(
                     widget.data.fold(0.0, (sum, item) => sum + item.value)),
-                  // Pass the sizes of the piechart slices
-                  progress: _animation.value, // Pass the animation progress.
-                  style: widget.style, // Pass the style configurations.
-                  showLabelOnlyOnHover: widget.showLabelOnlyOnHover, 
-                   // Pass the show label configuration
-                  padding: widget.padding, // Pass the padding.
-                  hoveredSegmentIndex:
-                      _hoveredSegmentIndex, // Pass the index of the hovered segment.
-                  chartRadius: widget.chartRadius, // Pass the chart radius
-                ),
-              );
-            },
-          ),
+                progress: _animation.value, // Pass the animation progress.
+                style: widget.style, // Pass the style configurations.
+                padding: widget.padding, // Pass the padding.
+                hoveredSegmentIndex:
+                    _hoveredSegmentIndex, // Pass the index of the hovered segment.
+              ),
+            );
+          },
         ),
       ),
     );

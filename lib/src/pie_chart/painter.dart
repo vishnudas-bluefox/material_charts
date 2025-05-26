@@ -22,12 +22,6 @@ class PieChartPainter extends CustomPainter {
   /// Index of the currently hovered segment, if any.
   final int? hoveredSegmentIndex;
 
-  /// Bool for showing the label only on hover
-  final bool showLabelOnlyOnHover;
-
-  /// Radius of the pie chart
-  final double chartRadius;
-
   /// Constructor for [PieChartPainter].
   ///
   /// Requires [data], [progress], [style], [padding], and an optional
@@ -39,8 +33,6 @@ class PieChartPainter extends CustomPainter {
     required this.sliceSizes,
     required this.padding,
     required this.hoveredSegmentIndex,
-    required this.showLabelOnlyOnHover,
-    required this.chartRadius,
   });
 
   @override
@@ -49,31 +41,18 @@ class PieChartPainter extends CustomPainter {
     if (data.isEmpty) return;
 
     // Calculate the center and radius of the pie chart.
-    final radius = [
+    final center = Offset(size.width / 2, size.height / 2);
+    final radius = min(
       (size.width - padding.horizontal) / 2,
       (size.height - padding.vertical) / 2,
-      chartRadius,
-    ].reduce(min);
-
-    final position = Offset(
-      switch (style.chartAlignment.horizontal) {
-        Horizontal.center => size.width / 2,
-        Horizontal.left => radius + padding.left,
-        Horizontal.right => size.width - (padding.right + radius),
-      },
-      switch (style.chartAlignment.vertical) {
-        Vertical.center => size.height / 2,
-        Vertical.top => radius + padding.top,
-        Vertical.bottom => size.height - (padding.bottom + radius),
-      },
     );
 
     // Draw the segments of the pie chart.
-    _drawSegments(canvas, position, radius);
+    _drawSegments(canvas, center, radius);
 
     // Draw the legend if it is enabled in the style.
     if (style.showLegend) {
-      _drawLegend(canvas, size, radius);
+      _drawLegend(canvas, size);
     }
   }
 
@@ -123,7 +102,7 @@ class PieChartPainter extends CustomPainter {
       }
 
       // Draw labels and values if enabled in the style.
-      if ((style.showLabels || style.showValues) && (!showLabelOnlyOnHover || hoveredSegmentIndex == i)) {
+      if (style.showLabels || style.showValues) {
         _drawLabelsAndValues(
           canvas,
           center,
@@ -261,20 +240,14 @@ class PieChartPainter extends CustomPainter {
   }
 
   /// Draws the legend for the pie chart, displaying the color and label for each segment.
-  void _drawLegend(Canvas canvas, Size size, double radius) {
+  void _drawLegend(Canvas canvas, Size size) {
     const double itemHeight = 24; // Height of each legend item
     const double itemSpacing = 8; // Spacing between legend items
     const double iconSize = 16; // Size of the color box in the legend
 
-    var currentY = switch(style.legendPosition){
-      PieChartLegendPosition.right => padding.top,
-      PieChartLegendPosition.bottom => padding.vertical + radius * 2 + 24,
-    }; // Start Y position for the legend
-
-    final legendLeft = switch(style.legendPosition){
-      PieChartLegendPosition.right => size.width - padding.right - 120,
-      PieChartLegendPosition.bottom => padding.left,
-    }; // Calculate legend position
+    var currentY = padding.top; // Start Y position for the legend
+    final legendLeft =
+        size.width - padding.right - 120; // Calculate legend position
 
     // Iterate through each data point to create legend entries.
     for (int i = 0; i < data.length; i++) {
