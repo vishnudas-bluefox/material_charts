@@ -1,3 +1,7 @@
+## 0.0.26
+
+New Docs Updated
+
 ## 0.0.24
 
 Area Chart Added
