@@ -171,7 +171,8 @@ class _MaterialPieChartState extends State<MaterialPieChart>
       switch (widget.style.chartAlignment.vertical) {
         Vertical.center => widget.height / 2,
         Vertical.top => outerRadius + widget.padding.top,
-        Vertical.bottom => widget.height - (widget.padding.bottom + outerRadius),
+        Vertical.bottom =>
+          widget.height - (widget.padding.bottom + outerRadius),
       },
     );
 
@@ -230,16 +231,16 @@ class _MaterialPieChartState extends State<MaterialPieChart>
           ? (_) => setState(() => _hoveredSegmentIndex = null)
           : null,
       child: InkWell(
-        onTapUp: widget.interactive ?
-          (event) {
-              // Get the index of the currently hovered segment based on mouse position.
-              final newIndex = _getHoveredSegment(event.localPosition);
-              // Update state only if the hovered segment has changed.
-              if (newIndex != _hoveredSegmentIndex) {
-                setState(() => _hoveredSegmentIndex = newIndex);
+        onTapUp: widget.interactive
+            ? (event) {
+                // Get the index of the currently hovered segment based on mouse position.
+                final newIndex = _getHoveredSegment(event.localPosition);
+                // Update state only if the hovered segment has changed.
+                if (newIndex != _hoveredSegmentIndex) {
+                  setState(() => _hoveredSegmentIndex = newIndex);
+                }
+                (widget.data[_hoveredSegmentIndex!].onTap ?? () {})();
               }
-              (widget.data[_hoveredSegmentIndex!].onTap ?? () {})();
-            }
             : null,
         child: Container(
           width: widget.width, // Set the width of the pie chart.
@@ -256,12 +257,12 @@ class _MaterialPieChartState extends State<MaterialPieChart>
                 painter: PieChartPainter(
                   data: widget.data, // Pass the data for pie chart segments.
                   sliceSizes: _setSizes(
-                    widget.data.fold(0.0, (sum, item) => sum + item.value)),
+                      widget.data.fold(0.0, (sum, item) => sum + item.value)),
                   // Pass the sizes of the piechart slices
                   progress: _animation.value, // Pass the animation progress.
                   style: widget.style, // Pass the style configurations.
-                  showLabelOnlyOnHover: widget.showLabelOnlyOnHover, 
-                   // Pass the show label configuration
+                  showLabelOnlyOnHover: widget.showLabelOnlyOnHover,
+                  // Pass the show label configuration
                   padding: widget.padding, // Pass the padding.
                   hoveredSegmentIndex:
                       _hoveredSegmentIndex, // Pass the index of the hovered segment.

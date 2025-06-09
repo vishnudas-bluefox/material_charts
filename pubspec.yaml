@@ -1,6 +1,6 @@
 name: material_charts
 description: "A flutter library for creating and manage industrial standard charts"
-version: 0.0.26
+version: 0.0.27
 homepage: https://github.com/vishnudas-bluefox/material_charts
 repository: https://github.com/vishnudas-bluefox/material_charts
 
@@ -11,7 +11,7 @@ environment:
 dependencies:
   flutter:
     sdk: flutter
-  intl: ^0.20.1
+  intl: ^0.20.2
 
 dev_dependencies:
   flutter_test:

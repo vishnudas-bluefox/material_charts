@@ -90,34 +90,35 @@ class PieChartStyle {
   ///
   /// All parameters have default values, allowing for flexible customization.
   /// If not provided, the pie chart will use the defaults for each property.
-  const PieChartStyle({
-    this.defaultColors = const [
-      Colors.blue, // Default color 1
-      Colors.red, // Default color 2
-      Colors.green, // Default color 3
-      Colors.yellow, // Default color 4
-      Colors.purple, // Default color 5
-      Colors.orange, // Default color 6
-    ],
-    this.backgroundColor = Colors.white, // Default background color
-    this.labelStyle, // Optional text style for labels
-    this.valueStyle, // Optional text style for values
-    this.startAngle = -90, // Default starting angle for the first slice
-    this.holeRadius = 0, // No hole by default (full pie chart)
-    this.animationDuration = const Duration(milliseconds: 1500), // Default animation duration
-    this.animationCurve = Curves.easeInOut, // Default animation curve
-    this.showLabels = true, // Labels are shown by default
-    this.showValues = true, // Values are shown by default
-    this.labelOffset = 20, // Default label offset
-    this.showLegend = true, // Legend is shown by default
-    this.legendPadding = const EdgeInsets.all(16), // Default legend padding
-    this.labelPosition = LabelPosition.outside, // Default label position
-    this.showConnectorLines = true, // Connector lines are shown by default
-    this.connectorLineColor = Colors.black54, // Default connector line color
-    this.connectorLineStrokeWidth = 1.0, // Default connector line stroke width
-    this.chartAlignment = ChartAlignment.center, // Default vertical position
-    this.legendPosition = PieChartLegendPosition.right
-  });
+  const PieChartStyle(
+      {this.defaultColors = const [
+        Colors.blue, // Default color 1
+        Colors.red, // Default color 2
+        Colors.green, // Default color 3
+        Colors.yellow, // Default color 4
+        Colors.purple, // Default color 5
+        Colors.orange, // Default color 6
+      ],
+      this.backgroundColor = Colors.white, // Default background color
+      this.labelStyle, // Optional text style for labels
+      this.valueStyle, // Optional text style for values
+      this.startAngle = -90, // Default starting angle for the first slice
+      this.holeRadius = 0, // No hole by default (full pie chart)
+      this.animationDuration =
+          const Duration(milliseconds: 1500), // Default animation duration
+      this.animationCurve = Curves.easeInOut, // Default animation curve
+      this.showLabels = true, // Labels are shown by default
+      this.showValues = true, // Values are shown by default
+      this.labelOffset = 20, // Default label offset
+      this.showLegend = true, // Legend is shown by default
+      this.legendPadding = const EdgeInsets.all(16), // Default legend padding
+      this.labelPosition = LabelPosition.outside, // Default label position
+      this.showConnectorLines = true, // Connector lines are shown by default
+      this.connectorLineColor = Colors.black54, // Default connector line color
+      this.connectorLineStrokeWidth =
+          1.0, // Default connector line stroke width
+      this.chartAlignment = ChartAlignment.center, // Default vertical position
+      this.legendPosition = PieChartLegendPosition.right});
 }
 
 /// Defines the possible positions for labels on the pie chart slices.

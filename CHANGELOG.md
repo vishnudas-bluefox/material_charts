@@ -1,5 +1,11 @@
 ## 0.0.26
 
+updates in Docs Updated
+minor updates in pie charts
+
+
+## 0.0.26
+
 New Docs Updated
 
 ## 0.0.24

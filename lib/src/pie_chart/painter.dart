@@ -123,7 +123,8 @@ class PieChartPainter extends CustomPainter {
       }
 
       // Draw labels and values if enabled in the style.
-      if ((style.showLabels || style.showValues) && (!showLabelOnlyOnHover || hoveredSegmentIndex == i)) {
+      if ((style.showLabels || style.showValues) &&
+          (!showLabelOnlyOnHover || hoveredSegmentIndex == i)) {
         _drawLabelsAndValues(
           canvas,
           center,
@@ -266,12 +267,12 @@ class PieChartPainter extends CustomPainter {
     const double itemSpacing = 8; // Spacing between legend items
     const double iconSize = 16; // Size of the color box in the legend
 
-    var currentY = switch(style.legendPosition){
+    var currentY = switch (style.legendPosition) {
       PieChartLegendPosition.right => padding.top,
       PieChartLegendPosition.bottom => padding.vertical + radius * 2 + 24,
     }; // Start Y position for the legend
 
-    final legendLeft = switch(style.legendPosition){
+    final legendLeft = switch (style.legendPosition) {
       PieChartLegendPosition.right => size.width - padding.right - 120,
       PieChartLegendPosition.bottom => padding.left,
     }; // Calculate legend position
