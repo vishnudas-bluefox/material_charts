@@ -1,3 +1,5 @@
+export 'src/shared/shared_models.dart';
+
 export 'src/gantt_chart/models.dart';
 export 'src/gantt_chart/widgets.dart';
 
