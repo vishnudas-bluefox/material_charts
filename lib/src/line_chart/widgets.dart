@@ -1,12 +1,14 @@
 import 'package:flutter/material.dart';
-import 'package:material_charts/src/line_chart/models.dart';
-import 'package:material_charts/src/line_chart/painter.dart';
+
+import 'models.dart';
+import 'painter.dart';
 
 /// A widget that displays a line chart based on the provided data.
 ///
 /// The chart supports various styling options, including line color,
-/// point visibility, grid lines, and animation. It allows customization
-/// for padding, chart size, and callback functionality upon animation completion.
+/// point visibility, grid lines, tooltip functionality, and animation.
+/// It allows customization for padding, chart size, and callback functionality
+/// upon animation completion.
 class MaterialChartLine extends StatefulWidget {
   /// The data points to be displayed in the line chart.
   final List<ChartData> data;
@@ -26,6 +28,9 @@ class MaterialChartLine extends StatefulWidget {
   /// A flag indicating whether to display grid lines in the chart.
   final bool showGrid;
 
+  /// A flag indicating whether to show tooltips when hovering over data points.
+  final bool showTooltips;
+
   /// Padding around the chart area.
   final EdgeInsets padding;
 
@@ -44,6 +49,7 @@ class MaterialChartLine extends StatefulWidget {
     this.style = const LineChartStyle(),
     this.showPoints = true,
     this.showGrid = true,
+    this.showTooltips = true,
     this.padding = const EdgeInsets.all(24),
     this.horizontalGridLines = 5,
     this.onAnimationComplete,
@@ -61,6 +67,9 @@ class _MaterialChartLineState extends State<MaterialChartLine>
   /// The animation value that drives the drawing of the chart.
   late Animation<double> _animation;
 
+  /// Current mouse hover position for tooltip functionality.
+  Offset? _hoverPosition;
+
   @override
   void initState() {
     super.initState();
@@ -76,10 +85,7 @@ class _MaterialChartLineState extends State<MaterialChartLine>
 
     // Animate the progress from 0.0 to 1.0 over the defined duration.
     _animation = Tween<double>(begin: 0.0, end: 1.0).animate(
-      CurvedAnimation(
-        parent: _controller,
-        curve: widget.style.animationCurve,
-      ),
+      CurvedAnimation(parent: _controller, curve: widget.style.animationCurve),
     )..addStatusListener((status) {
         // Trigger the completion callback when the animation ends.
         if (status == AnimationStatus.completed) {
@@ -100,30 +106,47 @@ class _MaterialChartLineState extends State<MaterialChartLine>
 
   @override
   Widget build(BuildContext context) {
-    return Container(
-      width: widget.width,
-      height: widget.height,
-      color: widget
-          .style.backgroundColor, // Set the background color for the chart.
-      child: AnimatedBuilder(
-        animation: _animation, // Rebuilds when the animation changes.
-        builder: (context, _) {
-          return CustomPaint(
-            size: Size(widget.width, widget.height), // Set custom paint size.
-            painter: LineChartPainter(
-              data: widget.data, // Pass the data points for the chart.
-              progress: _animation.value, // Use the current animation value.
-              style: widget.style, // Pass the style configuration.
-              showPoints: widget
-                  .showPoints, // Indicates if data points should be shown.
-              showGrid:
-                  widget.showGrid, // Indicates if grid lines should be shown.
-              padding: widget.padding, // Apply padding around the chart.
-              horizontalGridLines:
-                  widget.horizontalGridLines, // Define horizontal grid lines.
-            ),
-          );
-        },
+    return MouseRegion(
+      onEnter: (_) =>
+          setState(() => _hoverPosition = null), // Reset hover on enter
+      onHover: (details) {
+        setState(() {
+          _hoverPosition = details.localPosition; // Update hover position
+        });
+      },
+      onExit: (_) =>
+          setState(() => _hoverPosition = null), // Clear hover on exit
+      child: Container(
+        width: widget.width,
+        height: widget.height,
+        color: widget
+            .style.backgroundColor, // Set the background color for the chart.
+        child: AnimatedBuilder(
+          animation: _animation, // Rebuilds when the animation changes.
+          builder: (context, _) {
+            return CustomPaint(
+              size: Size(widget.width, widget.height), // Set custom paint size.
+              painter: LineChartPainter(
+                data: widget.data, // Pass the data points for the chart.
+                progress: _animation.value, // Use the current animation value.
+                style: widget.showTooltips
+                    ? widget.style
+                    : widget.style.copyWith(
+                        showTooltips: false,
+                      ), // Override tooltip visibility
+                showPoints: widget
+                    .showPoints, // Indicates if data points should be shown.
+                showGrid:
+                    widget.showGrid, // Indicates if grid lines should be shown.
+                padding: widget.padding, // Apply padding around the chart.
+                horizontalGridLines:
+                    widget.horizontalGridLines, // Define horizontal grid lines.
+                hoverPosition:
+                    _hoverPosition, // Pass hover position for tooltips.
+              ),
+            );
+          },
+        ),
       ),
     );
   }

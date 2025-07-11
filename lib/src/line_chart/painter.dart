@@ -1,11 +1,12 @@
 import 'dart:math';
+import 'dart:ui' as ui;
 import 'package:flutter/material.dart';
 
 import 'models.dart';
 
 /// A custom painter for rendering a line chart.
 /// This class extends [CustomPainter] and is responsible for drawing the chart,
-/// including the lines, points, grid, and labels based on the provided data.
+/// including the lines, points, grid, labels, and tooltips based on the provided data.
 class LineChartPainter extends CustomPainter {
   final List<ChartData> data; // List of chart data points to be plotted
   final double progress; // Progress indicator for animated drawing
@@ -14,6 +15,7 @@ class LineChartPainter extends CustomPainter {
   final bool showGrid; // Flag to determine whether to show grid lines
   final EdgeInsets padding; // Padding around the chart
   final int horizontalGridLines; // Number of horizontal grid lines to draw
+  final Offset? hoverPosition; // Current hover position (if any)
 
   /// Constructs a [LineChartPainter] with the necessary properties.
   LineChartPainter({
@@ -24,6 +26,7 @@ class LineChartPainter extends CustomPainter {
     required this.showGrid,
     required this.padding,
     required this.horizontalGridLines,
+    this.hoverPosition,
   });
 
   @override
@@ -38,6 +41,27 @@ class LineChartPainter extends CustomPainter {
       size.width - padding.horizontal,
       size.height - padding.vertical,
     );
+
+    // Draw the hover effects and tooltip first
+    if (hoverPosition != null) {
+      final verticalLineX = hoverPosition!.dx;
+
+      // Only draw if the hover position is within the chart area
+      if (verticalLineX >= chartArea.left && verticalLineX <= chartArea.right) {
+        // Draw the vertical hover line with custom styling
+        _drawVerticalHoverLine(canvas, chartArea, verticalLineX);
+
+        // Check if we are hovering over a data point and tooltips are enabled
+        if (style.showTooltips) {
+          final pointIndex =
+              _getDataPointIndexAtPosition(verticalLineX, chartArea);
+          if (pointIndex != null) {
+            // Draw the tooltip if hovering over a data point
+            _drawTooltip(canvas, chartArea, pointIndex);
+          }
+        }
+      }
+    }
 
     // Draw the grid if the flag is set
     if (showGrid) {
@@ -54,6 +78,213 @@ class LineChartPainter extends CustomPainter {
 
     // Draw labels for each data point along the X-axis
     _drawLabels(canvas, chartArea);
+  }
+
+  /// Draws the vertical hover line with custom styling
+  void _drawVerticalHoverLine(Canvas canvas, Rect chartArea, double x) {
+    final verticalLinePaint = Paint()
+      ..color = style.verticalLineColor.withOpacity(style.verticalLineOpacity)
+      ..strokeWidth = style.verticalLineWidth;
+
+    final startPoint = Offset(x, chartArea.top);
+    final endPoint = Offset(x, chartArea.bottom);
+
+    switch (style.verticalLineStyle) {
+      case LineStyle.solid:
+        canvas.drawLine(startPoint, endPoint, verticalLinePaint);
+        break;
+      case LineStyle.dashed:
+        _drawDashedLine(canvas, startPoint, endPoint, verticalLinePaint);
+        break;
+      case LineStyle.dotted:
+        _drawDottedLine(canvas, startPoint, endPoint, verticalLinePaint);
+        break;
+    }
+  }
+
+  /// Draws a dashed line between two points
+  void _drawDashedLine(Canvas canvas, Offset start, Offset end, Paint paint) {
+    const double dashLength = 8.0;
+    const double gapLength = 4.0;
+    const double totalLength = dashLength + gapLength;
+
+    final double distance = (end - start).distance;
+    final int dashCount = (distance / totalLength).floor();
+
+    final Offset direction = (end - start) / distance;
+
+    for (int i = 0; i < dashCount; i++) {
+      final double startDistance = i * totalLength;
+      final double endDistance = startDistance + dashLength;
+
+      final Offset dashStart = start + direction * startDistance;
+      final Offset dashEnd = start + direction * endDistance;
+
+      canvas.drawLine(dashStart, dashEnd, paint);
+    }
+
+    // Draw the remaining partial dash if any
+    final double remainingDistance = distance - (dashCount * totalLength);
+    if (remainingDistance > 0) {
+      final double finalDashLength = remainingDistance.clamp(0.0, dashLength);
+      final Offset finalStart = start + direction * (dashCount * totalLength);
+      final Offset finalEnd = finalStart + direction * finalDashLength;
+      canvas.drawLine(finalStart, finalEnd, paint);
+    }
+  }
+
+  /// Draws a dotted line between two points
+  void _drawDottedLine(Canvas canvas, Offset start, Offset end, Paint paint) {
+    const double dotSpacing = 6.0;
+    final double distance = (end - start).distance;
+    final int dotCount = (distance / dotSpacing).floor();
+
+    final Offset direction = (end - start) / distance;
+
+    // Set paint style for dots
+    paint.style = PaintingStyle.fill;
+    final double dotRadius = paint.strokeWidth / 2;
+
+    for (int i = 0; i <= dotCount; i++) {
+      final double currentDistance = i * dotSpacing;
+      if (currentDistance <= distance) {
+        final Offset dotPosition = start + direction * currentDistance;
+        canvas.drawCircle(dotPosition, dotRadius, paint);
+      }
+    }
+  }
+
+  /// Returns the index of the data point or null if none is found
+  int? _getDataPointIndexAtPosition(double x, Rect chartArea) {
+    if (data.length <= 1) return null;
+
+    final points = _getPointCoordinates(chartArea);
+    double minDistance = double.infinity;
+    int? closestIndex;
+
+    // Find the closest point to the hover position
+    for (int i = 0; i < points.length; i++) {
+      final distance = (points[i].dx - x).abs();
+      if (distance < minDistance) {
+        minDistance = distance;
+        closestIndex = i;
+      }
+    }
+
+    // Only return the index if the hover position is reasonably close to a point
+    const double maxDistance = 20.0; // Maximum distance to consider a "hit"
+    if (minDistance <= maxDistance) {
+      return closestIndex;
+    }
+
+    return null;
+  }
+
+  /// Draws the tooltip when hovering over a data point
+  /// Shows label and value for the data point
+  /// Includes styling for background, border, and text
+  void _drawTooltip(Canvas canvas, Rect chartArea, int pointIndex) {
+    final dataPoint = data[pointIndex];
+    final tooltipText =
+        '${dataPoint.label}\nValue: ${dataPoint.value.toStringAsFixed(2)}';
+
+    // Calculate the position to draw the tooltip
+    final points = _getPointCoordinates(chartArea);
+    final pointPosition = points[pointIndex];
+
+    // Position tooltip above and to the right of the point, but adjust if it would go off-screen
+    double tooltipX = pointPosition.dx + 10;
+    double tooltipY = pointPosition.dy - 10;
+
+    // Create a text painter for the tooltip
+    final textSpan = TextSpan(
+      text: tooltipText,
+      style: style.tooltipStyle.textStyle,
+    );
+    final textPainter = TextPainter(
+      text: textSpan,
+      textDirection: ui.TextDirection.ltr,
+      textAlign: TextAlign.left,
+    );
+
+    textPainter.layout();
+
+    // Calculate tooltip dimensions
+    final tooltipWidth =
+        textPainter.width + style.tooltipStyle.padding.horizontal;
+    final tooltipHeight =
+        textPainter.height + style.tooltipStyle.padding.vertical;
+
+    // Adjust tooltip position to keep it within bounds
+    if (tooltipX + tooltipWidth > chartArea.right) {
+      tooltipX = pointPosition.dx - tooltipWidth - 10;
+    }
+    if (tooltipY - tooltipHeight < chartArea.top) {
+      tooltipY = pointPosition.dy + 10;
+    }
+
+    // Create tooltip rectangle
+    final tooltipRect = Rect.fromLTWH(
+      tooltipX,
+      tooltipY - tooltipHeight,
+      tooltipWidth,
+      tooltipHeight,
+    );
+
+    // Draw tooltip background
+    final tooltipPaint = Paint()..color = style.tooltipStyle.backgroundColor;
+    canvas.drawRRect(
+      RRect.fromRectAndRadius(
+        tooltipRect,
+        Radius.circular(style.tooltipStyle.borderRadius),
+      ),
+      tooltipPaint,
+    );
+
+    // Draw tooltip border
+    final borderPaint = Paint()
+      ..color = style.tooltipStyle.borderColor
+      ..style = PaintingStyle.stroke
+      ..strokeWidth = 1.0;
+    canvas.drawRRect(
+      RRect.fromRectAndRadius(
+        tooltipRect,
+        Radius.circular(style.tooltipStyle.borderRadius),
+      ),
+      borderPaint,
+    );
+
+    // Draw the tooltip text
+    textPainter.paint(
+      canvas,
+      Offset(
+        tooltipX + style.tooltipStyle.padding.left,
+        tooltipY - tooltipHeight + style.tooltipStyle.padding.top,
+      ),
+    );
+
+    // Highlight the hovered point with a larger circle
+    final highlightPaint = Paint()
+      ..color = style.pointColor.withOpacity(0.8)
+      ..style = PaintingStyle.fill;
+
+    canvas.drawCircle(
+      pointPosition,
+      style.pointRadius * 1.5, // Make it 1.5x larger
+      highlightPaint,
+    );
+
+    // Draw a white border around the highlighted point
+    final highlightBorderPaint = Paint()
+      ..color = Colors.white
+      ..style = PaintingStyle.stroke
+      ..strokeWidth = 2.0;
+
+    canvas.drawCircle(
+      pointPosition,
+      style.pointRadius * 1.5,
+      highlightBorderPaint,
+    );
   }
 
   /// Draws the grid lines (both horizontal and vertical) in the chart area.
@@ -332,6 +563,8 @@ class LineChartPainter extends CustomPainter {
         oldDelegate.style != style ||
         oldDelegate.showPoints != showPoints ||
         oldDelegate.showGrid != showGrid ||
-        oldDelegate.horizontalGridLines != horizontalGridLines;
+        oldDelegate.horizontalGridLines != horizontalGridLines ||
+        oldDelegate.hoverPosition !=
+            hoverPosition; // Check hover position change
   }
 }
