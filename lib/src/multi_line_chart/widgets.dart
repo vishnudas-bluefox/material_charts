@@ -41,10 +41,10 @@ class MultiLineChart extends StatefulWidget {
   });
 
   @override
-  _MultiLineChartState createState() => _MultiLineChartState();
+  MultiLineChartState createState() => MultiLineChartState();
 }
 
-class _MultiLineChartState extends State<MultiLineChart>
+class MultiLineChartState extends State<MultiLineChart>
     with SingleTickerProviderStateMixin {
   late AnimationController _controller; // Controller for managing animations.
   late Animation<double>

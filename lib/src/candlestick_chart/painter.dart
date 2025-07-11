@@ -299,7 +299,7 @@ class CandlestickChartPainter extends CustomPainter {
   // Previous grid and label drawing methods with scroll adjustments...
   void _drawGrid(Canvas canvas, Rect chartArea) {
     final paint = Paint()
-      ..color = Colors.grey.withOpacity(0.2)
+      ..color = Colors.grey.withValues(alpha: 0.2)
       ..strokeWidth = 1;
 
     // Horizontal grid lines

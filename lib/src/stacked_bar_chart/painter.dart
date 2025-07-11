@@ -126,7 +126,7 @@ class StackedBarChartPainter extends CustomPainter {
         canvas.drawLine(
           Offset(chartArea.left, y),
           Offset(chartArea.right, y),
-          axisPaint..color = style.gridColor.withOpacity(0.2),
+          axisPaint..color = style.gridColor.withValues(alpha: 0.2),
         );
       }
     }
@@ -135,7 +135,7 @@ class StackedBarChartPainter extends CustomPainter {
   /// Draws horizontal grid lines across the chart area.
   void _drawGrid(Canvas canvas, Rect chartArea) {
     final paint = Paint()
-      ..color = style.gridColor.withOpacity(0.2)
+      ..color = style.gridColor.withValues(alpha: 0.2)
       ..strokeWidth = 1;
 
     for (int i = 0; i <= horizontalGridLines; i++) {
@@ -179,7 +179,7 @@ class StackedBarChartPainter extends CustomPainter {
 
         final paint = Paint()
           ..color = hoveredBarIndex == i
-              ? segment.color.withOpacity(0.8)
+              ? segment.color.withValues(alpha: 0.8)
               : segment.color;
 
         canvas.drawRRect(rect, paint);
@@ -229,7 +229,7 @@ class StackedBarChartPainter extends CustomPainter {
   void _drawHoverEffect(Canvas canvas, double barX, double barWidth,
       double totalHeight, Rect chartArea) {
     final hoverPaint = Paint()
-      ..color = Colors.white.withOpacity(0.3)
+      ..color = Colors.white.withValues(alpha: 0.3)
       ..style = PaintingStyle.stroke
       ..strokeWidth = 2;
 

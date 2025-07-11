@@ -83,7 +83,8 @@ class LineChartPainter extends CustomPainter {
   /// Draws the vertical hover line with custom styling
   void _drawVerticalHoverLine(Canvas canvas, Rect chartArea, double x) {
     final verticalLinePaint = Paint()
-      ..color = style.verticalLineColor.withOpacity(style.verticalLineOpacity)
+      ..color =
+          style.verticalLineColor.withValues(alpha: style.verticalLineOpacity)
       ..strokeWidth = style.verticalLineWidth;
 
     final startPoint = Offset(x, chartArea.top);
@@ -265,7 +266,7 @@ class LineChartPainter extends CustomPainter {
 
     // Highlight the hovered point with a larger circle
     final highlightPaint = Paint()
-      ..color = style.pointColor.withOpacity(0.8)
+      ..color = style.pointColor.withValues(alpha: 0.8)
       ..style = PaintingStyle.fill;
 
     canvas.drawCircle(
@@ -290,9 +291,7 @@ class LineChartPainter extends CustomPainter {
   /// Draws the grid lines (both horizontal and vertical) in the chart area.
   void _drawGrid(Canvas canvas, Rect chartArea) {
     final paint = Paint()
-      ..color = style.gridColor.withOpacity(
-        0.2,
-      ) // Set the grid color with opacity
+      ..color = style.gridColor.withValues(alpha: 0.2)
       ..strokeWidth = 1; // Set the stroke width for grid lines
 
     // Draw horizontal grid lines

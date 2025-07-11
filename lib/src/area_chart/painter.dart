@@ -11,7 +11,7 @@ class AreaChartPainter extends CustomPainter {
   final double progress; // Animation progress (0.0 to 1.0).
   final AreaChartStyle style; // Style configuration for the chart.
   final Offset?
-  tooltipPosition; // Position of the cursor or hover for tooltips.
+      tooltipPosition; // Position of the cursor or hover for tooltips.
 
   AreaChartPainter({
     required this.series,
@@ -35,7 +35,8 @@ class AreaChartPainter extends CustomPainter {
       final seriesData = series[i];
       // Get the colors for the series (fallback to default style colors if not defined).
       final color = seriesData.color ?? style.colors[i % style.colors.length];
-      final gradientColor = seriesData.gradientColor ?? color.withOpacity(0.2);
+      final gradientColor =
+          seriesData.gradientColor ?? color.withValues(alpha: 0.2);
 
       // Draw the area below the line for the series.
       _drawArea(canvas, chartArea, seriesData, color, gradientColor);
@@ -84,14 +85,13 @@ class AreaChartPainter extends CustomPainter {
     path.close();
 
     // Create a gradient paint for the area fill.
-    final paint =
-        Paint()
-          ..shader = LinearGradient(
-            begin: Alignment.topCenter,
-            end: Alignment.bottomCenter,
-            colors: [color, gradientColor],
-          ).createShader(chartArea)
-          ..style = PaintingStyle.fill;
+    final paint = Paint()
+      ..shader = LinearGradient(
+        begin: Alignment.topCenter,
+        end: Alignment.bottomCenter,
+        colors: [color, gradientColor],
+      ).createShader(chartArea)
+      ..style = PaintingStyle.fill;
 
     // Apply animation progress to the path.
     final pathMetrics = path.computeMetrics().first;
@@ -123,13 +123,12 @@ class AreaChartPainter extends CustomPainter {
     }
 
     // Define the paint for the line.
-    final paint =
-        Paint()
-          ..color = color
-          ..strokeWidth = seriesData.lineWidth ?? style.defaultLineWidth
-          ..strokeCap = StrokeCap.round
-          ..strokeJoin = StrokeJoin.round
-          ..style = PaintingStyle.stroke;
+    final paint = Paint()
+      ..color = color
+      ..strokeWidth = seriesData.lineWidth ?? style.defaultLineWidth
+      ..strokeCap = StrokeCap.round
+      ..strokeJoin = StrokeJoin.round
+      ..style = PaintingStyle.stroke;
 
     // Apply animation progress to the path.
     final pathMetrics = path.computeMetrics().first;
@@ -149,9 +148,8 @@ class AreaChartPainter extends CustomPainter {
     Color color,
   ) {
     final points = _getSeriesPoints(chartArea, seriesData);
-    final progressPoints =
-        (points.length * progress)
-            .floor(); // Limit points based on animation progress.
+    final progressPoints = (points.length * progress)
+        .floor(); // Limit points based on animation progress.
     final pointSize = seriesData.pointSize ?? style.defaultPointSize;
 
     // Use default tooltip configuration if series-specific config is not available.
@@ -161,24 +159,21 @@ class AreaChartPainter extends CustomPainter {
     // Iterate through the visible points.
     for (int i = 0; i < progressPoints; i++) {
       final dataPoint = seriesData.dataPoints[i];
-      final tooltipConfig =
-          dataPoint.tooltipConfig ??
+      final tooltipConfig = dataPoint.tooltipConfig ??
           seriesTooltip; // Use point-specific config or fallback.
 
       // Draw the data point as a filled circle.
-      final pointPaint =
-          Paint()
-            ..color = color
-            ..style = PaintingStyle.fill;
+      final pointPaint = Paint()
+        ..color = color
+        ..style = PaintingStyle.fill;
 
       canvas.drawCircle(points[i], pointSize, pointPaint);
 
       // Draw a border around the point for better visibility.
-      final borderPaint =
-          Paint()
-            ..color = style.backgroundColor
-            ..style = PaintingStyle.stroke
-            ..strokeWidth = 2;
+      final borderPaint = Paint()
+        ..color = style.backgroundColor
+        ..style = PaintingStyle.stroke
+        ..strokeWidth = 2;
       canvas.drawCircle(points[i], pointSize, borderPaint);
 
       // Check if tooltip should be displayed based on hover distance.
@@ -207,8 +202,7 @@ class AreaChartPainter extends CustomPainter {
     Rect chartArea,
     TooltipConfig config,
   ) {
-    final text =
-        config.text ??
+    final text = config.text ??
         '$seriesName: ${dataPoint.value.toStringAsFixed(1)}'; // Generate tooltip text.
     final textSpan = TextSpan(text: text, style: config.textStyle);
 
@@ -230,10 +224,9 @@ class AreaChartPainter extends CustomPainter {
     }
 
     // Draw tooltip background.
-    final bgPaint =
-        Paint()
-          ..color = config.backgroundColor
-          ..style = PaintingStyle.fill;
+    final bgPaint = Paint()
+      ..color = config.backgroundColor
+      ..style = PaintingStyle.fill;
 
     canvas.drawRRect(
       RRect.fromRectAndRadius(
@@ -252,10 +245,9 @@ class AreaChartPainter extends CustomPainter {
 
   /// Draws the grid lines and their labels (horizontal and vertical).
   void _drawGrid(Canvas canvas, Rect chartArea) {
-    final paint =
-        Paint()
-          ..color = style.gridColor.withOpacity(0.2)
-          ..strokeWidth = 1;
+    final paint = Paint()
+      ..color = style.gridColor.withValues(alpha: 0.2)
+      ..strokeWidth = 1;
 
     // Horizontal grid lines and labels.
     for (int i = 0; i <= style.horizontalGridLines; i++) {
@@ -275,8 +267,7 @@ class AreaChartPainter extends CustomPainter {
 
         final textSpan = TextSpan(
           text: value.toStringAsFixed(1),
-          style:
-              style.labelStyle ??
+          style: style.labelStyle ??
               TextStyle(color: style.gridColor, fontSize: 10),
         );
         final textPainter = TextPainter(
@@ -309,8 +300,7 @@ class AreaChartPainter extends CustomPainter {
         if (label != null) {
           final textSpan = TextSpan(
             text: label,
-            style:
-                style.labelStyle ??
+            style: style.labelStyle ??
                 TextStyle(color: style.gridColor, fontSize: 10),
           );
           final textPainter = TextPainter(
@@ -355,8 +345,7 @@ class AreaChartPainter extends CustomPainter {
         i,
         seriesData.dataPoints.length,
       ); // X position
-      final normalizedValue =
-          (seriesData.dataPoints[i].value - minValue) /
+      final normalizedValue = (seriesData.dataPoints[i].value - minValue) /
           valueRange; // Normalize Y value
       final y =
           chartArea.bottom - (normalizedValue * chartArea.height); // Y position

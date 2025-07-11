@@ -169,10 +169,8 @@ class MultiLineChartPainter extends CustomPainter {
 
     // Draw shadow for the tooltip
     final shadowPaint = Paint()
-      ..color = style.shadowColor
-          .withOpacity(0.1) // Set shadow color with transparency
-      ..maskFilter = MaskFilter.blur(
-          BlurStyle.normal, style.shadowBlurRadius); // Apply blur to shadow
+      ..color = style.shadowColor.withValues(alpha: 0.1)
+      ..maskFilter = MaskFilter.blur(BlurStyle.normal, style.shadowBlurRadius);
     canvas.drawRRect(
       RRect.fromRectAndRadius(
         Rect.fromLTWH(tooltipX, tooltipY, tooltipWidth, tooltipHeight)
@@ -184,9 +182,8 @@ class MultiLineChartPainter extends CustomPainter {
 
     // Draw background for the tooltip
     final bgPaint = Paint()
-      ..color = style.backgroundColor
-          .withOpacity(0.8) // Set background color with transparency
-      ..style = PaintingStyle.fill; // Fill the background
+      ..color = style.backgroundColor.withValues(alpha: 0.8)
+      ..style = PaintingStyle.fill;
     canvas.drawRRect(
       RRect.fromRectAndRadius(
         Rect.fromLTWH(tooltipX, tooltipY, tooltipWidth, tooltipHeight),
@@ -269,9 +266,8 @@ class MultiLineChartPainter extends CustomPainter {
   /// It also includes horizontal and vertical labels for the axes.
   void _drawGrid(Canvas canvas, Rect chartArea) {
     final paint = Paint()
-      ..color =
-          style.gridColor.withOpacity(0.2) // Set grid line color with opacity
-      ..strokeWidth = style.gridLineWidth; // Set grid line width
+      ..color = style.gridColor.withValues(alpha: 0.2)
+      ..strokeWidth = style.gridLineWidth;
 
     // Draw horizontal grid lines
     for (int i = 0; i <= style.horizontalGridLines; i++) {
