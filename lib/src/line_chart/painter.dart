@@ -1,6 +1,7 @@
 import 'dart:math';
 import 'package:flutter/material.dart';
-import 'package:material_charts/src/line_chart/models.dart';
+
+import 'models.dart';
 
 /// A custom painter for rendering a line chart.
 /// This class extends [CustomPainter] and is responsible for drawing the chart,
@@ -58,8 +59,9 @@ class LineChartPainter extends CustomPainter {
   /// Draws the grid lines (both horizontal and vertical) in the chart area.
   void _drawGrid(Canvas canvas, Rect chartArea) {
     final paint = Paint()
-      ..color =
-          style.gridColor.withOpacity(0.2) // Set the grid color with opacity
+      ..color = style.gridColor.withOpacity(
+        0.2,
+      ) // Set the grid color with opacity
       ..strokeWidth = 1; // Set the stroke width for grid lines
 
     // Draw horizontal grid lines
@@ -88,22 +90,26 @@ class LineChartPainter extends CustomPainter {
     final linePaint = Paint()
       ..color = style.lineColor // Set the line color
       ..strokeWidth = style.strokeWidth // Set the stroke width
-      ..strokeCap = StrokeCap.round // Set stroke cap to round
-      ..strokeJoin = StrokeJoin.round // Set stroke join to round
       ..style = PaintingStyle.stroke; // Set paint style to stroke
 
-    final path = Path(); // Create a new path for the line
-    final points =
-        _getPointCoordinates(chartArea); // Get coordinates of data points
+    // Apply rounded points styling if enabled
+    if (style.roundedPoints) {
+      linePaint.strokeCap = StrokeCap.round; // Set stroke cap to round
+      linePaint.strokeJoin = StrokeJoin.round; // Set stroke join to round
+    } else {
+      linePaint.strokeCap = StrokeCap.butt; // Set stroke cap to butt
+      linePaint.strokeJoin = StrokeJoin.miter; // Set stroke join to miter
+    }
 
-    // Create the path by connecting all the points
-    for (int i = 0; i < points.length; i++) {
-      final point = points[i];
-      if (i == 0) {
-        path.moveTo(point.dx, point.dy); // Move to the first point
-      } else {
-        path.lineTo(point.dx, point.dy); // Draw line to subsequent points
-      }
+    final points = _getPointCoordinates(
+      chartArea,
+    ); // Get coordinates of data points
+
+    final Path path;
+    if (style.useCurvedLines) {
+      path = _createCurvedPath(points); // Create curved path
+    } else {
+      path = _createStraightPath(points); // Create straight path
     }
 
     // Extract the portion of the path to be drawn based on progress
@@ -118,21 +124,139 @@ class LineChartPainter extends CustomPainter {
     canvas.drawPath(extractPath, linePaint);
   }
 
+  /// Creates a straight line path connecting all points.
+  Path _createStraightPath(List<Offset> points) {
+    final path = Path();
+    for (int i = 0; i < points.length; i++) {
+      final point = points[i];
+      if (i == 0) {
+        path.moveTo(point.dx, point.dy); // Move to the first point
+      } else {
+        path.lineTo(point.dx, point.dy); // Draw line to subsequent points
+      }
+    }
+    return path;
+  }
+
+  /// Creates a curved/smooth line path connecting all points using bezier curves.
+  Path _createCurvedPath(List<Offset> points) {
+    if (points.length < 2) return _createStraightPath(points);
+
+    final path = Path();
+    path.moveTo(points[0].dx, points[0].dy);
+
+    if (points.length == 2) {
+      // For only two points, draw a straight line
+      path.lineTo(points[1].dx, points[1].dy);
+      return path;
+    }
+
+    // Create smooth curves using quadratic bezier curves
+    for (int i = 0; i < points.length - 1; i++) {
+      final current = points[i];
+      final next = points[i + 1];
+
+      if (i == 0) {
+        // First segment - use quadratic curve
+        final controlPoint = _getControlPoint(
+          current,
+          next,
+          points[i + 2],
+          true,
+        );
+        path.quadraticBezierTo(
+          controlPoint.dx,
+          controlPoint.dy,
+          (current.dx + next.dx) / 2,
+          (current.dy + next.dy) / 2,
+        );
+      } else if (i == points.length - 2) {
+        // Last segment - complete the curve to the final point
+        final controlPoint = _getControlPoint(
+          points[i - 1],
+          current,
+          next,
+          false,
+        );
+        path.quadraticBezierTo(
+          controlPoint.dx,
+          controlPoint.dy,
+          next.dx,
+          next.dy,
+        );
+      } else {
+        // Middle segments - use smooth curves
+        final controlPoint = _getControlPoint(
+          points[i - 1],
+          current,
+          next,
+          false,
+        );
+        path.quadraticBezierTo(
+          controlPoint.dx,
+          controlPoint.dy,
+          (current.dx + next.dx) / 2,
+          (current.dy + next.dy) / 2,
+        );
+      }
+    }
+
+    return path;
+  }
+
+  /// Calculates a control point for smooth bezier curves.
+  Offset _getControlPoint(
+    Offset prev,
+    Offset current,
+    Offset next,
+    bool isFirst,
+  ) {
+    final intensity = style.curveIntensity.clamp(0.0, 1.0);
+
+    if (isFirst) {
+      // For the first point, create control point based on current and next
+      final direction = Offset(next.dx - current.dx, next.dy - current.dy);
+      return Offset(
+        current.dx + direction.dx * intensity * 0.3,
+        current.dy + direction.dy * intensity * 0.3,
+      );
+    } else {
+      // For middle points, create smooth control point
+      final prevDirection = Offset(current.dx - prev.dx, current.dy - prev.dy);
+      final nextDirection = Offset(next.dx - current.dx, next.dy - current.dy);
+
+      // Average the directions for smooth transition
+      final avgDirection = Offset(
+        (prevDirection.dx + nextDirection.dx) / 2,
+        (prevDirection.dy + nextDirection.dy) / 2,
+      );
+
+      return Offset(
+        current.dx + avgDirection.dx * intensity * 0.3,
+        current.dy + avgDirection.dy * intensity * 0.3,
+      );
+    }
+  }
+
   /// Draws the individual points on the line chart.
   void _drawPoints(Canvas canvas, Rect chartArea) {
     final pointPaint = Paint()
       ..color = style.pointColor // Set the point color
       ..style = PaintingStyle.fill; // Set paint style to fill
 
-    final points =
-        _getPointCoordinates(chartArea); // Get coordinates of data points
+    final points = _getPointCoordinates(
+      chartArea,
+    ); // Get coordinates of data points
     final progressPoints = (points.length * progress)
         .floor(); // Determine how many points to draw based on progress
 
     // Draw each point on the canvas
     for (int i = 0; i < progressPoints; i++) {
-      canvas.drawCircle(points[i], style.pointRadius,
-          pointPaint); // Draw circle for each point
+      canvas.drawCircle(
+        points[i],
+        style.pointRadius,
+        pointPaint,
+      ); // Draw circle for each point
     }
   }
 
@@ -178,6 +302,15 @@ class LineChartPainter extends CustomPainter {
     final minValue =
         data.map((point) => point.value).reduce(min); // Find min value
     final valueRange = maxValue - minValue; // Calculate range of values
+
+    // Handle case where all values are the same
+    if (valueRange == 0) {
+      return List.generate(data.length, (i) {
+        final x = chartArea.left + (chartArea.width / (data.length - 1)) * i;
+        final y = chartArea.top + chartArea.height / 2;
+        return Offset(x, y);
+      });
+    }
 
     // Generate a list of Offset points based on the normalized values
     return List.generate(data.length, (i) {
