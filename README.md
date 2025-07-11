@@ -9,7 +9,7 @@ A comprehensive Flutter charting library offering beautiful, animated, and custo
 
 **Design charts visually and copy production-ready Flutter code instantly!**
 
-![Live Editor](http://raw.githubusercontent.com/vishnudas-bluefox/material_charts/refs/heads/master/live_editor.png)
+![Live Editor](https://raw.githubusercontent.com/vishnudas-bluefox/material_charts/refs/heads/master/live_editor.png)
 
 Our interactive documentation at [materialcharts.netlify.app](https://materialcharts.netlify.app/) features:
 
@@ -221,15 +221,11 @@ All rights reserved.
 - 📧 [Email Support](mailto:vishnudas956783@gmail.com)
 - your donations are important for our future projects
 
-
 donate:
-
 
 if you like what i do, maybe consider buying me a coffee/tea 🥺👉👈
 
 <a href="https://buymeacoffee.com/vishnudas" target="_blank"><img src="https://cdn.buymeacoffee.com/buttons/v2/default-red.png" alt="Buy Me A Coffee" width="150" ></a>
-
-
 
 ## Credits
 

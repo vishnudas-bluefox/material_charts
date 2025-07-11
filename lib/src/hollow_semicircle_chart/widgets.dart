@@ -22,9 +22,9 @@ class MaterialChartHollowSemiCircle extends BaseChart {
     super.style, // Optional style configuration for the chart
     super.onAnimationComplete, // Optional callback when animation completes
   }) : assert(
-         hollowRadius > 0 && hollowRadius < 1,
-         'Hollow radius must be between 0 and 1',
-       );
+          hollowRadius > 0 && hollowRadius < 1,
+          'Hollow radius must be between 0 and 1',
+        );
 
   @override
   State<MaterialChartHollowSemiCircle> createState() =>
@@ -65,11 +65,11 @@ class _MaterialChartHollowSemiCircleState
         curve: widget.style.animationCurve, // Curve for the animation
       ),
     )..addStatusListener((status) {
-      if (status == AnimationStatus.completed) {
-        widget.onAnimationComplete
-            ?.call(); // Call the completion callback if set.
-      }
-    });
+        if (status == AnimationStatus.completed) {
+          widget.onAnimationComplete
+              ?.call(); // Call the completion callback if set.
+        }
+      });
 
     _animationController.forward(); // Start the animation
   }
@@ -136,10 +136,8 @@ class _MaterialChartHollowSemiCircleState
                   MainAxisAlignment.center, // Center align the legend items
               children: [
                 _LegendItem(
-                  color:
-                      widget
-                          .style
-                          .activeColor, // Color for the active legend item
+                  color: widget
+                      .style.activeColor, // Color for the active legend item
                   label: _formatLegendLabel(
                     'Active',
                     widget.percentage,
@@ -148,10 +146,8 @@ class _MaterialChartHollowSemiCircleState
                 ),
                 const SizedBox(width: 24), // Space between legend items
                 _LegendItem(
-                  color:
-                      widget
-                          .style
-                          .inactiveColor, // Color for the inactive legend item
+                  color: widget.style
+                      .inactiveColor, // Color for the inactive legend item
                   label: _formatLegendLabel(
                     'Inactive',
                     100 - widget.percentage,
@@ -182,14 +178,10 @@ class _MaterialChartHollowSemiCircleState
                     painter: HollowSemiCircleChart(
                       percentage:
                           _animation.value, // Current percentage to paint
-                      activeColor:
-                          widget
-                              .style
-                              .activeColor, // Active color for the chart
-                      inactiveColor:
-                          widget
-                              .style
-                              .inactiveColor, // Inactive color for the chart
+                      activeColor: widget
+                          .style.activeColor, // Active color for the chart
+                      inactiveColor: widget
+                          .style.inactiveColor, // Inactive color for the chart
                       hollowRadius: widget.hollowRadius, // Hollow radius ratio
                     ),
                   ),
@@ -201,20 +193,15 @@ class _MaterialChartHollowSemiCircleState
                         _formatPercentage(
                           _animation.value,
                         ), // Format the percentage text
-                        style:
-                            widget.style.percentageStyle?.copyWith(
-                              color:
-                                  widget
-                                      .style
-                                      .textColor, // Apply custom text color if specified
+                        style: widget.style.percentageStyle?.copyWith(
+                              color: widget.style
+                                  .textColor, // Apply custom text color if specified
                             ) ??
                             TextStyle(
                               fontSize: widget.size / 8, // Default font size
                               fontWeight: FontWeight.bold, // Bold font weight
-                              color:
-                                  widget
-                                      .style
-                                      .textColor, // Use custom text color if provided
+                              color: widget.style
+                                  .textColor, // Use custom text color if provided
                             ),
                       ),
                     ),
@@ -266,8 +253,7 @@ class _LegendItem extends StatelessWidget {
         // Display the label text for the legend
         Text(
           label,
-          style:
-              style ??
+          style: style ??
               const TextStyle(
                 fontSize: 14,
               ), // Use the provided style or default size

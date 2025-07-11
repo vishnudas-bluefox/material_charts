@@ -10,7 +10,7 @@ class MaterialAreaChart extends StatefulWidget {
   final double height; // Height of the chart
   final AreaChartStyle style; // Style configuration for the chart
   final VoidCallback?
-  onAnimationComplete; // Callback for when the animation completes
+      onAnimationComplete; // Callback for when the animation completes
   final bool interactive; // Flag to enable or disable interactivity
 
   const MaterialAreaChart({
@@ -30,7 +30,7 @@ class MaterialAreaChart extends StatefulWidget {
 class _MaterialAreaChartState extends State<MaterialAreaChart>
     with SingleTickerProviderStateMixin {
   late AnimationController
-  _controller; // Animation controller for managing the animation
+      _controller; // Animation controller for managing the animation
   late Animation<double> _animation; // Animation for the progress of the chart
   Offset? _tooltipPosition; // Position of the tooltip when hovering over points
 
@@ -43,10 +43,8 @@ class _MaterialAreaChartState extends State<MaterialAreaChart>
   /// Sets up the animation controller and animation
   void _setupAnimation() {
     _controller = AnimationController(
-      duration:
-          widget
-              .style
-              .animationDuration, // Duration of the animation from the style
+      duration: widget
+          .style.animationDuration, // Duration of the animation from the style
       vsync: this, // Use this state as the vsync provider
     );
 
@@ -58,12 +56,12 @@ class _MaterialAreaChartState extends State<MaterialAreaChart>
             widget.style.animationCurve, // Use the curve defined in the style
       ),
     )..addStatusListener((status) {
-      // Listen for animation status changes
-      if (status == AnimationStatus.completed) {
-        // Call the completion callback if the animation is finished
-        widget.onAnimationComplete?.call();
-      }
-    });
+        // Listen for animation status changes
+        if (status == AnimationStatus.completed) {
+          // Call the completion callback if the animation is finished
+          widget.onAnimationComplete?.call();
+        }
+      });
 
     _controller.forward(); // Start the animation
   }
@@ -78,23 +76,19 @@ class _MaterialAreaChartState extends State<MaterialAreaChart>
   Widget build(BuildContext context) {
     return MouseRegion(
       // Detect mouse hover events
-      onHover:
-          widget.interactive
-              ? _handleHover
-              : null, // Handle hover if interactive
-      onExit:
-          widget.interactive
-              ? (_) => setState(
+      onHover: widget.interactive
+          ? _handleHover
+          : null, // Handle hover if interactive
+      onExit: widget.interactive
+          ? (_) => setState(
                 () => _tooltipPosition = null,
               ) // Clear tooltip position on exit
-              : null,
+          : null,
       child: Container(
         width: widget.width, // Set the width of the container
         height: widget.height, // Set the height of the container
-        color:
-            widget
-                .style
-                .backgroundColor, // Set the background color from the style
+        color: widget
+            .style.backgroundColor, // Set the background color from the style
         child: AnimatedBuilder(
           // Rebuild the widget when the animation changes
           animation: _animation,

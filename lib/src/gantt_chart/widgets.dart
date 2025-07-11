@@ -81,25 +81,21 @@ class _MaterialGanttChartState extends State<MaterialGanttChart>
       vsync: this,
     );
 
-    _animation =
-        Tween<double>(begin: 0.0, end: 1.0).animate(
-            CurvedAnimation(
-              parent: _controller,
-              curve:
-                  widget
-                      .style
-                      .animationCurve, // Animation curve defined in style
-            ),
-          )
-          ..addListener(() {
-            setState(() {}); // Rebuild widget during animation progress
-          })
-          ..addStatusListener((status) {
-            // Notify when animation completes
-            if (status == AnimationStatus.completed) {
-              widget.onAnimationComplete?.call();
-            }
-          });
+    _animation = Tween<double>(begin: 0.0, end: 1.0).animate(
+      CurvedAnimation(
+        parent: _controller,
+        curve: widget.style.animationCurve, // Animation curve defined in style
+      ),
+    )
+      ..addListener(() {
+        setState(() {}); // Rebuild widget during animation progress
+      })
+      ..addStatusListener((status) {
+        // Notify when animation completes
+        if (status == AnimationStatus.completed) {
+          widget.onAnimationComplete?.call();
+        }
+      });
 
     _controller.forward(); // Start the animation
   }
@@ -138,8 +134,8 @@ class _MaterialGanttChartState extends State<MaterialGanttChart>
               left: position.dx - 20, // Centering the point
               top: position.dy - 20,
               child: MouseRegion(
-                onEnter:
-                    (_) => _handleHover(true, point, index), // Handle hover
+                onEnter: (_) =>
+                    _handleHover(true, point, index), // Handle hover
                 onExit: (_) => _handleHover(false, point, index),
                 child: Tooltip(
                   message:
@@ -201,13 +197,11 @@ class _MaterialGanttChartState extends State<MaterialGanttChart>
     final point = widget.data[index]; // Current data point
 
     // Calculate x and y coordinates for the point
-    final x =
-        chartArea.left +
+    final x = chartArea.left +
         (point.startDate.difference(timeRange.start).inMilliseconds /
                 totalDuration.inMilliseconds) *
             chartArea.width;
-    final y =
-        chartArea.top +
+    final y = chartArea.top +
         widget.style.timelineYOffset +
         (index * widget.style.verticalSpacing);
 
@@ -269,8 +263,8 @@ class _MaterialGanttChartState extends State<MaterialGanttChart>
                 Align(
                   alignment: Alignment.centerRight,
                   child: TextButton(
-                    onPressed:
-                        () => Navigator.of(context).pop(), // Close dialog
+                    onPressed: () =>
+                        Navigator.of(context).pop(), // Close dialog
                     child: const Text('Close'),
                   ),
                 ),

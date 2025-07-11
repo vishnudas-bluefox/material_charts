@@ -18,7 +18,7 @@ class MaterialBarChart extends StatefulWidget {
   final EdgeInsets padding; // Padding around the chart
   final int horizontalGridLines; // Number of horizontal grid lines
   final VoidCallback?
-  onAnimationComplete; // Callback for when animation finishes
+      onAnimationComplete; // Callback for when animation finishes
   final bool interactive; // Enable hover/tap interactions
 
   /// Creates an instance of [MaterialBarChart].
@@ -62,10 +62,11 @@ class _MaterialBarChartState extends State<MaterialBarChart>
     _animation = Tween<double>(begin: 0.0, end: 1.0).animate(
       CurvedAnimation(parent: _controller, curve: widget.style.animationCurve),
     )..addStatusListener((status) {
-      if (status == AnimationStatus.completed) {
-        widget.onAnimationComplete?.call(); // Callback when animation completes
-      }
-    });
+        if (status == AnimationStatus.completed) {
+          widget.onAnimationComplete
+              ?.call(); // Callback when animation completes
+        }
+      });
 
     _controller.forward(); // Start the animation
   }
@@ -80,12 +81,11 @@ class _MaterialBarChartState extends State<MaterialBarChart>
   Widget build(BuildContext context) {
     return MouseRegion(
       onHover: widget.interactive ? _handleHover : null, // Handle hover events
-      onExit:
-          widget.interactive
-              ? (_) => setState(
+      onExit: widget.interactive
+          ? (_) => setState(
                 () => _hoveredBarIndex = null,
               ) // Clear hovered index on exit
-              : null,
+          : null,
       child: Container(
         width: widget.width,
         height: widget.height,
