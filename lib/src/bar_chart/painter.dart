@@ -1,6 +1,6 @@
 import 'dart:math';
 import 'package:flutter/material.dart';
-import 'package:material_charts/src/bar_chart/models.dart';
+import 'models.dart';
 
 /// Custom painter for rendering a bar chart.
 ///
@@ -15,7 +15,7 @@ class BarChartPainter extends CustomPainter {
   final EdgeInsets padding; // Padding around the chart
   final int horizontalGridLines; // Number of horizontal grid lines to draw
   final int?
-      hoveredBarIndex; // Index of the bar currently hovered over (for interaction)
+  hoveredBarIndex; // Index of the bar currently hovered over (for interaction)
 
   /// Creates an instance of [BarChartPainter].
   BarChartPainter({
@@ -50,9 +50,10 @@ class BarChartPainter extends CustomPainter {
 
   /// Draws the grid lines on the chart.
   void _drawGrid(Canvas canvas, Rect chartArea) {
-    final paint = Paint()
-      ..color = style.gridColor.withOpacity(0.2)
-      ..strokeWidth = 1;
+    final paint =
+        Paint()
+          ..color = style.gridColor.withOpacity(0.2)
+          ..strokeWidth = 1;
 
     // Draw horizontal grid lines
     for (int i = 0; i <= horizontalGridLines; i++) {
@@ -113,10 +114,11 @@ class BarChartPainter extends CustomPainter {
         }
 
         // Draw hover indicator
-        final hoverPaint = Paint()
-          ..color = (data[i].color ?? style.barColor).withOpacity(0.2)
-          ..style = PaintingStyle.stroke
-          ..strokeWidth = 2;
+        final hoverPaint =
+            Paint()
+              ..color = (data[i].color ?? style.barColor).withOpacity(0.2)
+              ..style = PaintingStyle.stroke
+              ..strokeWidth = 2;
         canvas.drawRRect(rect, hoverPaint);
       }
 
@@ -125,7 +127,8 @@ class BarChartPainter extends CustomPainter {
       // Draw value labels above bars if enabled
       if (showValues) {
         final value = data[i].value.toStringAsFixed(1);
-        final textStyle = style.valueStyle ??
+        final textStyle =
+            style.valueStyle ??
             TextStyle(
               color: data[i].color ?? style.barColor, // Use bar color for text
               fontSize: 12,
@@ -153,11 +156,8 @@ class BarChartPainter extends CustomPainter {
     final barWidth = (chartArea.width / data.length) * (1 - style.barSpacing);
     final spacing = (chartArea.width / data.length) * style.barSpacing;
 
-    final textStyle = style.labelStyle ??
-        TextStyle(
-          color: style.barColor,
-          fontSize: 12,
-        );
+    final textStyle =
+        style.labelStyle ?? TextStyle(color: style.barColor, fontSize: 12);
 
     for (int i = 0; i < data.length; i++) {
       final x = chartArea.left + (i * (barWidth + spacing)) + (spacing / 2);

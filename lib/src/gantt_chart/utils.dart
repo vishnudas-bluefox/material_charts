@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:material_charts/src/gantt_chart/models.dart';
+import 'models.dart';
 
 /// A utility class for handling date-related operations for Gantt charts.
 class GanttDateUtils {
@@ -30,9 +30,11 @@ class GanttDateUtils {
     // Return the time range with additional padding of 7 days on each end
     return DateTimeRange(
       start: earliest!.subtract(
-          const Duration(days: 7)), // Padding before the earliest date
-      end:
-          latest!.add(const Duration(days: 7)), // Padding after the latest date
+        const Duration(days: 7),
+      ), // Padding before the earliest date
+      end: latest!.add(
+        const Duration(days: 7),
+      ), // Padding after the latest date
     );
   }
 }

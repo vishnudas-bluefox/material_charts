@@ -2,7 +2,7 @@ import 'dart:ui' as ui;
 
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
-import 'package:material_charts/src/gantt_chart/models.dart';
+import 'models.dart';
 
 /// Custom painter for rendering a Gantt chart.
 ///
@@ -57,9 +57,10 @@ class GanttBasePainter extends CustomPainter {
   /// Draws a grid representing time intervals on the Gantt chart.
   void _drawTimeGrid(Canvas canvas, Rect chartArea) {
     // Paint settings for the grid lines
-    final paint = Paint()
-      ..color = style.connectionLineColor.withOpacity(0.5)
-      ..strokeWidth = 0.3;
+    final paint =
+        Paint()
+          ..color = style.connectionLineColor.withOpacity(0.5)
+          ..strokeWidth = 0.3;
 
     // Get the overall time range covered by the data
     final timeRange = _getTimeRange();
@@ -78,15 +79,16 @@ class GanttBasePainter extends CustomPainter {
       );
 
       // Calculate and draw date label at the bottom of the grid
-      final date = timeRange.start.add(Duration(
-        milliseconds: (totalDuration.inMilliseconds ~/ gridCount * i),
-      ));
+      final date = timeRange.start.add(
+        Duration(milliseconds: (totalDuration.inMilliseconds ~/ gridCount * i)),
+      );
 
       final dateText = TextPainter(
         text: TextSpan(
           text:
               style.dateFormat?.format(date) ?? DateFormat.yMMMd().format(date),
-          style: style.dateStyle ??
+          style:
+              style.dateStyle ??
               TextStyle(fontSize: 10, color: style.connectionLineColor),
         ),
         textDirection: ui.TextDirection.ltr,
@@ -105,10 +107,11 @@ class GanttBasePainter extends CustomPainter {
   /// Draws the main timeline for the Gantt chart tasks.
   void _drawTimeline(Canvas canvas, Rect chartArea) {
     // Paint settings for task lines
-    final paint = Paint()
-      ..color = style.lineColor.withOpacity(.8)
-      ..strokeWidth = style.lineWidth
-      ..strokeCap = StrokeCap.round;
+    final paint =
+        Paint()
+          ..color = style.lineColor.withOpacity(.8)
+          ..strokeWidth = style.lineWidth
+          ..strokeCap = StrokeCap.round;
 
     // Iterate over each data point to draw the timeline
     for (int i = 0; i < data.length; i++) {
@@ -117,13 +120,15 @@ class GanttBasePainter extends CustomPainter {
       final totalDuration = timeRange.end.difference(timeRange.start);
 
       // Calculate X positions for the start and end of the task
-      final startX = chartArea.left +
+      final startX =
+          chartArea.left +
           (point.startDate.difference(timeRange.start).inMilliseconds /
                   totalDuration.inMilliseconds) *
               chartArea.width *
               progress;
 
-      final endX = chartArea.left +
+      final endX =
+          chartArea.left +
           (point.endDate.difference(timeRange.start).inMilliseconds /
                   totalDuration.inMilliseconds) *
               chartArea.width *
@@ -133,11 +138,7 @@ class GanttBasePainter extends CustomPainter {
           chartArea.top + style.timelineYOffset + (i * style.verticalSpacing);
 
       // Draw the task line on the canvas
-      canvas.drawLine(
-        Offset(startX, y),
-        Offset(endX, y),
-        paint,
-      );
+      canvas.drawLine(Offset(startX, y), Offset(endX, y), paint);
     }
   }
 
@@ -145,10 +146,11 @@ class GanttBasePainter extends CustomPainter {
   void _drawConnections(Canvas canvas, Rect chartArea) {
     if (data.length < 2) return; // No connections to draw if less than 2 tasks
 
-    final paint = Paint()
-      ..color = style.connectionLineColor.withOpacity(0.5)
-      ..strokeWidth = style.connectionLineWidth
-      ..style = PaintingStyle.stroke;
+    final paint =
+        Paint()
+          ..color = style.connectionLineColor.withOpacity(0.5)
+          ..strokeWidth = style.connectionLineWidth
+          ..style = PaintingStyle.stroke;
 
     final timeRange = _getTimeRange();
     final totalDuration = timeRange.end.difference(timeRange.start);
@@ -159,7 +161,8 @@ class GanttBasePainter extends CustomPainter {
       final next = data[i + 1];
 
       // Calculate X and Y positions for the start and end of the connection
-      final x1 = chartArea.left +
+      final x1 =
+          chartArea.left +
           (current.startDate.difference(timeRange.start).inMilliseconds /
                   totalDuration.inMilliseconds) *
               chartArea.width *
@@ -167,26 +170,22 @@ class GanttBasePainter extends CustomPainter {
       final y1 =
           chartArea.top + style.timelineYOffset + (i * style.verticalSpacing);
 
-      final x2 = chartArea.left +
+      final x2 =
+          chartArea.left +
           (next.startDate.difference(timeRange.start).inMilliseconds /
                   totalDuration.inMilliseconds) *
               chartArea.width *
               progress;
-      final y2 = chartArea.top +
+      final y2 =
+          chartArea.top +
           style.timelineYOffset +
           ((i + 1) * style.verticalSpacing);
 
       // Create a cubic bezier path for a smooth connection
-      final path = Path()
-        ..moveTo(x1, y1)
-        ..cubicTo(
-          x1 + (x2 - x1) / 2,
-          y1,
-          x1 + (x2 - x1) / 2,
-          y2,
-          x2,
-          y2,
-        );
+      final path =
+          Path()
+            ..moveTo(x1, y1)
+            ..cubicTo(x1 + (x2 - x1) / 2, y1, x1 + (x2 - x1) / 2, y2, x2, y2);
 
       // Draw the connection path on the canvas
       canvas.drawPath(path, paint);
@@ -200,7 +199,8 @@ class GanttBasePainter extends CustomPainter {
 
     for (int i = 0; i < data.length; i++) {
       final point = data[i];
-      final x = chartArea.left +
+      final x =
+          chartArea.left +
           (point.startDate.difference(timeRange.start).inMilliseconds /
                   totalDuration.inMilliseconds) *
               chartArea.width *
@@ -212,7 +212,8 @@ class GanttBasePainter extends CustomPainter {
       final labelPainter = TextPainter(
         text: TextSpan(
           text: point.label,
-          style: style.labelStyle ??
+          style:
+              style.labelStyle ??
               TextStyle(
                 color: point.color ?? style.pointColor,
                 fontSize: 14,
@@ -224,8 +225,10 @@ class GanttBasePainter extends CustomPainter {
 
       labelPainter.paint(
         canvas,
-        Offset(x - (labelPainter.width / 2),
-            y - style.labelOffset - labelPainter.height),
+        Offset(
+          x - (labelPainter.width / 2),
+          y - style.labelOffset - labelPainter.height,
+        ),
       );
     }
   }

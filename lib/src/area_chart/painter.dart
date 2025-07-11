@@ -1,7 +1,7 @@
 import 'dart:math';
 
 import 'package:flutter/material.dart';
-import 'package:material_charts/src/area_chart/models.dart';
+import 'models.dart';
 
 /// Custom painter for rendering an area chart.
 /// This painter is responsible for drawing the chart grid, area fills, lines,
@@ -11,7 +11,7 @@ class AreaChartPainter extends CustomPainter {
   final double progress; // Animation progress (0.0 to 1.0).
   final AreaChartStyle style; // Style configuration for the chart.
   final Offset?
-      tooltipPosition; // Position of the cursor or hover for tooltips.
+  tooltipPosition; // Position of the cursor or hover for tooltips.
 
   AreaChartPainter({
     required this.series,
@@ -51,17 +51,26 @@ class AreaChartPainter extends CustomPainter {
   }
 
   /// Draws the filled area below the line of the chart.
-  void _drawArea(Canvas canvas, Rect chartArea, AreaChartSeries seriesData,
-      Color color, Color gradientColor) {
+  void _drawArea(
+    Canvas canvas,
+    Rect chartArea,
+    AreaChartSeries seriesData,
+    Color color,
+    Color gradientColor,
+  ) {
     final points = _getSeriesPoints(chartArea, seriesData);
     if (points.isEmpty) return;
 
     // Create a path that represents the area below the line.
     final path = Path();
     path.moveTo(
-        points.first.dx, chartArea.bottom); // Start at the bottom of the chart.
+      points.first.dx,
+      chartArea.bottom,
+    ); // Start at the bottom of the chart.
     path.lineTo(
-        points.first.dx, points.first.dy); // Move to the first data point.
+      points.first.dx,
+      points.first.dy,
+    ); // Move to the first data point.
 
     // Connect all data points with lines.
     for (int i = 1; i < points.length; i++) {
@@ -69,17 +78,20 @@ class AreaChartPainter extends CustomPainter {
     }
 
     path.lineTo(
-        points.last.dx, chartArea.bottom); // Close the path at the bottom.
+      points.last.dx,
+      chartArea.bottom,
+    ); // Close the path at the bottom.
     path.close();
 
     // Create a gradient paint for the area fill.
-    final paint = Paint()
-      ..shader = LinearGradient(
-        begin: Alignment.topCenter,
-        end: Alignment.bottomCenter,
-        colors: [color, gradientColor],
-      ).createShader(chartArea)
-      ..style = PaintingStyle.fill;
+    final paint =
+        Paint()
+          ..shader = LinearGradient(
+            begin: Alignment.topCenter,
+            end: Alignment.bottomCenter,
+            colors: [color, gradientColor],
+          ).createShader(chartArea)
+          ..style = PaintingStyle.fill;
 
     // Apply animation progress to the path.
     final pathMetrics = path.computeMetrics().first;
@@ -93,7 +105,11 @@ class AreaChartPainter extends CustomPainter {
 
   /// Draws the line connecting the data points.
   void _drawLine(
-      Canvas canvas, Rect chartArea, AreaChartSeries seriesData, Color color) {
+    Canvas canvas,
+    Rect chartArea,
+    AreaChartSeries seriesData,
+    Color color,
+  ) {
     final points = _getSeriesPoints(chartArea, seriesData);
     if (points.isEmpty) return;
 
@@ -107,12 +123,13 @@ class AreaChartPainter extends CustomPainter {
     }
 
     // Define the paint for the line.
-    final paint = Paint()
-      ..color = color
-      ..strokeWidth = seriesData.lineWidth ?? style.defaultLineWidth
-      ..strokeCap = StrokeCap.round
-      ..strokeJoin = StrokeJoin.round
-      ..style = PaintingStyle.stroke;
+    final paint =
+        Paint()
+          ..color = color
+          ..strokeWidth = seriesData.lineWidth ?? style.defaultLineWidth
+          ..strokeCap = StrokeCap.round
+          ..strokeJoin = StrokeJoin.round
+          ..style = PaintingStyle.stroke;
 
     // Apply animation progress to the path.
     final pathMetrics = path.computeMetrics().first;
@@ -126,10 +143,15 @@ class AreaChartPainter extends CustomPainter {
 
   /// Draws data points as circles and displays tooltips when hovered.
   void _drawPoints(
-      Canvas canvas, Rect chartArea, AreaChartSeries seriesData, Color color) {
+    Canvas canvas,
+    Rect chartArea,
+    AreaChartSeries seriesData,
+    Color color,
+  ) {
     final points = _getSeriesPoints(chartArea, seriesData);
-    final progressPoints = (points.length * progress)
-        .floor(); // Limit points based on animation progress.
+    final progressPoints =
+        (points.length * progress)
+            .floor(); // Limit points based on animation progress.
     final pointSize = seriesData.pointSize ?? style.defaultPointSize;
 
     // Use default tooltip configuration if series-specific config is not available.
@@ -139,21 +161,24 @@ class AreaChartPainter extends CustomPainter {
     // Iterate through the visible points.
     for (int i = 0; i < progressPoints; i++) {
       final dataPoint = seriesData.dataPoints[i];
-      final tooltipConfig = dataPoint.tooltipConfig ??
+      final tooltipConfig =
+          dataPoint.tooltipConfig ??
           seriesTooltip; // Use point-specific config or fallback.
 
       // Draw the data point as a filled circle.
-      final pointPaint = Paint()
-        ..color = color
-        ..style = PaintingStyle.fill;
+      final pointPaint =
+          Paint()
+            ..color = color
+            ..style = PaintingStyle.fill;
 
       canvas.drawCircle(points[i], pointSize, pointPaint);
 
       // Draw a border around the point for better visibility.
-      final borderPaint = Paint()
-        ..color = style.backgroundColor
-        ..style = PaintingStyle.stroke
-        ..strokeWidth = 2;
+      final borderPaint =
+          Paint()
+            ..color = style.backgroundColor
+            ..style = PaintingStyle.stroke
+            ..strokeWidth = 2;
       canvas.drawCircle(points[i], pointSize, borderPaint);
 
       // Check if tooltip should be displayed based on hover distance.
@@ -182,12 +207,10 @@ class AreaChartPainter extends CustomPainter {
     Rect chartArea,
     TooltipConfig config,
   ) {
-    final text = config.text ??
+    final text =
+        config.text ??
         '$seriesName: ${dataPoint.value.toStringAsFixed(1)}'; // Generate tooltip text.
-    final textSpan = TextSpan(
-      text: text,
-      style: config.textStyle,
-    );
+    final textSpan = TextSpan(text: text, style: config.textStyle);
 
     final textPainter = TextPainter(
       text: textSpan,
@@ -207,9 +230,10 @@ class AreaChartPainter extends CustomPainter {
     }
 
     // Draw tooltip background.
-    final bgPaint = Paint()
-      ..color = config.backgroundColor
-      ..style = PaintingStyle.fill;
+    final bgPaint =
+        Paint()
+          ..color = config.backgroundColor
+          ..style = PaintingStyle.fill;
 
     canvas.drawRRect(
       RRect.fromRectAndRadius(
@@ -222,18 +246,16 @@ class AreaChartPainter extends CustomPainter {
     // Render the tooltip text.
     textPainter.paint(
       canvas,
-      Offset(
-        tooltipX + config.padding.left,
-        tooltipY + config.padding.top,
-      ),
+      Offset(tooltipX + config.padding.left, tooltipY + config.padding.top),
     );
   }
 
   /// Draws the grid lines and their labels (horizontal and vertical).
   void _drawGrid(Canvas canvas, Rect chartArea) {
-    final paint = Paint()
-      ..color = style.gridColor.withOpacity(0.2)
-      ..strokeWidth = 1;
+    final paint =
+        Paint()
+          ..color = style.gridColor.withOpacity(0.2)
+          ..strokeWidth = 1;
 
     // Horizontal grid lines and labels.
     for (int i = 0; i <= style.horizontalGridLines; i++) {
@@ -253,7 +275,8 @@ class AreaChartPainter extends CustomPainter {
 
         final textSpan = TextSpan(
           text: value.toStringAsFixed(1),
-          style: style.labelStyle ??
+          style:
+              style.labelStyle ??
               TextStyle(color: style.gridColor, fontSize: 10),
         );
         final textPainter = TextPainter(
@@ -286,7 +309,8 @@ class AreaChartPainter extends CustomPainter {
         if (label != null) {
           final textSpan = TextSpan(
             text: label,
-            style: style.labelStyle ??
+            style:
+                style.labelStyle ??
                 TextStyle(color: style.gridColor, fontSize: 10),
           );
           final textPainter = TextPainter(
@@ -296,10 +320,7 @@ class AreaChartPainter extends CustomPainter {
 
           textPainter.paint(
             canvas,
-            Offset(
-              x - textPainter.width / 2,
-              chartArea.bottom + 5,
-            ),
+            Offset(x - textPainter.width / 2, chartArea.bottom + 5),
           );
         }
       }
@@ -330,8 +351,12 @@ class AreaChartPainter extends CustomPainter {
     // by mapping the data value to the Y-coordinate within the chart area.
     return List.generate(seriesData.dataPoints.length, (i) {
       final x = _getXCoordinate(
-          chartArea, i, seriesData.dataPoints.length); // X position
-      final normalizedValue = (seriesData.dataPoints[i].value - minValue) /
+        chartArea,
+        i,
+        seriesData.dataPoints.length,
+      ); // X position
+      final normalizedValue =
+          (seriesData.dataPoints[i].value - minValue) /
           valueRange; // Normalize Y value
       final y =
           chartArea.bottom - (normalizedValue * chartArea.height); // Y position

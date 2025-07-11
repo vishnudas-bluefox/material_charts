@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
-import 'package:material_charts/src/hollow_semicircle_chart/models.dart';
-import 'package:material_charts/src/hollow_semicircle_chart/painter.dart';
+import 'painter.dart';
+import 'models.dart';
 
 /// A material design hollow semi-circle chart widget that displays a
 /// percentage value visually as a hollow semi-circle with optional legend and
@@ -21,8 +21,10 @@ class MaterialChartHollowSemiCircle extends BaseChart {
     this.hollowRadius = 0.6, // Default hollow radius ratio
     super.style, // Optional style configuration for the chart
     super.onAnimationComplete, // Optional callback when animation completes
-  }) : assert(hollowRadius > 0 && hollowRadius < 1,
-            'Hollow radius must be between 0 and 1');
+  }) : assert(
+         hollowRadius > 0 && hollowRadius < 1,
+         'Hollow radius must be between 0 and 1',
+       );
 
   @override
   State<MaterialChartHollowSemiCircle> createState() =>
@@ -57,16 +59,17 @@ class _MaterialChartHollowSemiCircleState
     _animation = Tween<double>(
       begin: 0, // Starting value of the animation
       end: widget.percentage, // Ending value of the animation
-    ).animate(CurvedAnimation(
-      parent: _animationController, // The animation controller
-      curve: widget.style.animationCurve, // Curve for the animation
-    ))
-      ..addStatusListener((status) {
-        if (status == AnimationStatus.completed) {
-          widget.onAnimationComplete
-              ?.call(); // Call the completion callback if set.
-        }
-      });
+    ).animate(
+      CurvedAnimation(
+        parent: _animationController, // The animation controller
+        curve: widget.style.animationCurve, // Curve for the animation
+      ),
+    )..addStatusListener((status) {
+      if (status == AnimationStatus.completed) {
+        widget.onAnimationComplete
+            ?.call(); // Call the completion callback if set.
+      }
+    });
 
     _animationController.forward(); // Start the animation
   }
@@ -80,10 +83,12 @@ class _MaterialChartHollowSemiCircleState
       _animation = Tween<double>(
         begin: oldWidget.percentage, // Start from the old percentage
         end: widget.percentage, // End at the new percentage
-      ).animate(CurvedAnimation(
-        parent: _animationController,
-        curve: widget.style.animationCurve, // Use the same curve as before
-      ));
+      ).animate(
+        CurvedAnimation(
+          parent: _animationController,
+          curve: widget.style.animationCurve, // Use the same curve as before
+        ),
+      );
       _animationController.forward(from: 0); // Restart the animation from 0
     }
   }
@@ -124,24 +129,33 @@ class _MaterialChartHollowSemiCircleState
         if (widget.style.showLegend) ...[
           Padding(
             padding: const EdgeInsets.only(
-                bottom: 24), // Add spacing below the legend
+              bottom: 24,
+            ), // Add spacing below the legend
             child: Row(
               mainAxisAlignment:
                   MainAxisAlignment.center, // Center align the legend items
               children: [
                 _LegendItem(
-                  color: widget
-                      .style.activeColor, // Color for the active legend item
+                  color:
+                      widget
+                          .style
+                          .activeColor, // Color for the active legend item
                   label: _formatLegendLabel(
-                      'Active', widget.percentage), // Label for active
+                    'Active',
+                    widget.percentage,
+                  ), // Label for active
                   style: widget.style.legendStyle, // Custom style for legend
                 ),
                 const SizedBox(width: 24), // Space between legend items
                 _LegendItem(
-                  color: widget.style
-                      .inactiveColor, // Color for the inactive legend item
-                  label: _formatLegendLabel('Inactive',
-                      100 - widget.percentage), // Label for inactive
+                  color:
+                      widget
+                          .style
+                          .inactiveColor, // Color for the inactive legend item
+                  label: _formatLegendLabel(
+                    'Inactive',
+                    100 - widget.percentage,
+                  ), // Label for inactive
                   style: widget.style.legendStyle, // Custom style for legend
                 ),
               ],
@@ -161,15 +175,21 @@ class _MaterialChartHollowSemiCircleState
                     Alignment.center, // Center the child elements in the stack
                 children: [
                   CustomPaint(
-                    size: Size(widget.size,
-                        widget.size / 2), // Size of the custom paint area
+                    size: Size(
+                      widget.size,
+                      widget.size / 2,
+                    ), // Size of the custom paint area
                     painter: HollowSemiCircleChart(
                       percentage:
                           _animation.value, // Current percentage to paint
-                      activeColor: widget
-                          .style.activeColor, // Active color for the chart
-                      inactiveColor: widget
-                          .style.inactiveColor, // Inactive color for the chart
+                      activeColor:
+                          widget
+                              .style
+                              .activeColor, // Active color for the chart
+                      inactiveColor:
+                          widget
+                              .style
+                              .inactiveColor, // Inactive color for the chart
                       hollowRadius: widget.hollowRadius, // Hollow radius ratio
                     ),
                   ),
@@ -179,16 +199,22 @@ class _MaterialChartHollowSemiCircleState
                       bottom: 0, // Position at the bottom of the stack
                       child: Text(
                         _formatPercentage(
-                            _animation.value), // Format the percentage text
-                        style: widget.style.percentageStyle?.copyWith(
-                              color: widget.style
-                                  .textColor, // Apply custom text color if specified
+                          _animation.value,
+                        ), // Format the percentage text
+                        style:
+                            widget.style.percentageStyle?.copyWith(
+                              color:
+                                  widget
+                                      .style
+                                      .textColor, // Apply custom text color if specified
                             ) ??
                             TextStyle(
                               fontSize: widget.size / 8, // Default font size
                               fontWeight: FontWeight.bold, // Bold font weight
-                              color: widget.style
-                                  .textColor, // Use custom text color if provided
+                              color:
+                                  widget
+                                      .style
+                                      .textColor, // Use custom text color if provided
                             ),
                       ),
                     ),
@@ -240,9 +266,11 @@ class _LegendItem extends StatelessWidget {
         // Display the label text for the legend
         Text(
           label,
-          style: style ??
+          style:
+              style ??
               const TextStyle(
-                  fontSize: 14), // Use the provided style or default size
+                fontSize: 14,
+              ), // Use the provided style or default size
         ),
       ],
     );
