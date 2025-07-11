@@ -4,17 +4,27 @@ All notable changes to this project will be documented in this file.
 
 ## [0.0.28] - 2024-12-20
 
+### Added
+
+- **Tooltip Functionality** - Added interactive tooltip support to line charts
+- **Shared Tooltip Model** - Moved tooltip model to shared space for extensibility and reusability
+- Enhanced user interaction with detailed data point information
+
 ### Changed
 
 - **Line Chart Enhancement** - Replaced sharp edges with smooth rounded edges for better visual appeal
 - Improved line chart rendering with curved line segments
 - Enhanced visual aesthetics across all line chart variants
+- **Tooltip Architecture** - Refactored tooltip system for better code organization and maintainability
 
 ### Features
 
 - Smooth curved line rendering instead of sharp angular connections
 - Better visual flow and modern appearance
 - Maintained performance while improving aesthetics
+- Interactive tooltips showing data point details on hover
+- Reusable tooltip components across different chart types
+- Improved code maintainability through shared tooltip models
 
 ## [0.0.27] - 2024-12-19
 
