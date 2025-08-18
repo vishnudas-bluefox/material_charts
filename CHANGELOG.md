@@ -2,6 +2,44 @@
 
 All notable changes to this project will be documented in this file.
 
+## [0.0.29] - 2025-08-18
+
+### Added
+
+- **Bar Chart JSON Integration** - Comprehensive Plotly-like JSON support for bar charts
+- **Multiple Factory Constructors** - Added `fromJson()`, `fromJsonString()`, and `fromData()` constructors
+- **Plotly Compatibility** - Seamless conversion from Plotly JSON configurations
+- **Advanced JSON Configuration** - Support for complex styling, animations, and layout via JSON
+- **Color Format Support** - Multiple color formats including hex, RGB, and RGBA
+- **Gradient Effects via JSON** - Configure gradient effects and colors through JSON
+- **Dynamic Data Loading** - Load charts from JSON strings or maps with error handling
+- **Comprehensive Documentation** - New dedicated README for JSON integration features
+
+### Features
+
+- **JSON Format Support**:
+  - Simple format for basic charts
+  - Plotly-compatible format for existing configurations
+  - Advanced format with full customization options
+- **Factory Constructors**:
+  - `MaterialBarChart.fromJson()` - Create from JSON map
+  - `MaterialBarChart.fromJsonString()` - Create from JSON string
+  - `MaterialBarChart.fromData()` - Quick creation from arrays
+- **Styling via JSON**:
+  - Colors, animations, and layout configuration
+  - Individual bar colors and gradient effects
+  - Grid lines, padding, and interactive options
+- **Migration Support**:
+  - Easy conversion from Plotly JSON
+  - Compatibility mapping and examples
+  - Best practices for data transformation
+
+### Changed
+
+- Enhanced bar chart architecture for JSON integration
+- Improved error handling and validation for JSON inputs
+- Better documentation and examples for JSON usage
+
 ## [0.0.28] - 2024-12-20
 
 ### Added

@@ -18,7 +18,7 @@ class MaterialBarChart extends StatefulWidget {
   final EdgeInsets padding; // Padding around the chart
   final int horizontalGridLines; // Number of horizontal grid lines
   final VoidCallback?
-      onAnimationComplete; // Callback for when animation finishes
+  onAnimationComplete; // Callback for when animation finishes
   final bool interactive; // Enable hover/tap interactions
 
   /// Creates an instance of [MaterialBarChart].
@@ -36,6 +36,85 @@ class MaterialBarChart extends StatefulWidget {
     this.interactive = true,
   });
 
+  /// Creates a [MaterialBarChart] from JSON configuration.
+  /// Supports both simple and Plotly-compatible formats.
+  factory MaterialBarChart.fromJson(Map<String, dynamic> json) {
+    final config = BarChartJsonConfig.fromJson(json);
+    return MaterialBarChart(
+      data: config.getBarChartData(),
+      width: config.width,
+      height: config.height,
+      style: config.getBarChartStyle(),
+      showGrid: config.showGrid,
+      showValues: config.showValues,
+      padding: config.padding,
+      horizontalGridLines: config.horizontalGridLines,
+      interactive: config.interactive,
+      onAnimationComplete: config.onAnimationComplete,
+    );
+  }
+
+  /// Creates a [MaterialBarChart] from a JSON string.
+  factory MaterialBarChart.fromJsonString(String jsonString) {
+    final config = BarChartJsonConfig.fromJsonString(jsonString);
+    return MaterialBarChart(
+      data: config.getBarChartData(),
+      width: config.width,
+      height: config.height,
+      style: config.getBarChartStyle(),
+      showGrid: config.showGrid,
+      showValues: config.showValues,
+      padding: config.padding,
+      horizontalGridLines: config.horizontalGridLines,
+      interactive: config.interactive,
+      onAnimationComplete: config.onAnimationComplete,
+    );
+  }
+
+  /// Creates a [MaterialBarChart] from simple data arrays.
+  /// This is a convenience constructor for quick chart creation.
+  factory MaterialBarChart.fromData({
+    required List<String> labels,
+    required List<double> values,
+    List<String>? colors,
+    Map<String, dynamic>? style,
+    double width = 800,
+    double height = 400,
+    bool showGrid = true,
+    bool showValues = true,
+    EdgeInsets padding = const EdgeInsets.all(24),
+    int horizontalGridLines = 5,
+    bool interactive = true,
+    VoidCallback? onAnimationComplete,
+  }) {
+    final data = <BarChartData>[];
+
+    for (int i = 0; i < labels.length; i++) {
+      Color? color;
+      if (colors != null && i < colors.length) {
+        color = BarChartData.parseColor(colors[i]);
+      }
+
+      data.add(BarChartData(value: values[i], label: labels[i], color: color));
+    }
+
+    final chartStyle =
+        style != null ? BarChartStyle.fromJson(style) : const BarChartStyle();
+
+    return MaterialBarChart(
+      data: data,
+      width: width,
+      height: height,
+      style: chartStyle,
+      showGrid: showGrid,
+      showValues: showValues,
+      padding: padding,
+      horizontalGridLines: horizontalGridLines,
+      interactive: interactive,
+      onAnimationComplete: onAnimationComplete,
+    );
+  }
+
   @override
   State<MaterialBarChart> createState() => _MaterialBarChartState();
 }
@@ -44,7 +123,7 @@ class _MaterialBarChartState extends State<MaterialBarChart>
     with SingleTickerProviderStateMixin {
   late AnimationController _controller; // Controller for the animation
   late Animation<double> _animation; // Animation for the chart
-  int? _hoveredBarIndex; // Index of the currently hovered bar
+  Offset? _hoverPosition; // Position of the mouse hover
 
   @override
   void initState() {
@@ -62,11 +141,10 @@ class _MaterialBarChartState extends State<MaterialBarChart>
     _animation = Tween<double>(begin: 0.0, end: 1.0).animate(
       CurvedAnimation(parent: _controller, curve: widget.style.animationCurve),
     )..addStatusListener((status) {
-        if (status == AnimationStatus.completed) {
-          widget.onAnimationComplete
-              ?.call(); // Callback when animation completes
-        }
-      });
+      if (status == AnimationStatus.completed) {
+        widget.onAnimationComplete?.call(); // Callback when animation completes
+      }
+    });
 
     _controller.forward(); // Start the animation
   }
@@ -81,11 +159,12 @@ class _MaterialBarChartState extends State<MaterialBarChart>
   Widget build(BuildContext context) {
     return MouseRegion(
       onHover: widget.interactive ? _handleHover : null, // Handle hover events
-      onExit: widget.interactive
-          ? (_) => setState(
-                () => _hoveredBarIndex = null,
-              ) // Clear hovered index on exit
-          : null,
+      onExit:
+          widget.interactive
+              ? (_) => setState(
+                () => _hoverPosition = null,
+              ) // Clear hover position on exit
+              : null,
       child: Container(
         width: widget.width,
         height: widget.height,
@@ -103,7 +182,7 @@ class _MaterialBarChartState extends State<MaterialBarChart>
                 showValues: widget.showValues,
                 padding: widget.padding,
                 horizontalGridLines: widget.horizontalGridLines,
-                hoveredBarIndex: _hoveredBarIndex,
+                hoverPosition: _hoverPosition,
               ),
             );
           },
@@ -116,6 +195,8 @@ class _MaterialBarChartState extends State<MaterialBarChart>
   void _handleHover(PointerHoverEvent event) {
     if (!widget.interactive) return; // Exit if interaction is disabled
 
+    // The event.localPosition is relative to the MouseRegion (which covers the entire container)
+    // We need to check if it's within the chart area (excluding padding)
     final chartArea = Rect.fromLTWH(
       widget.padding.left,
       widget.padding.top,
@@ -123,20 +204,6 @@ class _MaterialBarChartState extends State<MaterialBarChart>
       widget.height - widget.padding.vertical,
     );
 
-    final barWidth =
-        (chartArea.width / widget.data.length) * (1 - widget.style.barSpacing);
-    final spacing =
-        (chartArea.width / widget.data.length) * widget.style.barSpacing;
-
-    final x = event.localPosition.dx - chartArea.left; // Calculate x position
-    final barIndex = (x / (barWidth + spacing)).floor(); // Determine bar index
-
-    if (barIndex >= 0 && barIndex < widget.data.length) {
-      setState(() => _hoveredBarIndex = barIndex); // Update hovered bar index
-    } else {
-      setState(
-        () => _hoveredBarIndex = null,
-      ); // Clear hovered bar index if out of bounds
-    }
+    setState(() => _hoverPosition = event.localPosition);
   }
 }

@@ -14,8 +14,7 @@ class BarChartPainter extends CustomPainter {
   final bool showValues; // Flag to show or hide bar values
   final EdgeInsets padding; // Padding around the chart
   final int horizontalGridLines; // Number of horizontal grid lines to draw
-  final int?
-      hoveredBarIndex; // Index of the bar currently hovered over (for interaction)
+  final Offset? hoverPosition; // Position of the mouse hover (for interaction)
 
   /// Creates an instance of [BarChartPainter].
   BarChartPainter({
@@ -26,7 +25,7 @@ class BarChartPainter extends CustomPainter {
     required this.showValues,
     required this.padding,
     required this.horizontalGridLines,
-    required this.hoveredBarIndex,
+    required this.hoverPosition,
   });
 
   @override
@@ -50,9 +49,10 @@ class BarChartPainter extends CustomPainter {
 
   /// Draws the grid lines on the chart.
   void _drawGrid(Canvas canvas, Rect chartArea) {
-    final paint = Paint()
-      ..color = style.gridColor.withValues(alpha: 0.2)
-      ..strokeWidth = 1;
+    final paint =
+        Paint()
+          ..color = style.gridColor.withValues(alpha: 0.2)
+          ..strokeWidth = 1;
 
     // Draw horizontal grid lines
     for (int i = 0; i <= horizontalGridLines; i++) {
@@ -100,25 +100,28 @@ class BarChartPainter extends CustomPainter {
       }
 
       // Apply hover effect if applicable
-      if (hoveredBarIndex == i) {
+      if (_isBarHovered(i, chartArea, barWidth, spacing)) {
         if (paint.shader != null) {
           paint.shader = LinearGradient(
             begin: Alignment.bottomCenter,
             end: Alignment.topCenter,
-            colors: style.gradientColors!
-                .map((c) => c.withValues(alpha: 0.8))
-                .toList(),
+            colors:
+                style.gradientColors!
+                    .map((c) => c.withValues(alpha: 0.8))
+                    .toList(),
           ).createShader(rect.outerRect);
         } else {
-          paint.color =
-              paint.color.withValues(alpha: 0.8); // Lighter color on hover
+          paint.color = paint.color.withValues(
+            alpha: 0.8,
+          ); // Lighter color on hover
         }
 
         // Draw hover indicator
-        final hoverPaint = Paint()
-          ..color = (data[i].color ?? style.barColor).withValues(alpha: 0.2)
-          ..style = PaintingStyle.stroke
-          ..strokeWidth = 2;
+        final hoverPaint =
+            Paint()
+              ..color = (data[i].color ?? style.barColor).withValues(alpha: 0.2)
+              ..style = PaintingStyle.stroke
+              ..strokeWidth = 2;
         canvas.drawRRect(rect, hoverPaint);
       }
 
@@ -127,7 +130,8 @@ class BarChartPainter extends CustomPainter {
       // Draw value labels above bars if enabled
       if (showValues) {
         final value = data[i].value.toStringAsFixed(1);
-        final textStyle = style.valueStyle ??
+        final textStyle =
+            style.valueStyle ??
             TextStyle(
               color: data[i].color ?? style.barColor, // Use bar color for text
               fontSize: 12,
@@ -176,6 +180,22 @@ class BarChartPainter extends CustomPainter {
     }
   }
 
+  /// Checks if a specific bar is being hovered over
+  bool _isBarHovered(
+    int barIndex,
+    Rect chartArea,
+    double barWidth,
+    double spacing,
+  ) {
+    if (hoverPosition == null) return false;
+
+    final barX =
+        chartArea.left + (barIndex * (barWidth + spacing)) + (spacing / 2);
+    final barEndX = barX + barWidth;
+
+    return hoverPosition!.dx >= barX && hoverPosition!.dx <= barEndX;
+  }
+
   @override
   bool shouldRepaint(BarChartPainter oldDelegate) {
     // Determines whether the painter should repaint when properties change
@@ -184,7 +204,7 @@ class BarChartPainter extends CustomPainter {
         oldDelegate.style != style ||
         oldDelegate.showGrid != showGrid ||
         oldDelegate.showValues != showValues ||
-        oldDelegate.hoveredBarIndex != hoveredBarIndex ||
+        oldDelegate.hoverPosition != hoverPosition ||
         oldDelegate.horizontalGridLines != horizontalGridLines;
   }
 }
