@@ -3,7 +3,6 @@ description: "A flutter library for creating and manage industrial standard char
 version: 0.0.30
 homepage: https://github.com/vishnudas-bluefox/material_charts
 repository: https://github.com/vishnudas-bluefox/material_charts
-publisher: clearprompt.dev
 
 environment:
   sdk: ^3.5.2
