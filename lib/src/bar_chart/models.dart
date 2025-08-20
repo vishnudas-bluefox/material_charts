@@ -157,27 +157,40 @@ class BarChartStyle {
               ? BarChartData.parseColor(json['barColor'])
               : json['marker']?['color'] != null
               ? BarChartData.parseColor(json['marker']['color'])
+              : json['marker']?['colorscale'] != null
+              ? _parseColorscale(json['marker']['colorscale']).first
               : Colors.blue,
       gridColor:
           json['gridColor'] != null
               ? BarChartData.parseColor(json['gridColor'])
-              : json['plot_bgcolor'] != null
-              ? BarChartData.parseColor(json['plot_bgcolor'])
+              : json['xaxis']?['gridcolor'] != null
+              ? BarChartData.parseColor(json['xaxis']['gridcolor'])
+              : json['yaxis']?['gridcolor'] != null
+              ? BarChartData.parseColor(json['yaxis']['gridcolor'])
               : Colors.grey,
       backgroundColor:
           json['backgroundColor'] != null
               ? BarChartData.parseColor(json['backgroundColor'])
+              : json['plot_bgcolor'] != null
+              ? BarChartData.parseColor(json['plot_bgcolor'])
               : json['paper_bgcolor'] != null
               ? BarChartData.parseColor(json['paper_bgcolor'])
               : Colors.white,
+      labelStyle: _parseTextStyle(json['labelStyle'] ?? json['xaxis']?['tickfont'] ?? 
+                               json['yaxis']?['tickfont']),
+      valueStyle: _parseTextStyle(json['valueStyle'] ?? json['font'] ?? json['textfont']),
       barSpacing: (json['barSpacing'] ?? json['bargap'] ?? 0.2).toDouble(),
-      cornerRadius:
-          (json['cornerRadius'] ?? json['line']?['width'] ?? 4.0).toDouble(),
+      cornerRadius: () {
+        final value = json['cornerRadius'] ?? json['marker']?['cornerradius'] ?? 4.0;
+ 
+        return value.toDouble();
+      }(),
       animationDuration: Duration(
-        milliseconds: (json['animationDuration'] ?? 1500).toInt(),
+        milliseconds: (json['animationDuration'] ?? json['animation']?['duration'] ?? 1500).toInt(),
       ),
-      animationCurve: _parseCurve(json['animationCurve'] ?? 'easeInOut'),
-      gradientEffect: json['gradientEffect'] ?? json['colorscale'] != null,
+      animationCurve: _parseCurve(json['animationCurve'] ?? json['animation']?['curve'] ?? 'easeInOut'),
+      gradientEffect: json['gradientEffect'] ?? json['colorscale'] != null || 
+                     json['marker']?['colorscale'] != null,
       gradientColors:
           json['gradientColors'] != null
               ? (json['gradientColors'] as List)
@@ -185,6 +198,8 @@ class BarChartStyle {
                   .toList()
               : json['colorscale'] != null
               ? _parseColorscale(json['colorscale'])
+              : json['marker']?['colorscale'] != null
+              ? _parseColorscale(json['marker']['colorscale'])
               : null,
     );
   }
@@ -246,6 +261,57 @@ class BarChartStyle {
     // Default gradient if colorscale is not a list
     return [Colors.blue.shade300, Colors.blue.shade600];
   }
+
+  /// Helper method to parse text style from JSON
+  static TextStyle? _parseTextStyle(dynamic textStyle) {
+    if (textStyle == null) return null;
+    
+    if (textStyle is Map<String, dynamic>) {
+      return TextStyle(
+        fontSize: (textStyle['size'] ?? textStyle['fontSize'] ?? 12).toDouble(),
+        fontWeight: _parseFontWeight(textStyle['weight'] ?? textStyle['fontWeight']),
+        color: textStyle['color'] != null 
+            ? BarChartData.parseColor(textStyle['color'])
+            : null,
+      );
+    }
+    
+    return null;
+  }
+
+  /// Helper method to parse font weight from string
+  static FontWeight _parseFontWeight(dynamic weight) {
+    if (weight == null) return FontWeight.normal;
+    
+    if (weight is String) {
+      switch (weight.toLowerCase()) {
+        case 'bold':
+          return FontWeight.bold;
+        case 'w100':
+          return FontWeight.w100;
+        case 'w200':
+          return FontWeight.w200;
+        case 'w300':
+          return FontWeight.w300;
+        case 'w400':
+          return FontWeight.w400;
+        case 'w500':
+          return FontWeight.w500;
+        case 'w600':
+          return FontWeight.w600;
+        case 'w700':
+          return FontWeight.w700;
+        case 'w800':
+          return FontWeight.w800;
+        case 'w900':
+          return FontWeight.w900;
+        default:
+          return FontWeight.normal;
+      }
+    }
+    
+    return FontWeight.normal;
+  }
 }
 
 /// JSON configuration for bar charts with optional Plotly compatibility.
@@ -289,18 +355,58 @@ class BarChartJsonConfig {
     final data = json['data'] as List<dynamic>? ?? [];
     final style = json['style'] ?? json['layout'] ?? {};
 
+    // Handle Plotly format: data is an array of objects with x, y arrays
+    List<Map<String, dynamic>> processedData = [];
+    Map<String, dynamic> mergedStyle = Map<String, dynamic>.from(style);
+    
+    if (data.isNotEmpty && data[0] is Map<String, dynamic>) {
+      final firstDataItem = data[0] as Map<String, dynamic>;
+      
+      // Check if this is Plotly format (has x and y as arrays)
+      if (firstDataItem['x'] is List && firstDataItem['y'] is List) {
+        final xValues = firstDataItem['x'] as List;
+        final yValues = firstDataItem['y'] as List;
+        final marker = firstDataItem['marker'] as Map<String, dynamic>?;
+        final colors = marker?['color'] as List?;
+        
+        // Merge marker data into style for global properties like cornerradius
+        if (marker != null) {
+          mergedStyle['marker'] = marker;
+        }
+        
+        // Convert Plotly format to individual data objects
+        for (int i = 0; i < xValues.length && i < yValues.length; i++) {
+          final dataPoint = <String, dynamic>{
+            'x': xValues[i],
+            'y': yValues[i],
+          };
+          
+          // Add color if available
+          if (colors != null && i < colors.length) {
+            dataPoint['color'] = colors[i];
+          }
+          
+          processedData.add(dataPoint);
+        }
+      } else {
+        // Handle regular format (array of individual data objects)
+        processedData = data.cast<Map<String, dynamic>>();
+      }
+    }
+
     return BarChartJsonConfig(
-      data: data.cast<Map<String, dynamic>>(),
-      style: style,
+      data: processedData,
+      style: mergedStyle,
       width: (style['width'] ?? 800).toDouble(),
       height: (style['height'] ?? 400).toDouble(),
-      showGrid: style['showGrid'] ?? style['showgrid'] ?? true,
+      showGrid: style['showGrid'] ?? style['showgrid'] ?? 
+                style['xaxis']?['showgrid'] ?? style['yaxis']?['showgrid'] ?? true,
       showValues: style['showValues'] ?? style['showvalues'] ?? true,
       padding: _parsePadding(style['padding'] ?? style['margin']),
       horizontalGridLines:
-          (style['horizontalGridLines'] ?? style['ygrid']?['nticks'] ?? 5)
-              .toInt(),
-      interactive: style['interactive'] ?? true,
+          (style['horizontalGridLines'] ?? style['ygrid']?['nticks'] ?? 
+           style['yaxis']?['nticks'] ?? 5).toInt(),
+      interactive: style['interactive'] ?? style['hovermode'] != null ?? true,
     );
   }
 
