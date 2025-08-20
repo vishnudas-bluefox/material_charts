@@ -18,7 +18,7 @@ class MaterialBarChart extends StatefulWidget {
   final EdgeInsets padding; // Padding around the chart
   final int horizontalGridLines; // Number of horizontal grid lines
   final VoidCallback?
-  onAnimationComplete; // Callback for when animation finishes
+      onAnimationComplete; // Callback for when animation finishes
   final bool interactive; // Enable hover/tap interactions
 
   /// Creates an instance of [MaterialBarChart].
@@ -141,10 +141,11 @@ class _MaterialBarChartState extends State<MaterialBarChart>
     _animation = Tween<double>(begin: 0.0, end: 1.0).animate(
       CurvedAnimation(parent: _controller, curve: widget.style.animationCurve),
     )..addStatusListener((status) {
-      if (status == AnimationStatus.completed) {
-        widget.onAnimationComplete?.call(); // Callback when animation completes
-      }
-    });
+        if (status == AnimationStatus.completed) {
+          widget.onAnimationComplete
+              ?.call(); // Callback when animation completes
+        }
+      });
 
     _controller.forward(); // Start the animation
   }
@@ -159,12 +160,11 @@ class _MaterialBarChartState extends State<MaterialBarChart>
   Widget build(BuildContext context) {
     return MouseRegion(
       onHover: widget.interactive ? _handleHover : null, // Handle hover events
-      onExit:
-          widget.interactive
-              ? (_) => setState(
+      onExit: widget.interactive
+          ? (_) => setState(
                 () => _hoverPosition = null,
               ) // Clear hover position on exit
-              : null,
+          : null,
       child: Container(
         width: widget.width,
         height: widget.height,
@@ -197,12 +197,7 @@ class _MaterialBarChartState extends State<MaterialBarChart>
 
     // The event.localPosition is relative to the MouseRegion (which covers the entire container)
     // We need to check if it's within the chart area (excluding padding)
-    final chartArea = Rect.fromLTWH(
-      widget.padding.left,
-      widget.padding.top,
-      widget.width - widget.padding.horizontal,
-      widget.height - widget.padding.vertical,
-    );
+    // Note: chartArea calculation removed as it wasn't being used
 
     setState(() => _hoverPosition = event.localPosition);
   }

@@ -49,10 +49,9 @@ class BarChartPainter extends CustomPainter {
 
   /// Draws the grid lines on the chart.
   void _drawGrid(Canvas canvas, Rect chartArea) {
-    final paint =
-        Paint()
-          ..color = style.gridColor.withValues(alpha: 0.2)
-          ..strokeWidth = 1;
+    final paint = Paint()
+      ..color = style.gridColor.withValues(alpha: 0.2)
+      ..strokeWidth = 1;
 
     // Draw horizontal grid lines
     for (int i = 0; i <= horizontalGridLines; i++) {
@@ -105,10 +104,9 @@ class BarChartPainter extends CustomPainter {
           paint.shader = LinearGradient(
             begin: Alignment.bottomCenter,
             end: Alignment.topCenter,
-            colors:
-                style.gradientColors!
-                    .map((c) => c.withValues(alpha: 0.8))
-                    .toList(),
+            colors: style.gradientColors!
+                .map((c) => c.withValues(alpha: 0.8))
+                .toList(),
           ).createShader(rect.outerRect);
         } else {
           paint.color = paint.color.withValues(
@@ -117,11 +115,10 @@ class BarChartPainter extends CustomPainter {
         }
 
         // Draw hover indicator
-        final hoverPaint =
-            Paint()
-              ..color = (data[i].color ?? style.barColor).withValues(alpha: 0.2)
-              ..style = PaintingStyle.stroke
-              ..strokeWidth = 2;
+        final hoverPaint = Paint()
+          ..color = (data[i].color ?? style.barColor).withValues(alpha: 0.2)
+          ..style = PaintingStyle.stroke
+          ..strokeWidth = 2;
         canvas.drawRRect(rect, hoverPaint);
       }
 
@@ -130,8 +127,7 @@ class BarChartPainter extends CustomPainter {
       // Draw value labels above bars if enabled
       if (showValues) {
         final value = data[i].value.toStringAsFixed(1);
-        final textStyle =
-            style.valueStyle ??
+        final textStyle = style.valueStyle ??
             TextStyle(
               color: data[i].color ?? style.barColor, // Use bar color for text
               fontSize: 12,
