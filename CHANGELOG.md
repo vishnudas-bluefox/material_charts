@@ -2,6 +2,31 @@
 
 All notable changes to this project will be documented in this file.
 
+## [0.0.30] - 2025-08-20
+
+### Fixed
+
+- **Dart Analyzer Warnings** - Resolved deprecated API usage and code quality issues
+  - Fixed deprecated `Color.value` usage by replacing with `Color.toARGB32()`
+  - Removed unused `chartArea` variable in bar chart hover handler
+  - Applied `dart format` to improve code readability and consistency
+  - Updated `pubspec.lock` dependencies to latest compatible versions
+
+### Changed
+
+- **Code Quality Improvements** - Enhanced code maintainability and standards compliance
+  - Improved code formatting and consistency across all chart components
+  - Enhanced error handling and validation for better stability
+  - Updated development dependencies for better tooling support
+
+### Technical Details
+
+- **Resolved Issues**:
+  - `warning: unused_local_variable` in `widgets.dart:200`
+  - `info: deprecated_member_use` in `models.dart:79`
+- **Performance**: No performance impact, only code quality improvements
+- **Compatibility**: Fully backward compatible with previous versions
+
 ## [0.0.29] - 2025-08-18
 
 ### Added
@@ -425,7 +450,7 @@ All notable changes to this project will be documented in this file.
 
 ## Version History Summary
 
-This changelog covers the development of Material Charts from version 0.0.1 to 0.0.27, documenting the addition of various chart types and features:
+This changelog covers the development of Material Charts from version 0.0.1 to 0.0.30, documenting the addition of various chart types and features:
 
 - **0.0.1-0.0.11**: Foundation and basic framework
 - **0.0.12**: Bar Chart implementation
@@ -438,5 +463,31 @@ This changelog covers the development of Material Charts from version 0.0.1 to 0
 - **0.0.23**: Pie Chart implementation
 - **0.0.24**: Area Chart implementation
 - **0.0.26-0.0.27**: Documentation and performance improvements
+- **0.0.29**: JSON integration and Plotly compatibility
+- **0.0.30**: Code quality improvements and bug fixes
 
 Each version builds upon the previous, adding new chart types and enhancing existing functionality with better performance, styling options, and user experience improvements.
+
+## Migration Guide
+
+### From 0.0.29 to 0.0.30
+
+No breaking changes. This is a maintenance release focused on code quality improvements.
+
+### From 0.0.28 to 0.0.29
+
+The JSON integration feature is fully backward compatible. Existing code will continue to work without any changes.
+
+### From 0.0.27 to 0.0.28
+
+The tooltip system has been refactored for better maintainability. Existing tooltip implementations will continue to work.
+
+## Contributing
+
+When contributing to this project, please ensure your changes are documented in this changelog following the established format:
+
+- Use clear, descriptive language
+- Group changes by type (Added, Changed, Fixed, Removed)
+- Include technical details when relevant
+- Maintain chronological order (newest first)
+- Follow semantic versioning principles

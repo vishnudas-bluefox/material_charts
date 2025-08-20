@@ -64,26 +64,68 @@ MaterialBarChart.fromData(
 )
 ```
 
-### JSON Configuration
+### JSON Configuration (Plotly-Compatible)
 
 ```dart
 final jsonConfig = {
-  'data': [
-    {'x': 'Jan', 'y': 45, 'color': '#1f77b4'},
-    {'x': 'Feb', 'y': 78, 'color': '#2ca02c'},
-    {'x': 'Mar', 'y': 32, 'color': '#ff7f0e'},
+  "data": [
+    {
+      "type": "bar",
+      "x": ["Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug"],
+      "y": [45, 78, 32, 89, 56, 67, 23, 91],
+      "marker": {
+        "color": ["#F1C40F", "#E67E22", "#1ABC9C", "#3498DB",
+                  "#9B59B6", "#2ECC71", "#E74C3C", "#34495E"],
+        "colorscale": ["#B8D4E3", "#7B9E87"]
+      }
+    }
   ],
-  'style': {
-    'width': 800,
-    'height': 400,
-    'showGrid': true,
-    'showValues': true,
-    'interactive': true,
-    'barColor': '#1f77b4',
-    'barSpacing': 0.2,
-    'cornerRadius': 8.0,
-    'gradientEffect': true,
-  },
+  "layout": {
+    "width": 800,
+    "height": 300,
+    "plot_bgcolor": "#16213E",
+    "paper_bgcolor": "#16213E",
+    "showlegend": false,
+    "bargap": 0.3,
+    "bargroupgap": 0.1,
+    "xaxis": {
+      "showgrid": true,
+      "gridcolor": "#34495E",
+      "tickfont": {
+        "size": 16,
+        "color": "#E8F4F8"
+      },
+      "tickcolor": "#E8F4F8",
+      "title": {
+        "text": "Months",
+        "font": {
+          "size": 18,
+          "color": "#E8F4F8"
+        }
+      }
+    },
+    "yaxis": {
+      "showgrid": true,
+      "gridcolor": "#34495E",
+      "nticks": 6,
+      "tickfont": {
+        "size": 14,
+        "color": "#E8F4F8"
+      },
+      "tickcolor": "#E8F4F8",
+      "title": {
+        "text": "Values",
+        "font": {
+          "size": 18,
+          "color": "#E8F4F8"
+        }
+      }
+    },
+    "font": {
+      "size": 12,
+      "color": "#E8F4F8"
+    }
+  }
 };
 
 MaterialBarChart.fromJson(jsonConfig)
@@ -130,7 +172,7 @@ MaterialBarChart.fromJson(jsonConfig)
 | `gradientEffect`    | `bool`         | `false`            | Enable gradient effect         |
 | `gradientColors`    | `List<Color>?` | `null`             | Colors for gradient            |
 
-## JSON Schema
+## JSON Schema (Plotly-Compatible)
 
 ### Data Format
 
@@ -138,38 +180,61 @@ MaterialBarChart.fromJson(jsonConfig)
 {
   "data": [
     {
-      "x": "Jan",
-      "y": 45,
-      "color": "#1f77b4"
-    },
-    {
-      "x": "Feb",
-      "y": 78,
-      "color": "#2ca02c"
+      "type": "bar",
+      "x": ["Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug"],
+      "y": [45, 78, 32, 89, 56, 67, 23, 91],
+      "marker": {
+        "color": ["#F1C40F", "#E67E22", "#1ABC9C", "#3498DB",
+                  "#9B59B6", "#2ECC71", "#E74C3C", "#34495E"],
+        "colorscale": ["#B8D4E3", "#7B9E87"]
+      }
     }
   ],
-  "style": {
+  "layout": {
     "width": 800,
-    "height": 400,
-    "showGrid": true,
-    "showValues": true,
-    "interactive": true,
-    "padding": {
-      "left": 24,
-      "top": 24,
-      "right": 24,
-      "bottom": 24
+    "height": 300,
+    "plot_bgcolor": "#16213E",
+    "paper_bgcolor": "#16213E",
+    "showlegend": false,
+    "bargap": 0.3,
+    "bargroupgap": 0.1,
+    "xaxis": {
+      "showgrid": true,
+      "gridcolor": "#34495E",
+      "tickfont": {
+        "size": 16,
+        "color": "#E8F4F8"
+      },
+      "tickcolor": "#E8F4F8",
+      "title": {
+        "text": "Months",
+        "font": {
+          "size": 18,
+          "color": "#E8F4F8"
+        }
+      }
     },
-    "horizontalGridLines": 5,
-    "barColor": "#1f77b4",
-    "gridColor": "#f0f0f0",
-    "backgroundColor": "#ffffff",
-    "barSpacing": 0.2,
-    "cornerRadius": 4.0,
-    "animationDuration": 1500,
-    "animationCurve": "easeInOut",
-    "gradientEffect": false,
-    "gradientColors": ["#1f77b4", "#ff7f0e"]
+    "yaxis": {
+      "showgrid": true,
+      "gridcolor": "#34495E",
+      "nticks": 6,
+      "tickfont": {
+        "size": 14,
+        "color": "#E8F4F8"
+      },
+      "tickcolor": "#E8F4F8",
+      "title": {
+        "text": "Values",
+        "font": {
+          "size": 18,
+          "color": "#E8F4F8"
+        }
+      }
+    },
+    "font": {
+      "size": 12,
+      "color": "#E8F4F8"
+    }
   }
 }
 ```
@@ -178,39 +243,57 @@ MaterialBarChart.fromJson(jsonConfig)
 
 #### Data Properties
 
-- `x`: Label for the bar (string)
-- `y`: Numeric value for the bar (number)
-- `color`: Bar color in hex format (string, optional)
+- `type`: Chart type, should be "bar" (string)
+- `x`: Array of labels for the bars (array of strings)
+- `y`: Array of numeric values for the bars (array of numbers)
+- `marker`: Object containing styling for the bars (object)
+  - `color`: Array of colors for individual bars (array of strings, optional)
+  - `colorscale`: Array of colors for gradient effect (array of strings, optional)
 
-#### Style Properties
+#### Layout Properties
 
 - `width`: Chart width in pixels (number)
 - `height`: Chart height in pixels (number)
-- `showGrid`: Show grid lines (boolean)
-- `showValues`: Show values on bars (boolean)
-- `interactive`: Enable hover interactions (boolean)
-- `padding`: Chart padding object with `left`, `top`, `right`, `bottom` (object)
-- `horizontalGridLines`: Number of horizontal grid lines (number)
-- `barColor`: Default bar color in hex format (string)
-- `gridColor`: Grid line color in hex format (string)
-- `backgroundColor`: Chart background color in hex format (string)
-- `barSpacing`: Spacing between bars, 0.0 to 1.0 (number)
-- `cornerRadius`: Corner radius for bars in pixels (number)
-- `animationDuration`: Animation duration in milliseconds (number)
-- `animationCurve`: Animation curve type (string)
-- `gradientEffect`: Enable gradient effect (boolean)
-- `gradientColors`: Array of hex colors for gradient (array)
+- `plot_bgcolor`: Plot area background color in hex format (string)
+- `paper_bgcolor`: Paper/container background color in hex format (string)
+- `showlegend`: Show legend (boolean)
+- `bargap`: Gap between bars, 0.0 to 1.0 (number)
+- `bargroupgap`: Gap between bar groups, 0.0 to 1.0 (number)
 
-### Animation Curves
+#### X-Axis Properties
 
-Supported animation curve values:
+- `showgrid`: Show grid lines (boolean)
+- `gridcolor`: Grid line color in hex format (string)
+- `tickfont`: Font styling for tick labels (object)
+  - `size`: Font size (number)
+  - `color`: Font color in hex format (string)
+- `tickcolor`: Tick color in hex format (string)
+- `title`: Axis title configuration (object)
+  - `text`: Title text (string)
+  - `font`: Title font styling (object)
+    - `size`: Font size (number)
+    - `color`: Font color in hex format (string)
 
-- `"linear"`
-- `"easeIn"`
-- `"easeOut"`
-- `"easeInOut"`
-- `"bounceIn"`
-- `"bounceOut"`
+#### Y-Axis Properties
+
+- `showgrid`: Show grid lines (boolean)
+- `gridcolor`: Grid line color in hex format (string)
+- `nticks`: Number of tick marks (number)
+- `tickfont`: Font styling for tick labels (object)
+  - `size`: Font size (number)
+  - `color`: Font color in hex format (string)
+- `tickcolor`: Tick color in hex format (string)
+- `title`: Axis title configuration (object)
+  - `text`: Title text (string)
+  - `font`: Title font styling (object)
+    - `size`: Font size (number)
+    - `color`: Font color in hex format (string)
+
+#### Global Font Properties
+
+- `font`: Global font styling (object)
+  - `size`: Font size (number)
+  - `color`: Font color in hex format (string)
 
 ### Color Formats
 
@@ -220,77 +303,3 @@ Colors can be specified in multiple formats:
 - RGB: `"rgb(31, 119, 180)"`
 - RGBA: `"rgba(31, 119, 180, 0.8)"`
 
-## Examples
-
-### Basic Chart
-
-```dart
-MaterialBarChart.fromData(
-  labels: ['A', 'B', 'C', 'D'],
-  values: [10, 20, 30, 40],
-  width: 400,
-  height: 300,
-)
-```
-
-### Styled Chart with Gradient
-
-```dart
-MaterialBarChart.fromData(
-  labels: ['Q1', 'Q2', 'Q3', 'Q4'],
-  values: [100, 150, 200, 175],
-  width: 600,
-  height: 400,
-  style: {
-    'gradientEffect': true,
-    'gradientColors': ['#4CAF50', '#2196F3'],
-    'barSpacing': 0.3,
-    'cornerRadius': 12.0,
-    'animationDuration': 2000,
-  },
-)
-```
-
-### Interactive Chart from JSON
-
-```dart
-final jsonConfig = {
-      'data': [
-        {'x': 'Jan', 'y': 45, 'color': '#1f77b4'},
-        {'x': 'Feb', 'y': 78, 'color': '#2ca02c'},
-        {'x': 'Mar', 'y': 32, 'color': '#ff7f0e'},
-        {'x': 'Apr', 'y': 89, 'color': '#d62728'},
-        {'x': 'May', 'y': 56, 'color': '#9467bd'},
-        {'x': 'Jun', 'y': 67, 'color': '#8c564b'},
-        {'x': 'Jul', 'y': 23, 'color': '#e377c2'},
-        {'x': 'Aug', 'y': 91, 'color': '#7f7f7f'},
-      ],
-      'style': {
-        'width': 800,
-        'height': 300,
-        'showGrid': true,
-        'showValues': true,
-        'padding': {'left': 32, 'top': 32, 'right': 32, 'bottom': 32},
-        'horizontalGridLines': 6,
-        'interactive': true,
-        'barColor': '#1f77b4',
-        'gridColor': '#f0f0f0',
-        'backgroundColor': '#ffffff',
-        'barSpacing': 0.3,
-        'cornerRadius': 8.0,
-        'animationDuration': 2000,
-        'animationCurve': 'easeInOut',
-        'gradientEffect': true,
-        'gradientColors': ['#1f77b4', '#ff7f0e'],
-      },
-    };
-
-    return SizedBox(
-      width: 1000,
-      height: 400,
-      child: MaterialBarChart.fromJson(jsonConfig),
-    );
-''';
-
-MaterialBarChart.fromJsonString(jsonString)
-```
