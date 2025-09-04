@@ -2,6 +2,53 @@
 
 All notable changes to this project will be documented in this file.
 
+## [0.0.33] - 2025-01-XX
+
+### Added
+
+- **MultiLine Chart JSON Integration** - Comprehensive JSON support for multi-line charts with Plotly compatibility
+- **Multiple Factory Constructors** - Added `fromJson()`, `fromJsonString()`, `fromData()`, and `fromPlotlyData()` constructors
+- **Advanced JSON Configuration** - Support for complex styling, animations, and layout via JSON
+- **Plotly Compatibility** - Seamless conversion from Plotly JSON configurations to multi-line charts
+- **Enhanced Data Parsing** - Support for multiple data formats including arrays and object-based series
+- **Interactive Features via JSON** - Configure zoom, pan, and callback functions through JSON
+
+### Features
+
+- **JSON Format Support**:
+  - Simple format for basic multi-line charts
+  - Plotly-compatible format for existing configurations
+  - Advanced format with full customization options
+- **Factory Constructors**:
+  - `MultiLineChart.fromJson()` - Create from JSON map
+  - `MultiLineChart.fromJsonString()` - Create from JSON string
+  - `MultiLineChart.fromData()` - Quick creation from arrays
+  - `MultiLineChart.fromPlotlyData()` - Direct Plotly data conversion
+- **Styling via JSON**:
+  - Colors, animations, and layout configuration
+  - Individual series colors and line properties
+  - Grid lines, padding, and interactive options
+  - Tooltip styling and crosshair configuration
+- **Data Format Flexibility**:
+  - Support for x/y arrays (Plotly format)
+  - Support for dataPoints arrays (simple format)
+  - Support for data arrays (alternative format)
+  - Automatic color parsing from hex, RGB, and RGBA formats
+
+### Changed
+
+- **MultiLine Chart Architecture** - Enhanced for comprehensive JSON integration
+- **Data Parsing System** - Improved to handle multiple JSON data formats
+- **Style Configuration** - Extended to support full JSON-based customization
+- **Factory Constructor System** - Added multiple convenient constructors for different use cases
+
+### Technical Details
+
+- **Performance**: Optimized JSON parsing and chart rendering pipeline
+- **Compatibility**: Fully backward compatible with existing multi-line chart implementations
+- **Migration**: Easy conversion from existing multi-line chart implementations
+- **Error Handling**: Comprehensive validation for JSON inputs with graceful fallbacks
+
 ## [0.0.32] - 2025-01-XX
 
 ### Added

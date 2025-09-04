@@ -98,8 +98,10 @@ class MultiLineChartPainter extends CustomPainter {
       final color = seriesData.color ??
           style.colors[
               i % style.colors.length]; // Determine color for the series
-      final points = _getSeriesPoints(chartArea,
-          seriesData); // Retrieve the series points for the chart area
+      final points = _getSeriesPoints(
+        chartArea,
+        seriesData,
+      ); // Retrieve the series points for the chart area
 
       // Iterate through each point in the series
       for (int j = 0; j < points.length; j++) {
@@ -130,8 +132,9 @@ class MultiLineChartPainter extends CustomPainter {
     final style = this.style.tooltipStyle; // Access the tooltip style settings
 
     // Prepare tooltip content
-    final valueText = tooltipData.dataPoint.value
-        .toStringAsFixed(1); // Format the value to one decimal place
+    final valueText = tooltipData.dataPoint.value.toStringAsFixed(
+      1,
+    ); // Format the value to one decimal place
     final labelText = tooltipData.dataPoint.label ??
         ''; // Get the label text, default to empty
     final text =
@@ -170,11 +173,18 @@ class MultiLineChartPainter extends CustomPainter {
     // Draw shadow for the tooltip
     final shadowPaint = Paint()
       ..color = style.shadowColor.withValues(alpha: 0.1)
-      ..maskFilter = MaskFilter.blur(BlurStyle.normal, style.shadowBlurRadius);
+      ..maskFilter = MaskFilter.blur(
+        BlurStyle.normal,
+        style.shadowBlurRadius,
+      );
     canvas.drawRRect(
       RRect.fromRectAndRadius(
-        Rect.fromLTWH(tooltipX, tooltipY, tooltipWidth, tooltipHeight)
-            .shift(const Offset(0, 2)), // Offset shadow slightly down
+        Rect.fromLTWH(
+          tooltipX,
+          tooltipY,
+          tooltipWidth,
+          tooltipHeight,
+        ).shift(const Offset(0, 2)), // Offset shadow slightly down
         Radius.circular(style.borderRadius), // Use rounded corners for shadow
       ),
       shadowPaint, // Paint the shadow
@@ -212,7 +222,9 @@ class MultiLineChartPainter extends CustomPainter {
     textPainter.paint(
       canvas,
       Offset(
-          tooltipX + padding, tooltipY + padding), // Position text with padding
+        tooltipX + padding,
+        tooltipY + padding,
+      ), // Position text with padding
     );
   }
 
@@ -237,7 +249,7 @@ class MultiLineChartPainter extends CustomPainter {
   Rect _getChartArea(Size size) {
     double legendHeight = 0;
     double legendWidth = 0;
-// Determine dimensions for the legend based on its position and visibility
+    // Determine dimensions for the legend based on its position and visibility
     if (style.showLegend) {
       switch (style.legendPosition) {
         case LegendPosition.top:
@@ -294,8 +306,9 @@ class MultiLineChartPainter extends CustomPainter {
           text: value.toStringAsFixed(1), // Format value to one decimal place
           style: style.labelStyle ??
               TextStyle(
-                  color: style.gridColor,
-                  fontSize: 10), // Use custom label style or default
+                color: style.gridColor,
+                fontSize: 10,
+              ), // Use custom label style or default
         );
         final textPainter = TextPainter(
           text: textSpan,
@@ -304,10 +317,11 @@ class MultiLineChartPainter extends CustomPainter {
         textPainter.paint(
           canvas,
           Offset(
-              chartArea.left -
-                  textPainter.width -
-                  5, // Position label to the left of the grid line
-              y - textPainter.height / 2), // Center vertically
+            chartArea.left -
+                textPainter.width -
+                5, // Position label to the left of the grid line
+            y - textPainter.height / 2,
+          ), // Center vertically
         );
       }
     }
@@ -319,7 +333,10 @@ class MultiLineChartPainter extends CustomPainter {
           .length; // Get the number of data points in the first series
       for (int i = 0; i < pointCount; i++) {
         final x = _getXCoordinate(
-            chartArea, i, pointCount); // Calculate X position for grid line
+          chartArea,
+          i,
+          pointCount,
+        ); // Calculate X position for grid line
         canvas.drawLine(
           Offset(x, chartArea.top), // Start point (top)
           Offset(x, chartArea.bottom), // End point (bottom)
@@ -334,8 +351,9 @@ class MultiLineChartPainter extends CustomPainter {
             text: label, // Use the label from the data point
             style: style.labelStyle ??
                 TextStyle(
-                    color: style.gridColor,
-                    fontSize: 10), // Use custom label style or default
+                  color: style.gridColor,
+                  fontSize: 10,
+                ), // Use custom label style or default
           );
           final textPainter = TextPainter(
             text: textSpan,
@@ -344,9 +362,9 @@ class MultiLineChartPainter extends CustomPainter {
           textPainter.paint(
             canvas,
             Offset(
-                x - textPainter.width / 2,
-                chartArea.bottom +
-                    5), // Center label horizontally below the grid line
+              x - textPainter.width / 2,
+              chartArea.bottom + 5,
+            ), // Center label horizontally below the grid line
           );
         }
       }
@@ -372,7 +390,9 @@ class MultiLineChartPainter extends CustomPainter {
 
     final path = Path(); // Create a new path for the line
     final points = _getSeriesPoints(
-        chartArea, seriesData); // Get calculated points for the series
+      chartArea,
+      seriesData,
+    ); // Get calculated points for the series
 
     if (points.isEmpty) return; // Exit if there are no points to draw
 
@@ -394,15 +414,19 @@ class MultiLineChartPainter extends CustomPainter {
     );
 
     canvas.drawPath(
-        animatedPath, linePaint); // Draw the animated path on the canvas
+      animatedPath,
+      linePaint,
+    ); // Draw the animated path on the canvas
   }
 
   /// Draws a straight line connecting the given points in the path.
   void _drawStraightLine(Path path, List<Offset> points) {
     path.moveTo(points.first.dx, points.first.dy); // Move to the first point
     for (int i = 1; i < points.length; i++) {
-      path.lineTo(points[i].dx,
-          points[i].dy); // Connect each subsequent point with a line
+      path.lineTo(
+        points[i].dx,
+        points[i].dy,
+      ); // Connect each subsequent point with a line
     }
   }
 
@@ -450,7 +474,9 @@ class MultiLineChartPainter extends CustomPainter {
       ..style = PaintingStyle.fill; // Set paint style to fill
 
     final points = _getSeriesPoints(
-        chartArea, seriesData); // Get calculated points for the series
+      chartArea,
+      seriesData,
+    ); // Get calculated points for the series
     final progressPoints = (points.length * progress)
         .floor(); // Calculate number of points to draw based on progress
     final pointSize = seriesData.pointSize ??
@@ -458,15 +484,21 @@ class MultiLineChartPainter extends CustomPainter {
 
     for (int i = 0; i < progressPoints; i++) {
       canvas.drawCircle(
-          points[i], pointSize, pointPaint); // Draw the filled point
+        points[i],
+        pointSize,
+        pointPaint,
+      ); // Draw the filled point
 
       // Draw white border around points
       final borderPaint = Paint()
         ..color = style.backgroundColor // Set border color to background color
         ..style = PaintingStyle.stroke // Set paint style to stroke
         ..strokeWidth = 2; // Set border width
-      canvas.drawCircle(points[i], pointSize,
-          borderPaint); // Draw the border around the point
+      canvas.drawCircle(
+        points[i],
+        pointSize,
+        borderPaint,
+      ); // Draw the border around the point
     }
   }
 
@@ -550,16 +582,19 @@ class MultiLineChartPainter extends CustomPainter {
 
       // Draw the circular marker for the legend item
       canvas.drawCircle(
-        Offset(xOffset + height / 2,
-            y + height / 2), // Center the marker vertically
+        Offset(
+          xOffset + height / 2,
+          y + height / 2,
+        ), // Center the marker vertically
         height / 4, // Set marker radius to one-fourth of the item height
         markerPaint, // Use the defined paint for the marker
       );
 
       // Draw legend text
       final textSpan = TextSpan(
-          text: item.text,
-          style: textStyle); // Create text span with the item text
+        text: item.text,
+        style: textStyle,
+      ); // Create text span with the item text
       final textPainter = TextPainter(
         text: textSpan,
         textDirection: TextDirection.ltr, // Left-to-right text direction
@@ -568,8 +603,10 @@ class MultiLineChartPainter extends CustomPainter {
       // Position the text next to the marker
       textPainter.paint(
         canvas,
-        Offset(xOffset + height + 5,
-            y + (height - textPainter.height) / 2), // Center text vertically
+        Offset(
+          xOffset + height + 5,
+          y + (height - textPainter.height) / 2,
+        ), // Center text vertically
       );
 
       // Increment the xOffset for the next item to avoid overlap
@@ -608,16 +645,19 @@ class MultiLineChartPainter extends CustomPainter {
 
       // Draw the circular marker for the legend item
       canvas.drawCircle(
-        Offset(x + height / 2,
-            yOffset + height / 2), // Center the marker vertically
+        Offset(
+          x + height / 2,
+          yOffset + height / 2,
+        ), // Center the marker vertically
         height / 4, // Set marker radius to one-fourth of the item height
         markerPaint, // Use the defined paint for the marker
       );
 
       // Draw legend text
       final textSpan = TextSpan(
-          text: item.text,
-          style: textStyle); // Create text span with the item text
+        text: item.text,
+        style: textStyle,
+      ); // Create text span with the item text
       final textPainter = TextPainter(
         text: textSpan,
         textDirection: TextDirection.ltr, // Left-to-right text direction
@@ -627,9 +667,9 @@ class MultiLineChartPainter extends CustomPainter {
       textPainter.paint(
         canvas,
         Offset(
-            x + height + 5,
-            yOffset +
-                (height - textPainter.height) / 2), // Center text vertically
+          x + height + 5,
+          yOffset + (height - textPainter.height) / 2,
+        ), // Center text vertically
       );
 
       // Increment the yOffset for the next item to avoid overlap
@@ -707,8 +747,10 @@ class MultiLineChartPainter extends CustomPainter {
     canvas.drawRect(yLabelRect, bgPaint); // Draw the background rectangle
     textPainter.paint(
       canvas,
-      Offset(chartArea.left - textPainter.width - 20,
-          crosshairPosition!.dy - textPainter.height / 2), // Position the text
+      Offset(
+        chartArea.left - textPainter.width - 20,
+        crosshairPosition!.dy - textPainter.height / 2,
+      ), // Position the text
     );
 
     // Draw X-axis label
@@ -721,8 +763,10 @@ class MultiLineChartPainter extends CustomPainter {
     canvas.drawRect(xLabelRect, bgPaint); // Draw the background rectangle
     textPainter.paint(
       canvas,
-      Offset(crosshairPosition!.dx - textPainter.width / 2,
-          chartArea.bottom + 5), // Position the text
+      Offset(
+        crosshairPosition!.dx - textPainter.width / 2,
+        chartArea.bottom + 5,
+      ), // Position the text
     );
   }
 
@@ -740,7 +784,10 @@ class MultiLineChartPainter extends CustomPainter {
     // Generate the list of points based on the data points
     return List.generate(seriesData.dataPoints.length, (i) {
       final x = _getXCoordinate(
-          chartArea, i, seriesData.dataPoints.length); // Get X coordinate
+        chartArea,
+        i,
+        seriesData.dataPoints.length,
+      ); // Get X coordinate
       // Calculate Y position based on normalized value
       final normalizedValue =
           (seriesData.dataPoints[i].value - minValue) / valueRange;
@@ -780,10 +827,12 @@ class MultiLineChartPainter extends CustomPainter {
   /// Retrieves the value represented at the specified position within the chart.
   /// The value is normalized based on the position of the crosshair in the chart area.
   double _getValueAtPosition(Offset position) {
-    final chartArea = _getChartArea(Size(
-      position.dx + style.padding.horizontal,
-      position.dy + style.padding.vertical,
-    ));
+    final chartArea = _getChartArea(
+      Size(
+        position.dx + style.padding.horizontal,
+        position.dy + style.padding.vertical,
+      ),
+    );
 
     final maxValue = _getMaxValue(); // Get max value
     final minValue = _getMinValue(); // Get min value

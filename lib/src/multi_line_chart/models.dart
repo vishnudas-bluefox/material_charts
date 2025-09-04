@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'dart:convert';
 
 /// Represents a single data point in a chart.
 ///
@@ -14,11 +15,57 @@ class ChartDataPoint {
   ///
   /// [value] is required to define the data point.
   /// [label] and [color] are optional.
-  const ChartDataPoint({
-    required this.value,
-    this.label,
-    this.color,
-  });
+  const ChartDataPoint({required this.value, this.label, this.color});
+
+  /// Creates a [ChartDataPoint] instance from a JSON map.
+  /// Supports both simple and Plotly-compatible formats.
+  factory ChartDataPoint.fromJson(Map<String, dynamic> json) {
+    return ChartDataPoint(
+      value: (json['y'] ?? json['value'] ?? 0.0).toDouble(),
+      label: json['x'] ?? json['label'],
+      color: json['color'] != null ? _parseColor(json['color']) : null,
+    );
+  }
+
+  /// Converts the [ChartDataPoint] to a JSON map.
+  Map<String, dynamic> toJson() {
+    return {
+      'x': label,
+      'y': value,
+      if (color != null) 'color': _colorToHex(color!),
+    };
+  }
+
+  /// Helper method to parse color from various formats
+  static Color _parseColor(dynamic colorValue) {
+    if (colorValue is String) {
+      if (colorValue.startsWith('#')) {
+        return Color(int.parse(colorValue.replaceFirst('#', '0xFF')));
+      } else if (colorValue.startsWith('rgb(')) {
+        // Parse rgb(r, g, b) format
+        final rgb = colorValue.replaceAll('rgb(', '').replaceAll(')', '');
+        final parts = rgb.split(',').map((e) => int.parse(e.trim())).toList();
+        return Color.fromRGBO(parts[0], parts[1], parts[2], 1.0);
+      } else if (colorValue.startsWith('rgba(')) {
+        // Parse rgba(r, g, b, a) format
+        final rgba = colorValue.replaceAll('rgba(', '').replaceAll(')', '');
+        final parts =
+            rgba.split(',').map((e) => double.parse(e.trim())).toList();
+        return Color.fromRGBO(
+          parts[0].toInt(),
+          parts[1].toInt(),
+          parts[2].toInt(),
+          parts[3],
+        );
+      }
+    }
+    return Colors.blue; // Default fallback
+  }
+
+  /// Helper method to convert Color to hex string
+  static String _colorToHex(Color color) {
+    return '#${color.toARGB32().toRadixString(16).padLeft(8, '0')}';
+  }
 }
 
 /// Represents the data to be displayed in a tooltip.
@@ -78,6 +125,86 @@ class MultiLineTooltipStyle {
     this.shadowBlurRadius = 3.0,
     this.indicatorHeight = 2.0,
   });
+
+  /// Creates a [MultiLineTooltipStyle] instance from a JSON map.
+  /// Supports both simple and Plotly-compatible formats.
+  factory MultiLineTooltipStyle.fromJson(Map<String, dynamic> json) {
+    return MultiLineTooltipStyle(
+      textStyle: _parseTextStyle(json['textStyle'] ?? json['font']) ??
+          const TextStyle(
+            color: Colors.white,
+            fontSize: 12,
+            fontWeight: FontWeight.w500,
+          ),
+      backgroundColor: json['backgroundColor'] != null
+          ? ChartDataPoint._parseColor(json['backgroundColor'])
+          : json['bgcolor'] != null
+              ? ChartDataPoint._parseColor(json['bgcolor'])
+              : Colors.black,
+      padding: (json['padding'] ?? 8.0).toDouble(),
+      threshold: (json['threshold'] ?? 10.0).toDouble(),
+      borderRadius:
+          (json['borderRadius'] ?? json['borderradius'] ?? 4.0).toDouble(),
+      shadowColor: json['shadowColor'] != null
+          ? ChartDataPoint._parseColor(json['shadowColor'])
+          : Colors.black,
+      shadowBlurRadius: (json['shadowBlurRadius'] ?? 3.0).toDouble(),
+      indicatorHeight: (json['indicatorHeight'] ?? 2.0).toDouble(),
+    );
+  }
+
+  /// Helper method to parse text style from JSON
+  static TextStyle? _parseTextStyle(dynamic textStyle) {
+    if (textStyle == null) return null;
+
+    if (textStyle is Map<String, dynamic>) {
+      return TextStyle(
+        fontSize: (textStyle['size'] ?? textStyle['fontSize'] ?? 12).toDouble(),
+        fontWeight: _parseFontWeight(
+          textStyle['weight'] ?? textStyle['fontWeight'],
+        ),
+        color: textStyle['color'] != null
+            ? ChartDataPoint._parseColor(textStyle['color'])
+            : Colors.white,
+      );
+    }
+
+    return null;
+  }
+
+  /// Helper method to parse font weight from string
+  static FontWeight _parseFontWeight(dynamic weight) {
+    if (weight == null) return FontWeight.normal;
+
+    if (weight is String) {
+      switch (weight.toLowerCase()) {
+        case 'bold':
+          return FontWeight.bold;
+        case 'w100':
+          return FontWeight.w100;
+        case 'w200':
+          return FontWeight.w200;
+        case 'w300':
+          return FontWeight.w300;
+        case 'w400':
+          return FontWeight.w400;
+        case 'w500':
+          return FontWeight.w500;
+        case 'w600':
+          return FontWeight.w600;
+        case 'w700':
+          return FontWeight.w700;
+        case 'w800':
+          return FontWeight.w800;
+        case 'w900':
+          return FontWeight.w900;
+        default:
+          return FontWeight.normal;
+      }
+    }
+
+    return FontWeight.normal;
+  }
 }
 
 /// Represents a series of data points on a chart.
@@ -108,6 +235,80 @@ class ChartSeries {
     this.lineWidth,
     this.pointSize,
   });
+
+  /// Creates a [ChartSeries] instance from a JSON map.
+  /// Supports both simple and Plotly-compatible formats.
+  factory ChartSeries.fromJson(Map<String, dynamic> json) {
+    List<ChartDataPoint> dataPoints = [];
+
+    // Handle Plotly format: x and y as arrays
+    if (json['x'] is List && json['y'] is List) {
+      final xValues = json['x'] as List;
+      final yValues = json['y'] as List;
+
+      for (int i = 0; i < xValues.length && i < yValues.length; i++) {
+        dataPoints.add(
+          ChartDataPoint(
+            value: yValues[i].toDouble(),
+            label: xValues[i]?.toString(),
+          ),
+        );
+      }
+    }
+    // Handle simple format: dataPoints as array of objects
+    else if (json['dataPoints'] is List) {
+      final points = json['dataPoints'] as List;
+      dataPoints = points
+          .map(
+            (point) => ChartDataPoint.fromJson(point as Map<String, dynamic>),
+          )
+          .toList();
+    }
+    // Handle data as array of individual points
+    else if (json['data'] is List) {
+      final points = json['data'] as List;
+      dataPoints = points
+          .map(
+            (point) => ChartDataPoint.fromJson(point as Map<String, dynamic>),
+          )
+          .toList();
+    }
+
+    return ChartSeries(
+      name: json['name'] ?? json['title'] ?? 'Series',
+      dataPoints: dataPoints,
+      color: json['color'] != null
+          ? ChartDataPoint._parseColor(json['color'])
+          : json['line']?['color'] != null
+              ? ChartDataPoint._parseColor(json['line']['color'])
+              : json['marker']?['color'] != null
+                  ? ChartDataPoint._parseColor(json['marker']['color'])
+                  : null,
+      showPoints:
+          json['showPoints'] ?? json['mode']?.toString().contains('markers'),
+      smoothLine: json['smoothLine'] ??
+          (json['line']?['shape'] == 'spline') ??
+          (json['type'] == 'smooth'),
+      lineWidth:
+          json['lineWidth']?.toDouble() ?? json['line']?['width']?.toDouble(),
+      pointSize:
+          json['pointSize']?.toDouble() ?? json['marker']?['size']?.toDouble(),
+    );
+  }
+
+  /// Converts the [ChartSeries] to a JSON map.
+  Map<String, dynamic> toJson() {
+    return {
+      'name': name,
+      'x': dataPoints.map((point) => point.label).toList(),
+      'y': dataPoints.map((point) => point.value).toList(),
+      if (color != null) 'color': ChartDataPoint._colorToHex(color!),
+      if (showPoints != null) 'showPoints': showPoints,
+      if (smoothLine != null) 'smoothLine': smoothLine,
+      if (lineWidth != null) 'lineWidth': lineWidth,
+      if (pointSize != null) 'pointSize': pointSize,
+    };
+  }
 }
 
 // models/chart_style.dart
@@ -166,6 +367,148 @@ class MultiLineChartStyle {
         const MultiLineTooltipStyle(), // Initialize tooltip style.
   });
 
+  /// Creates a [MultiLineChartStyle] instance from a JSON map.
+  /// Supports both simple and Plotly-compatible formats.
+  factory MultiLineChartStyle.fromJson(Map<String, dynamic> json) {
+    // Parse colors from various formats
+    List<Color> colors = [];
+    if (json['colors'] is List) {
+      colors = (json['colors'] as List)
+          .map((color) => ChartDataPoint._parseColor(color))
+          .toList();
+    } else if (json['colorway'] is List) {
+      // Plotly format
+      colors = (json['colorway'] as List)
+          .map((color) => ChartDataPoint._parseColor(color))
+          .toList();
+    }
+
+    if (colors.isEmpty) {
+      colors = [
+        Colors.blue,
+        Colors.red,
+        Colors.green,
+        Colors.orange,
+        Colors.purple,
+      ];
+    }
+
+    return MultiLineChartStyle(
+      colors: colors,
+      defaultLineWidth:
+          (json['defaultLineWidth'] ?? json['line']?['width'] ?? 2.0)
+              .toDouble(),
+      defaultPointSize:
+          (json['defaultPointSize'] ?? json['marker']?['size'] ?? 4.0)
+              .toDouble(),
+      gridColor: json['gridColor'] != null
+          ? ChartDataPoint._parseColor(json['gridColor'])
+          : json['xaxis']?['gridcolor'] != null
+              ? ChartDataPoint._parseColor(json['xaxis']['gridcolor'])
+              : json['yaxis']?['gridcolor'] != null
+                  ? ChartDataPoint._parseColor(json['yaxis']['gridcolor'])
+                  : Colors.grey,
+      backgroundColor: json['backgroundColor'] != null
+          ? ChartDataPoint._parseColor(json['backgroundColor'])
+          : json['plot_bgcolor'] != null
+              ? ChartDataPoint._parseColor(json['plot_bgcolor'])
+              : json['paper_bgcolor'] != null
+                  ? ChartDataPoint._parseColor(json['paper_bgcolor'])
+                  : Colors.white,
+      labelStyle: _parseTextStyle(
+        json['labelStyle'] ??
+            json['xaxis']?['tickfont'] ??
+            json['yaxis']?['tickfont'],
+      ),
+      legendStyle: _parseTextStyle(
+        json['legendStyle'] ?? json['legend']?['font'],
+      ),
+      smoothLines:
+          json['smoothLines'] ?? json['line']?['shape'] == 'spline' ?? false,
+      padding: _parsePadding(json['padding'] ?? json['margin']),
+      showPoints: json['showPoints'] ?? true,
+      showGrid: json['showGrid'] ??
+          json['showgrid'] ??
+          json['xaxis']?['showgrid'] ??
+          json['yaxis']?['showgrid'] ??
+          true,
+      showLegend: json['showLegend'] ?? json['showlegend'] ?? true,
+      gridLineWidth: (json['gridLineWidth'] ?? 1.0).toDouble(),
+      horizontalGridLines:
+          (json['horizontalGridLines'] ?? json['yaxis']?['nticks'] ?? 5)
+              .toInt(),
+      animation: ChartAnimation.fromJson(json['animation'] ?? {}),
+      legendPosition: _parseLegendPosition(
+        json['legendPosition'] ?? json['legend']?['orientation'],
+      ),
+      crosshair: json['crosshair'] != null
+          ? CrosshairConfig.fromJson(json['crosshair'])
+          : null,
+      forceYAxisFromZero: json['forceYAxisFromZero'] ??
+          json['yaxis']?['rangemode'] == 'tozero' ??
+          false,
+      tooltipStyle: MultiLineTooltipStyle.fromJson(
+        json['tooltipStyle'] ?? json['hoverlabel'] ?? {},
+      ),
+    );
+  }
+
+  /// Helper method to parse text style from JSON
+  static TextStyle? _parseTextStyle(dynamic textStyle) {
+    if (textStyle == null) return null;
+
+    if (textStyle is Map<String, dynamic>) {
+      return TextStyle(
+        fontSize: (textStyle['size'] ?? textStyle['fontSize'] ?? 12).toDouble(),
+        fontWeight: MultiLineTooltipStyle._parseFontWeight(
+          textStyle['weight'] ?? textStyle['fontWeight'],
+        ),
+        color: textStyle['color'] != null
+            ? ChartDataPoint._parseColor(textStyle['color'])
+            : null,
+      );
+    }
+
+    return null;
+  }
+
+  /// Helper method to parse padding from JSON
+  static EdgeInsets _parsePadding(dynamic padding) {
+    if (padding == null) return const EdgeInsets.all(20);
+
+    if (padding is Map<String, dynamic>) {
+      return EdgeInsets.only(
+        left: (padding['left'] ?? padding['l'] ?? 20).toDouble(),
+        top: (padding['top'] ?? padding['t'] ?? 20).toDouble(),
+        right: (padding['right'] ?? padding['r'] ?? 20).toDouble(),
+        bottom: (padding['bottom'] ?? padding['b'] ?? 20).toDouble(),
+      );
+    }
+
+    return const EdgeInsets.all(20);
+  }
+
+  /// Helper method to parse legend position from string
+  static LegendPosition _parseLegendPosition(dynamic position) {
+    if (position == null) return LegendPosition.bottom;
+
+    if (position is String) {
+      switch (position.toLowerCase()) {
+        case 'top':
+          return LegendPosition.top;
+        case 'left':
+          return LegendPosition.left;
+        case 'right':
+          return LegendPosition.right;
+        case 'bottom':
+        default:
+          return LegendPosition.bottom;
+      }
+    }
+
+    return LegendPosition.bottom;
+  }
+
   /// Creates a copy of the current [MultiLineChartStyle] instance with optional overrides.
   ///
   /// This method allows modification of the existing style while retaining
@@ -189,6 +532,7 @@ class MultiLineChartStyle {
     LegendPosition? legendPosition,
     CrosshairConfig? crosshair,
     bool? forceYAxisFromZero,
+    MultiLineTooltipStyle? tooltipStyle,
   }) {
     return MultiLineChartStyle(
       colors: colors ?? this.colors,
@@ -209,6 +553,7 @@ class MultiLineChartStyle {
       legendPosition: legendPosition ?? this.legendPosition,
       crosshair: crosshair ?? this.crosshair,
       forceYAxisFromZero: forceYAxisFromZero ?? this.forceYAxisFromZero,
+      tooltipStyle: tooltipStyle ?? this.tooltipStyle,
     );
   }
 }
@@ -251,6 +596,35 @@ class ChartAnimation {
     this.curve = Curves.easeInOut,
     this.enabled = true,
   });
+
+  /// Creates a [ChartAnimation] instance from a JSON map.
+  factory ChartAnimation.fromJson(Map<String, dynamic> json) {
+    return ChartAnimation(
+      duration: Duration(milliseconds: (json['duration'] ?? 1000).toInt()),
+      curve: _parseCurve(json['curve'] ?? 'easeInOut'),
+      enabled: json['enabled'] ?? true,
+    );
+  }
+
+  /// Helper method to parse animation curve from string
+  static Curve _parseCurve(String curveName) {
+    switch (curveName.toLowerCase()) {
+      case 'linear':
+        return Curves.linear;
+      case 'easein':
+        return Curves.easeIn;
+      case 'easeout':
+        return Curves.easeOut;
+      case 'easeinout':
+        return Curves.easeInOut;
+      case 'bouncein':
+        return Curves.bounceIn;
+      case 'bounceout':
+        return Curves.bounceOut;
+      default:
+        return Curves.easeInOut;
+    }
+  }
 }
 
 /// Configures the crosshair behavior in the chart.
@@ -274,4 +648,111 @@ class CrosshairConfig {
     this.showLabel = true,
     this.labelStyle,
   });
+
+  /// Creates a [CrosshairConfig] instance from a JSON map.
+  factory CrosshairConfig.fromJson(Map<String, dynamic> json) {
+    return CrosshairConfig(
+      lineColor: json['lineColor'] != null
+          ? ChartDataPoint._parseColor(json['lineColor'])
+          : Colors.grey,
+      lineWidth: (json['lineWidth'] ?? 1.0).toDouble(),
+      enabled: json['enabled'] ?? true,
+      showLabel: json['showLabel'] ?? true,
+      labelStyle: MultiLineChartStyle._parseTextStyle(json['labelStyle']),
+    );
+  }
+}
+
+/// JSON configuration for multi-line charts with optional Plotly compatibility.
+/// This class provides a bridge between JSON format and Flutter widgets.
+class MultiLineChartJsonConfig {
+  /// The series data for the chart
+  final List<ChartSeries> series;
+
+  /// The style configuration
+  final MultiLineChartStyle style;
+
+  /// Chart dimensions
+  final double? width;
+  final double? height;
+
+  /// Callback functions
+  final ValueChanged<ChartDataPoint>? onPointTap;
+  final ValueChanged<Offset>? onChartTap;
+
+  /// Interactive features
+  final bool enableZoom;
+  final bool enablePan;
+
+  /// Creates a [MultiLineChartJsonConfig] instance.
+  const MultiLineChartJsonConfig({
+    required this.series,
+    required this.style,
+    this.width,
+    this.height,
+    this.onPointTap,
+    this.onChartTap,
+    this.enableZoom = false,
+    this.enablePan = false,
+  });
+
+  /// Creates a [MultiLineChartJsonConfig] from a JSON map.
+  /// Supports both simple and Plotly-compatible formats.
+  factory MultiLineChartJsonConfig.fromJson(Map<String, dynamic> json) {
+    List<ChartSeries> series = [];
+    Map<String, dynamic> styleData = json['layout'] ?? json['style'] ?? {};
+
+    // Handle data parsing
+    if (json['data'] is List) {
+      final data = json['data'] as List;
+
+      // Parse each series from the data array
+      for (var seriesData in data) {
+        if (seriesData is Map<String, dynamic>) {
+          series.add(ChartSeries.fromJson(seriesData));
+        }
+      }
+    } else if (json['series'] is List) {
+      // Handle direct series format
+      final seriesData = json['series'] as List;
+      for (var seriesItem in seriesData) {
+        if (seriesItem is Map<String, dynamic>) {
+          series.add(ChartSeries.fromJson(seriesItem));
+        }
+      }
+    }
+
+    return MultiLineChartJsonConfig(
+      series: series,
+      style: MultiLineChartStyle.fromJson(styleData),
+      width: json['width']?.toDouble() ?? styleData['width']?.toDouble(),
+      height: json['height']?.toDouble() ?? styleData['height']?.toDouble(),
+      enableZoom: json['enableZoom'] ?? false,
+      enablePan: json['enablePan'] ?? false,
+    );
+  }
+
+  /// Creates a [MultiLineChartJsonConfig] from a JSON string.
+  factory MultiLineChartJsonConfig.fromJsonString(String jsonString) {
+    final json = jsonDecode(jsonString) as Map<String, dynamic>;
+    return MultiLineChartJsonConfig.fromJson(json);
+  }
+
+  /// Converts the configuration to a JSON map.
+  Map<String, dynamic> toJson() {
+    return {
+      'data': series.map((s) => s.toJson()).toList(),
+      'layout': {
+        if (width != null) 'width': width,
+        if (height != null) 'height': height,
+        'enableZoom': enableZoom,
+        'enablePan': enablePan,
+      },
+    };
+  }
+
+  /// Converts the configuration to a JSON string.
+  String toJsonString() {
+    return jsonEncode(toJson());
+  }
 }

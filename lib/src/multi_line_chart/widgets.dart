@@ -40,6 +40,131 @@ class MultiLineChart extends StatefulWidget {
     this.enablePan = false,
   });
 
+  /// Creates a [MultiLineChart] from JSON configuration.
+  /// Supports both simple and Plotly-compatible formats.
+  factory MultiLineChart.fromJson(Map<String, dynamic> json) {
+    final config = MultiLineChartJsonConfig.fromJson(json);
+    return MultiLineChart(
+      series: config.series,
+      style: config.style,
+      height: config.height,
+      width: config.width,
+      onPointTap: config.onPointTap,
+      onChartTap: config.onChartTap,
+      enableZoom: config.enableZoom,
+      enablePan: config.enablePan,
+    );
+  }
+
+  /// Creates a [MultiLineChart] from a JSON string.
+  /// Supports both simple and Plotly-compatible formats.
+  factory MultiLineChart.fromJsonString(String jsonString) {
+    final config = MultiLineChartJsonConfig.fromJsonString(jsonString);
+    return MultiLineChart(
+      series: config.series,
+      style: config.style,
+      height: config.height,
+      width: config.width,
+      onPointTap: config.onPointTap,
+      onChartTap: config.onChartTap,
+      enableZoom: config.enableZoom,
+      enablePan: config.enablePan,
+    );
+  }
+
+  /// Creates a [MultiLineChart] from simple data arrays.
+  /// This is a convenience constructor for quick chart creation.
+  factory MultiLineChart.fromData({
+    required List<String> labels,
+    required List<List<double>> seriesData,
+    required List<String> seriesNames,
+    Map<String, dynamic>? style,
+    double? width,
+    double? height,
+    List<Color>? colors,
+    bool enableZoom = false,
+    bool enablePan = false,
+    ValueChanged<ChartDataPoint>? onPointTap,
+    ValueChanged<Offset>? onChartTap,
+  }) {
+    final series = <ChartSeries>[];
+
+    for (int i = 0; i < seriesData.length && i < seriesNames.length; i++) {
+      final dataPoints = <ChartDataPoint>[];
+      final values = seriesData[i];
+
+      for (int j = 0; j < labels.length && j < values.length; j++) {
+        dataPoints.add(ChartDataPoint(value: values[j], label: labels[j]));
+      }
+
+      series.add(
+        ChartSeries(
+          name: seriesNames[i],
+          dataPoints: dataPoints,
+          color: colors != null && i < colors.length ? colors[i] : null,
+        ),
+      );
+    }
+
+    final defaultColors = colors ??
+        [
+          Colors.blue,
+          Colors.red,
+          Colors.green,
+          Colors.orange,
+          Colors.purple,
+          Colors.teal,
+          Colors.pink,
+          Colors.indigo,
+        ];
+
+    final chartStyle = style != null
+        ? MultiLineChartStyle.fromJson({
+            ...style,
+            'colors': defaultColors
+                .map(
+                  (c) => '#${c.toARGB32().toRadixString(16).padLeft(8, '0')}',
+                )
+                .toList(),
+          })
+        : MultiLineChartStyle(colors: defaultColors);
+
+    return MultiLineChart(
+      series: series,
+      style: chartStyle,
+      width: width,
+      height: height,
+      enableZoom: enableZoom,
+      enablePan: enablePan,
+      onPointTap: onPointTap,
+      onChartTap: onChartTap,
+    );
+  }
+
+  /// Creates a [MultiLineChart] with Plotly-style data format.
+  /// This constructor makes it easy to use Plotly JSON data directly.
+  factory MultiLineChart.fromPlotlyData({
+    required List<Map<String, dynamic>> data,
+    Map<String, dynamic>? layout,
+    double? width,
+    double? height,
+    bool enableZoom = false,
+    bool enablePan = false,
+    ValueChanged<ChartDataPoint>? onPointTap,
+    ValueChanged<Offset>? onChartTap,
+  }) {
+    final plotlyJson = {
+      'data': data,
+      if (layout != null) 'layout': layout,
+      if (width != null) 'width': width,
+      if (height != null) 'height': height,
+      'enableZoom': enableZoom,
+      'enablePan': enablePan,
+    };
+
+    return MultiLineChart.fromJson(plotlyJson);
+  }
+
   @override
   MultiLineChartState createState() => MultiLineChartState();
 }
@@ -97,10 +222,12 @@ class MultiLineChartState extends State<MultiLineChart>
         _containerSize = Size(width, height); // Set the container size.
 
         return MouseRegion(
-          onEnter: (_) => setState(() => _crosshairPosition =
-              null), // Hide the crosshair when the mouse enters.
-          onExit: (_) => setState(() => _crosshairPosition =
-              null), // Hide the crosshair when the mouse exits.
+          onEnter: (_) => setState(
+            () => _crosshairPosition = null,
+          ), // Hide the crosshair when the mouse enters.
+          onExit: (_) => setState(
+            () => _crosshairPosition = null,
+          ), // Hide the crosshair when the mouse exits.
           onHover: (PointerHoverEvent event) {
             setState(() {
               _crosshairPosition = event
@@ -114,10 +241,14 @@ class MultiLineChartState extends State<MultiLineChart>
                   onScaleUpdate:
                       _handleScaleUpdate, // Handle scale update gesture.
                   child: _buildChartContent(
-                      width, height), // Build the chart content.
+                    width,
+                    height,
+                  ), // Build the chart content.
                 )
-              : _buildChartContent(width,
-                  height), // Just build the chart content without gestures.
+              : _buildChartContent(
+                  width,
+                  height,
+                ), // Just build the chart content without gestures.
         );
       },
     );
@@ -149,8 +280,10 @@ class MultiLineChartState extends State<MultiLineChart>
               scale: _scale, // Current scale factor.
               panOffset: _panOffset, // Current pan offset.
             ),
-            size:
-                Size(width, height), // Set the size of the CustomPaint widget.
+            size: Size(
+              width,
+              height,
+            ), // Set the size of the CustomPaint widget.
           );
         },
       ),
@@ -191,8 +324,10 @@ class MultiLineChartState extends State<MultiLineChart>
     setState(() {
       if (widget.enableZoom) {
         // Update scale first, clamping it to the defined limits.
-        final newScale = (_scale * details.scale)
-            .clamp(1.0, 3.0); // Minimum scale is 1.0, maximum is 3.0.
+        final newScale = (_scale * details.scale).clamp(
+          1.0,
+          3.0,
+        ); // Minimum scale is 1.0, maximum is 3.0.
         _scale = newScale;
       }
 
