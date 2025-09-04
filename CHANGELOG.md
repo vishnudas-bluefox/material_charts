@@ -2,6 +2,55 @@
 
 All notable changes to this project will be documented in this file.
 
+## [0.0.32] - 2025-01-XX
+
+### Added
+
+- **Enhanced Line Chart Interactive Features** - Advanced hover functionality with vertical line indicators
+- **Customizable Vertical Hover Lines** - Support for solid, dashed, and dotted vertical hover line styles
+- **Advanced Tooltip System** - Improved tooltip positioning, styling, and point highlighting
+- **Enhanced Point Highlighting** - Visual feedback with enlarged points and white borders on hover
+- **Improved Curve Rendering** - Better bezier curve algorithms for smoother line connections
+- **Line Style Enumeration** - New `LineStyle` enum supporting solid, dashed, and dotted line styles
+
+### Features
+
+- **Interactive Hover System**:
+  - Vertical hover line with customizable color, width, style, and opacity
+  - Smart tooltip positioning to prevent off-screen display
+  - Point highlighting with 1.5x size increase and white border
+  - Configurable hover detection distance (20px threshold)
+- **Enhanced Line Rendering**:
+  - Improved curved line path generation with better control points
+  - Better handling of rounded points for different line types
+  - Smoother bezier curve interpolation with intensity control
+  - Optimized stroke cap and join handling for curved vs straight lines
+- **Advanced Tooltip Features**:
+  - Customizable background, border, and text styling
+  - Automatic positioning adjustment to stay within chart bounds
+  - Configurable padding and border radius
+
+### Changed
+
+- **Line Chart Architecture** - Enhanced painter system for better hover interaction handling
+- **Curve Generation** - Improved cubic bezier curve algorithms for smoother line rendering
+- **Tooltip Positioning** - Smart positioning system to prevent tooltip overflow
+- **Point Rendering** - Better visual feedback system for hovered data points
+
+### Fixed
+
+- **Curved Line Rendering** - Fixed handling of rounded points with curved lines for better visual consistency
+- **Bezier Curve Smoothness** - Improved control point generation for more natural curve transitions
+- **Tooltip Overflow** - Fixed tooltip positioning to prevent display outside chart boundaries
+- **Hover Detection** - Enhanced point detection accuracy with configurable distance thresholds
+
+### Technical Details
+
+- **Performance**: Optimized hover detection and rendering pipeline
+- **Compatibility**: Fully backward compatible with existing line chart implementations
+- **Architecture**: Enhanced painter system with better separation of concerns
+- **Styling**: Comprehensive styling options for all interactive elements
+
 ## [0.0.31] - 2025-09-04
 
 ### Added

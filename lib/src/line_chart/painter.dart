@@ -53,8 +53,10 @@ class LineChartPainter extends CustomPainter {
 
         // Check if we are hovering over a data point and tooltips are enabled
         if (style.showTooltips) {
-          final pointIndex =
-              _getDataPointIndexAtPosition(verticalLineX, chartArea);
+          final pointIndex = _getDataPointIndexAtPosition(
+            verticalLineX,
+            chartArea,
+          );
           if (pointIndex != null) {
             // Draw the tooltip if hovering over a data point
             _drawTooltip(canvas, chartArea, pointIndex);
@@ -83,8 +85,9 @@ class LineChartPainter extends CustomPainter {
   /// Draws the vertical hover line with custom styling
   void _drawVerticalHoverLine(Canvas canvas, Rect chartArea, double x) {
     final verticalLinePaint = Paint()
-      ..color =
-          style.verticalLineColor.withValues(alpha: style.verticalLineOpacity)
+      ..color = style.verticalLineColor.withValues(
+        alpha: style.verticalLineOpacity,
+      )
       ..strokeWidth = style.verticalLineWidth;
 
     final startPoint = Offset(x, chartArea.top);
@@ -316,19 +319,28 @@ class LineChartPainter extends CustomPainter {
   }
 
   /// Draws the line connecting the data points based on the current progress.
+  /// FIXED: Improved handling of rounded points with curved lines
   void _drawLine(Canvas canvas, Rect chartArea) {
     final linePaint = Paint()
       ..color = style.lineColor // Set the line color
       ..strokeWidth = style.strokeWidth // Set the stroke width
       ..style = PaintingStyle.stroke; // Set paint style to stroke
 
-    // Apply rounded points styling if enabled
-    if (style.roundedPoints) {
-      linePaint.strokeCap = StrokeCap.round; // Set stroke cap to round
-      linePaint.strokeJoin = StrokeJoin.round; // Set stroke join to round
+    // FIXED: Better handling of rounded points for different line types
+    if (style.useCurvedLines) {
+      // For curved lines, always use round caps for smooth appearance
+      linePaint.strokeCap = StrokeCap.round;
+      // For curved lines, avoid rounded joins as they interfere with curve smoothness
+      linePaint.strokeJoin = StrokeJoin.round;
     } else {
-      linePaint.strokeCap = StrokeCap.butt; // Set stroke cap to butt
-      linePaint.strokeJoin = StrokeJoin.miter; // Set stroke join to miter
+      // For straight lines, apply the roundedPoints setting
+      if (style.roundedPoints) {
+        linePaint.strokeCap = StrokeCap.round;
+        linePaint.strokeJoin = StrokeJoin.round;
+      } else {
+        linePaint.strokeCap = StrokeCap.butt;
+        linePaint.strokeJoin = StrokeJoin.miter;
+      }
     }
 
     final points = _getPointCoordinates(
@@ -337,7 +349,7 @@ class LineChartPainter extends CustomPainter {
 
     final Path path;
     if (style.useCurvedLines) {
-      path = _createCurvedPath(points); // Create curved path
+      path = _createSmoothCurvedPath(points); // FIXED: Better curve creation
     } else {
       path = _createStraightPath(points); // Create straight path
     }
@@ -368,8 +380,8 @@ class LineChartPainter extends CustomPainter {
     return path;
   }
 
-  /// Creates a curved/smooth line path connecting all points using bezier curves.
-  Path _createCurvedPath(List<Offset> points) {
+  /// FIXED: Creates a smoother curved path with better bezier curve handling
+  Path _createSmoothCurvedPath(List<Offset> points) {
     if (points.length < 2) return _createStraightPath(points);
 
     final path = Path();
@@ -381,91 +393,61 @@ class LineChartPainter extends CustomPainter {
       return path;
     }
 
-    // Create smooth curves using quadratic bezier curves
-    for (int i = 0; i < points.length - 1; i++) {
-      final current = points[i];
-      final next = points[i + 1];
+    // Use a single continuous cubic bezier path for smoother curves
+    final controlPoints = _generateSmoothControlPoints(points);
 
-      if (i == 0) {
-        // First segment - use quadratic curve
-        final controlPoint = _getControlPoint(
-          current,
-          next,
-          points[i + 2],
-          true,
-        );
-        path.quadraticBezierTo(
-          controlPoint.dx,
-          controlPoint.dy,
-          (current.dx + next.dx) / 2,
-          (current.dy + next.dy) / 2,
-        );
-      } else if (i == points.length - 2) {
-        // Last segment - complete the curve to the final point
-        final controlPoint = _getControlPoint(
-          points[i - 1],
-          current,
-          next,
-          false,
-        );
-        path.quadraticBezierTo(
-          controlPoint.dx,
-          controlPoint.dy,
-          next.dx,
-          next.dy,
-        );
-      } else {
-        // Middle segments - use smooth curves
-        final controlPoint = _getControlPoint(
-          points[i - 1],
-          current,
-          next,
-          false,
-        );
-        path.quadraticBezierTo(
-          controlPoint.dx,
-          controlPoint.dy,
-          (current.dx + next.dx) / 2,
-          (current.dy + next.dy) / 2,
-        );
-      }
+    for (int i = 0; i < points.length - 1; i++) {
+      final next = points[i + 1];
+      final cp1 = controlPoints[i * 2];
+      final cp2 = controlPoints[i * 2 + 1];
+
+      path.cubicTo(cp1.dx, cp1.dy, cp2.dx, cp2.dy, next.dx, next.dy);
     }
 
     return path;
   }
 
-  /// Calculates a control point for smooth bezier curves.
-  Offset _getControlPoint(
-    Offset prev,
-    Offset current,
-    Offset next,
-    bool isFirst,
-  ) {
+  /// FIXED: Generates smooth control points for cubic bezier curves
+  List<Offset> _generateSmoothControlPoints(List<Offset> points) {
+    final controlPoints = <Offset>[];
     final intensity = style.curveIntensity.clamp(0.0, 1.0);
 
-    if (isFirst) {
-      // For the first point, create control point based on current and next
-      final direction = Offset(next.dx - current.dx, next.dy - current.dy);
-      return Offset(
-        current.dx + direction.dx * intensity * 0.3,
-        current.dy + direction.dy * intensity * 0.3,
-      );
-    } else {
-      // For middle points, create smooth control point
-      final prevDirection = Offset(current.dx - prev.dx, current.dy - prev.dy);
-      final nextDirection = Offset(next.dx - current.dx, next.dy - current.dy);
+    for (int i = 0; i < points.length - 1; i++) {
+      final current = points[i];
+      final next = points[i + 1];
 
-      // Average the directions for smooth transition
-      final avgDirection = Offset(
-        (prevDirection.dx + nextDirection.dx) / 2,
-        (prevDirection.dy + nextDirection.dy) / 2,
-      );
+      // Calculate smooth control points
+      final distance = (next - current).distance;
+      final controlDistance = distance * intensity * 0.4;
 
-      return Offset(
-        current.dx + avgDirection.dx * intensity * 0.3,
-        current.dy + avgDirection.dy * intensity * 0.3,
-      );
+      Offset cp1, cp2;
+
+      if (i == 0) {
+        // First segment
+        cp1 = current + Offset(controlDistance, 0);
+        cp2 = next - Offset(controlDistance, 0);
+      } else if (i == points.length - 2) {
+        // Last segment
+        cp1 = current + Offset(controlDistance, 0);
+        cp2 = next - Offset(controlDistance, 0);
+      } else {
+        // Middle segments - create smooth transitions
+        final prev = points[i - 1];
+        final after = i + 2 < points.length ? points[i + 2] : next;
+
+        // Calculate tangent directions
+        final tangent1 = (next - prev).normalized() * controlDistance;
+        final tangent2 = (after - current).normalized() * controlDistance;
+
+        cp1 = current + tangent1;
+        cp2 = next - tangent2;
+      }
+
+      controlPoints.add(cp1);
+      controlPoints.add(cp2);
     }
+
+    return controlPoints;
   }
 
   /// Draws the individual points on the line chart.
@@ -565,5 +547,14 @@ class LineChartPainter extends CustomPainter {
         oldDelegate.horizontalGridLines != horizontalGridLines ||
         oldDelegate.hoverPosition !=
             hoverPosition; // Check hover position change
+  }
+}
+
+/// Extension to normalize Offset vectors
+extension OffsetExtension on Offset {
+  Offset normalized() {
+    final length = distance;
+    if (length == 0) return Offset.zero;
+    return this / length;
   }
 }
