@@ -2,6 +2,48 @@
 
 All notable changes to this project will be documented in this file.
 
+## [0.0.31] - 2025-09-04
+
+### Added
+
+- **Enhanced Stacked Bar Chart JSON Support** - Comprehensive JSON integration for MaterialStackedBarChart
+- **Factory Constructors for Stacked Bar Charts** - Added `fromJson()`, `fromJsonString()`, and `fromData()` constructors
+- **Interactive Hover Functionality** - Enhanced user experience with hover effects on stacked bar charts
+- **Improved Color Parsing** - Better color validation and parsing utilities for JSON configurations
+- **Plotly Format Support** - Seamless conversion from Plotly JSON configurations to stacked bar charts
+
+### Features
+
+- **JSON Format Support**:
+  - Simple format for basic stacked bar charts
+  - Plotly-compatible format for existing configurations
+  - Advanced format with full customization options
+- **Factory Constructors**:
+  - `MaterialStackedBarChart.fromJson()` - Create from JSON map
+  - `MaterialStackedBarChart.fromJsonString()` - Create from JSON string
+  - `MaterialStackedBarChart.fromData()` - Quick creation from arrays
+- **Interactive Features**:
+  - Hover effects with detailed segment information
+  - Smooth animations and transitions
+  - Responsive design for various screen sizes
+- **Enhanced Error Handling**:
+  - Comprehensive validation for JSON inputs
+  - Better error messages and debugging support
+  - Graceful fallbacks for malformed data
+
+### Changed
+
+- Enhanced stacked bar chart architecture for better JSON integration
+- Improved color parsing and validation system
+- Better error handling and validation for JSON inputs
+- Enhanced documentation and examples for JSON usage
+
+### Technical Details
+
+- **Performance**: Optimized JSON parsing and chart rendering
+- **Compatibility**: Fully backward compatible with previous versions
+- **Migration**: Easy conversion from existing stacked bar chart implementations
+
 ## [0.0.30] - 2025-08-20
 
 ### Fixed
