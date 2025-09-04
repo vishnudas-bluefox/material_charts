@@ -27,7 +27,10 @@ class StackedBarSegment {
 
   /// Creates a [StackedBarSegment] from JSON data.
   /// Supports both simple and Plotly-compatible formats.
-  factory StackedBarSegment.fromJson(Map<String, dynamic> json, {Color? defaultColor}) {
+  factory StackedBarSegment.fromJson(
+    Map<String, dynamic> json, {
+    Color? defaultColor,
+  }) {
     return StackedBarSegment(
       value: (json['y'] ?? json['value'] ?? 0.0).toDouble(),
       label: json['name'] ?? json['label'],
@@ -61,7 +64,8 @@ class StackedBarSegment {
       } else if (colorValue.startsWith('rgba(')) {
         // Parse rgba(r, g, b, a) format
         final rgba = colorValue.replaceAll('rgba(', '').replaceAll(')', '');
-        final parts = rgba.split(',').map((e) => double.parse(e.trim())).toList();
+        final parts =
+            rgba.split(',').map((e) => double.parse(e.trim())).toList();
         return Color.fromRGBO(
           parts[0].toInt(),
           parts[1].toInt(),
@@ -75,7 +79,7 @@ class StackedBarSegment {
 
   /// Helper method to convert Color to hex string
   static String _colorToHex(Color color) {
-    return '#${color.value.toRadixString(16).padLeft(8, '0')}';
+    return '#${color.toARGB32().toRadixString(16).padLeft(8, '0')}';
   }
 }
 
@@ -90,10 +94,7 @@ class StackedBarData {
   final List<StackedBarSegment> segments;
 
   /// Constructs [StackedBarData] with a required label and list of segments.
-  const StackedBarData({
-    required this.label,
-    required this.segments,
-  });
+  const StackedBarData({required this.label, required this.segments});
 
   /// Computes the total value by summing all segment values in the bar.
   ///
@@ -110,16 +111,16 @@ class StackedBarData {
       return StackedBarData(
         label: json['label'] ?? '',
         segments: segmentsList
-            .map((s) => StackedBarSegment.fromJson(s as Map<String, dynamic>))
+            .map(
+              (s) => StackedBarSegment.fromJson(s as Map<String, dynamic>),
+            )
             .toList(),
       );
     } else {
       // Single segment format
       return StackedBarData(
         label: json['x'] ?? json['label'] ?? '',
-        segments: [
-          StackedBarSegment.fromJson(json),
-        ],
+        segments: [StackedBarSegment.fromJson(json)],
       );
     }
   }
@@ -186,8 +187,10 @@ class YAxisConfig {
       showGridLines: json['showgrid'] ?? true,
       labelStyle: _parseTextStyle(json['tickfont']),
       axisWidth: (json['tickwidth'] ?? 50.0).toDouble(),
-      labelFormatter: json['tickformat'] != null 
-          ? (value) => value.toStringAsFixed(json['tickformat'].contains('.') ? 1 : 0)
+      labelFormatter: json['tickformat'] != null
+          ? (value) => value.toStringAsFixed(
+                json['tickformat'].contains('.') ? 1 : 0,
+              )
           : null,
     );
   }
@@ -211,7 +214,9 @@ class YAxisConfig {
     if (textStyle is Map<String, dynamic>) {
       return TextStyle(
         fontSize: (textStyle['size'] ?? textStyle['fontSize'] ?? 12).toDouble(),
-        fontWeight: _parseFontWeight(textStyle['weight'] ?? textStyle['fontWeight']),
+        fontWeight: _parseFontWeight(
+          textStyle['weight'] ?? textStyle['fontWeight'],
+        ),
         color: textStyle['color'] != null
             ? StackedBarSegment._parseColor(textStyle['color'])
             : null,
@@ -259,8 +264,10 @@ class YAxisConfig {
   static Map<String, dynamic> _textStyleToJson(TextStyle style) {
     return {
       if (style.fontSize != null) 'size': style.fontSize,
-      if (style.fontWeight != null) 'weight': _fontWeightToString(style.fontWeight!),
-      if (style.color != null) 'color': StackedBarSegment._colorToHex(style.color!),
+      if (style.fontWeight != null)
+        'weight': _fontWeightToString(style.fontWeight!),
+      if (style.color != null)
+        'color': StackedBarSegment._colorToHex(style.color!),
     };
   }
 
@@ -285,8 +292,6 @@ class YAxisConfig {
         return 'w800';
       case FontWeight.w900:
         return 'w900';
-      case FontWeight.bold:
-        return 'bold';
       default:
         return 'normal';
     }
@@ -363,16 +368,19 @@ class StackedBarChartStyle {
               ? StackedBarSegment._parseColor(json['paper_bgcolor'])
               : Colors.white,
       labelStyle: YAxisConfig._parseTextStyle(
-          json['font'] ?? json['xaxis']?['tickfont']),
+        json['font'] ?? json['xaxis']?['tickfont'],
+      ),
       valueStyle: YAxisConfig._parseTextStyle(
-          json['valueStyle'] ?? json['font'] ?? json['annotations']?[0]?['font']),
+        json['valueStyle'] ?? json['font'] ?? json['annotations']?[0]?['font'],
+      ),
       barSpacing: (json['bargap'] ?? 0.2).toDouble(),
       cornerRadius: (json['shapes']?[0]?['cornerradius'] ?? 4.0).toDouble(),
       animationDuration: Duration(
         milliseconds: (json['transition']?['duration'] ?? 1500).toInt(),
       ),
       animationCurve: _parseCurve(
-          json['transition']?['easing'] ?? 'cubic-in-out'),
+        json['transition']?['easing'] ?? 'cubic-in-out',
+      ),
       yAxisConfig: YAxisConfig.fromJson(json['yaxis']),
     );
   }
@@ -388,9 +396,7 @@ class StackedBarChartStyle {
         'easing': _curveToString(animationCurve),
       },
       if (yAxisConfig != null) 'yaxis': yAxisConfig!.toJson(),
-      'xaxis': {
-        'gridcolor': StackedBarSegment._colorToHex(gridColor),
-      },
+      'xaxis': {'gridcolor': StackedBarSegment._colorToHex(gridColor)},
       'yaxis': {
         ...?yAxisConfig?.toJson(),
         'gridcolor': StackedBarSegment._colorToHex(gridColor),
@@ -494,18 +500,22 @@ class StackedBarChartJsonConfig {
         // Handle Plotly format
         final plotlyData = json['data'] as List<dynamic>? ?? [];
         layoutConfig = json['layout'] as Map<String, dynamic>? ?? {};
-        
+
         _validatePlotlyData(plotlyData);
         processedData = _processPlotlyData(plotlyData);
       } else if (_isSimpleStackedFormat(json)) {
         // Handle simple stacked format
         final simpleData = json['data'] as List<dynamic>? ?? [];
-        layoutConfig = json['style'] as Map<String, dynamic>? ?? json['layout'] as Map<String, dynamic>? ?? {};
-        
+        layoutConfig = json['style'] as Map<String, dynamic>? ??
+            json['layout'] as Map<String, dynamic>? ??
+            {};
+
         _validateSimpleData(simpleData);
         processedData = _processSimpleData(simpleData);
       } else {
-        throw ArgumentError('Unsupported JSON format. Expected Plotly format with data/layout or simple format with data/style');
+        throw ArgumentError(
+          'Unsupported JSON format. Expected Plotly format with data/layout or simple format with data/style',
+        );
       }
 
       return StackedBarChartJsonConfig(
@@ -531,7 +541,7 @@ class StackedBarChartJsonConfig {
       if (jsonString.trim().isEmpty) {
         throw ArgumentError('JSON string cannot be empty');
       }
-      
+
       final json = jsonDecode(jsonString) as Map<String, dynamic>;
       return StackedBarChartJsonConfig.fromJson(json);
     } catch (e) {
@@ -549,10 +559,7 @@ class StackedBarChartJsonConfig {
         'height': height,
         'margin': _paddingToPlotlyMargin(padding),
       },
-      'config': {
-        ...config,
-        'displayModeBar': interactive,
-      },
+      'config': {...config, 'displayModeBar': interactive},
     };
   }
 
@@ -564,30 +571,28 @@ class StackedBarChartJsonConfig {
   /// Validation: Check if JSON follows Plotly format
   static bool _isPlotlyFormat(Map<String, dynamic> json) {
     if (!json.containsKey('data') || json['data'] is! List) return false;
-    
+
     final data = json['data'] as List;
     if (data.isEmpty) return false;
-    
+
     final firstItem = data[0];
     if (firstItem is! Map<String, dynamic>) return false;
-    
+
     // Check for Plotly-specific properties
-    return (firstItem as Map<String, dynamic>).containsKey('x') && 
-           (firstItem as Map<String, dynamic>).containsKey('y');
+    return firstItem.containsKey('x') && firstItem.containsKey('y');
   }
 
   /// Validation: Check if JSON follows simple stacked format
   static bool _isSimpleStackedFormat(Map<String, dynamic> json) {
     if (!json.containsKey('data') || json['data'] is! List) return false;
-    
+
     final data = json['data'] as List;
     if (data.isEmpty) return false;
-    
+
     final firstItem = data[0];
     if (firstItem is! Map<String, dynamic>) return false;
-    
-    final firstMap = firstItem as Map<String, dynamic>;
-    return firstMap.containsKey('label') || firstMap.containsKey('segments');
+
+    return firstItem.containsKey('label') || firstItem.containsKey('segments');
   }
 
   /// Validation: Validate Plotly data structure
@@ -602,25 +607,23 @@ class StackedBarChartJsonConfig {
         throw ArgumentError('Plotly trace $i must be a Map');
       }
 
-      final traceMap = trace as Map<String, dynamic>;
-      
+      final traceMap = trace;
+
       if (!traceMap.containsKey('x') || !traceMap.containsKey('y')) {
         throw ArgumentError('Plotly trace $i must contain x and y arrays');
       }
 
-      final x = traceMap['x'];
-      final y = traceMap['y'];
-      
-      if (x is! List || y is! List) {
-        throw ArgumentError('Plotly trace $i x and y must be arrays');
-      }
+      final x = traceMap['x'] as List;
+      final y = traceMap['y'] as List;
 
-      if ((x as List).isEmpty || (y as List).isEmpty) {
+      if (x.isEmpty || y.isEmpty) {
         throw ArgumentError('Plotly trace $i x and y arrays cannot be empty');
       }
 
       if (x.length != y.length) {
-        throw ArgumentError('Plotly trace $i x and y arrays must have the same length');
+        throw ArgumentError(
+          'Plotly trace $i x and y arrays must have the same length',
+        );
       }
     }
   }
@@ -637,25 +640,31 @@ class StackedBarChartJsonConfig {
         throw ArgumentError('Simple data item $i must be a Map');
       }
 
-      final itemMap = item as Map<String, dynamic>;
-      
+      final itemMap = item;
+
       if (!itemMap.containsKey('label') && !itemMap.containsKey('segments')) {
-        throw ArgumentError('Simple data item $i must contain label and/or segments');
+        throw ArgumentError(
+          'Simple data item $i must contain label and/or segments',
+        );
       }
 
       if (itemMap.containsKey('segments')) {
         final segments = itemMap['segments'];
-        if (segments is! List || (segments as List).isEmpty) {
-          throw ArgumentError('Simple data item $i segments must be a non-empty array');
+        if (segments is! List || segments.isEmpty) {
+          throw ArgumentError(
+            'Simple data item $i segments must be a non-empty array',
+          );
         }
       }
     }
   }
 
   /// Process Plotly data into internal format
-  static List<Map<String, dynamic>> _processPlotlyData(List<dynamic> plotlyData) {
+  static List<Map<String, dynamic>> _processPlotlyData(
+    List<dynamic> plotlyData,
+  ) {
     final Map<String, List<Map<String, dynamic>>> categoryTraces = {};
-    
+
     // Group traces by category (x values)
     for (final trace in plotlyData) {
       final traceMap = trace as Map<String, dynamic>;
@@ -663,11 +672,11 @@ class StackedBarChartJsonConfig {
       final yValues = traceMap['y'] as List;
       final traceName = traceMap['name'] ?? 'Series';
       final color = _extractTraceColor(traceMap);
-      
+
       for (int i = 0; i < xValues.length && i < yValues.length; i++) {
         final category = xValues[i].toString();
         final value = (yValues[i] ?? 0.0).toDouble();
-        
+
         categoryTraces[category] ??= [];
         categoryTraces[category]!.add({
           'value': value,
@@ -676,18 +685,27 @@ class StackedBarChartJsonConfig {
         });
       }
     }
-    
+
     // Convert to expected format
-    return categoryTraces.entries.map((entry) => {
-      'x': entry.key,
-      'label': entry.key,
-      'segments': entry.value,
-      'totalValue': entry.value.fold<double>(0, (sum, segment) => sum + (segment['value'] as double)),
-    }).toList();
+    return categoryTraces.entries
+        .map(
+          (entry) => {
+            'x': entry.key,
+            'label': entry.key,
+            'segments': entry.value,
+            'totalValue': entry.value.fold<double>(
+              0,
+              (sum, segment) => sum + (segment['value'] as double),
+            ),
+          },
+        )
+        .toList();
   }
 
   /// Process simple data into internal format
-  static List<Map<String, dynamic>> _processSimpleData(List<dynamic> simpleData) {
+  static List<Map<String, dynamic>> _processSimpleData(
+    List<dynamic> simpleData,
+  ) {
     return simpleData.cast<Map<String, dynamic>>().map((item) {
       final segments = item['segments'] as List<dynamic>? ?? [];
       final processedSegments = segments.map((segment) {
@@ -698,11 +716,14 @@ class StackedBarChartJsonConfig {
           'label': segmentMap['label'] ?? segmentMap['name'],
         };
       }).toList();
-      
+
       return {
         'label': item['label'] ?? item['x'] ?? '',
         'segments': processedSegments,
-        'totalValue': processedSegments.fold<double>(0, (sum, segment) => sum + (segment['value'] as double)),
+        'totalValue': processedSegments.fold<double>(
+          0,
+          (sum, segment) => sum + (segment['value'] as double),
+        ),
       };
     }).toList();
   }
@@ -719,53 +740,78 @@ class StackedBarChartJsonConfig {
   }
 
   /// Extract chart width from configuration
-  static double _extractWidth(Map<String, dynamic> layout, Map<String, dynamic> root) {
+  static double _extractWidth(
+    Map<String, dynamic> layout,
+    Map<String, dynamic> root,
+  ) {
     return (layout['width'] ?? root['width'] ?? 800).toDouble();
   }
 
   /// Extract chart height from configuration
-  static double _extractHeight(Map<String, dynamic> layout, Map<String, dynamic> root) {
+  static double _extractHeight(
+    Map<String, dynamic> layout,
+    Map<String, dynamic> root,
+  ) {
     return (layout['height'] ?? root['height'] ?? 400).toDouble();
   }
 
   /// Extract showGrid setting from configuration
-  static bool _extractShowGrid(Map<String, dynamic> layout, Map<String, dynamic> root) {
-    return layout['xaxis']?['showgrid'] ?? 
-           layout['yaxis']?['showgrid'] ?? 
-           layout['showGrid'] ??
-           root['showGrid'] ?? 
-           true;
+  static bool _extractShowGrid(
+    Map<String, dynamic> layout,
+    Map<String, dynamic> root,
+  ) {
+    return layout['xaxis']?['showgrid'] ??
+        layout['yaxis']?['showgrid'] ??
+        layout['showGrid'] ??
+        root['showGrid'] ??
+        true;
   }
 
   /// Extract showValues setting from configuration
-  static bool _extractShowValues(Map<String, dynamic> layout, Map<String, dynamic> root) {
-    return layout['showValues'] ?? 
-           root['showValues'] ?? 
-           (layout['annotations'] != null && (layout['annotations'] as List).isNotEmpty) ??
-           true;
+  static bool _extractShowValues(
+    Map<String, dynamic> layout,
+    Map<String, dynamic> root,
+  ) {
+    return layout['showValues'] ??
+        root['showValues'] ??
+        (layout['annotations'] != null &&
+            (layout['annotations'] as List).isNotEmpty) ??
+        true;
   }
 
   /// Extract padding from configuration
-  static EdgeInsets _extractPadding(Map<String, dynamic> layout, Map<String, dynamic> root) {
-    final margin = layout['margin'] ?? root['margin'] ?? layout['padding'] ?? root['padding'];
+  static EdgeInsets _extractPadding(
+    Map<String, dynamic> layout,
+    Map<String, dynamic> root,
+  ) {
+    final margin = layout['margin'] ??
+        root['margin'] ??
+        layout['padding'] ??
+        root['padding'];
     return _parsePadding(margin);
   }
 
   /// Extract horizontal grid lines count
-  static int _extractHorizontalGridLines(Map<String, dynamic> layout, Map<String, dynamic> root) {
-    return layout['yaxis']?['nticks'] ?? 
-           layout['horizontalGridLines'] ??
-           root['horizontalGridLines'] ??
-           5;
+  static int _extractHorizontalGridLines(
+    Map<String, dynamic> layout,
+    Map<String, dynamic> root,
+  ) {
+    return layout['yaxis']?['nticks'] ??
+        layout['horizontalGridLines'] ??
+        root['horizontalGridLines'] ??
+        5;
   }
 
   /// Extract interactive setting
-  static bool _extractInteractive(Map<String, dynamic> layout, Map<String, dynamic> root) {
+  static bool _extractInteractive(
+    Map<String, dynamic> layout,
+    Map<String, dynamic> root,
+  ) {
     final config = root['config'] as Map<String, dynamic>? ?? {};
-    return config['displayModeBar'] ?? 
-           layout['interactive'] ??
-           root['interactive'] ??
-           true;
+    return config['displayModeBar'] ??
+        layout['interactive'] ??
+        root['interactive'] ??
+        true;
   }
 
   /// Converts processed data to Flutter stacked bar data.
@@ -778,20 +824,19 @@ class StackedBarChartJsonConfig {
       return data.map((item) {
         final label = item['label']?.toString() ?? '';
         final segments = item['segments'] as List<dynamic>? ?? [];
-        
+
         final stackedSegments = segments.map((segment) {
           final segmentMap = segment as Map<String, dynamic>;
           return StackedBarSegment(
             value: (segmentMap['value'] ?? 0.0).toDouble(),
-            color: StackedBarSegment._parseColor(segmentMap['color'] ?? '#1f77b4'),
+            color: StackedBarSegment._parseColor(
+              segmentMap['color'] ?? '#1f77b4',
+            ),
             label: segmentMap['label']?.toString(),
           );
         }).toList();
 
-        return StackedBarData(
-          label: label,
-          segments: stackedSegments,
-        );
+        return StackedBarData(label: label, segments: stackedSegments);
       }).toList();
     } catch (e) {
       throw ArgumentError('Failed to convert data to StackedBarData: $e');
@@ -804,7 +849,6 @@ class StackedBarChartJsonConfig {
       return StackedBarChartStyle.fromJson(style);
     } catch (e) {
       // Return default style if parsing fails
-      print('Warning: Failed to parse chart style, using default: $e');
       return const StackedBarChartStyle();
     }
   }
@@ -833,29 +877,5 @@ class StackedBarChartJsonConfig {
       'r': padding.right,
       'b': padding.bottom,
     };
-  }
-
-  /// Helper method to parse colorscale from Plotly format
-  static List<Color> _parseColorscale(dynamic colorscale) {
-    if (colorscale is String) {
-      // Handle named colorscales
-      switch (colorscale.toLowerCase()) {
-        case 'viridis':
-          return [Colors.purple.shade900, Colors.green.shade400];
-        case 'plasma':
-          return [Colors.purple.shade900, Colors.pink.shade300];
-        case 'blues':
-          return [Colors.blue.shade100, Colors.blue.shade900];
-        default:
-          return [Colors.blue.shade300, Colors.blue.shade600];
-      }
-    }
-    
-    if (colorscale is List) {
-      return colorscale.map((color) => StackedBarSegment._parseColor(color)).toList();
-    }
-    
-    // Default gradient
-    return [Colors.blue.shade300, Colors.blue.shade600];
   }
 }
