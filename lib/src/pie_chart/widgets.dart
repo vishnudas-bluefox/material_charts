@@ -46,7 +46,6 @@ class MaterialPieChart extends StatefulWidget {
   ///
   /// Requires [data], [width], and [height]. Optional parameters include [style],
   /// [padding], [onAnimationComplete], and [interactive].
-
   const MaterialPieChart({
     super.key,
     required this.data,
@@ -60,6 +59,86 @@ class MaterialPieChart extends StatefulWidget {
     this.showLabelOnlyOnHover = false,
     this.chartRadius = double.maxFinite,
   });
+
+  /// Creates a [MaterialPieChart] from JSON configuration.
+  /// Supports both simple and Plotly-compatible formats.
+  factory MaterialPieChart.fromJson(Map<String, dynamic> json) {
+    final config = PieChartJsonConfig.fromJson(json);
+    return MaterialPieChart(
+      data: config.getPieChartData(),
+      width: config.width,
+      height: config.height,
+      style: config.getPieChartStyle(),
+      padding: config.padding,
+      minSizePercent: config.minSizePercent,
+      interactive: config.interactive,
+      showLabelOnlyOnHover: config.showLabelOnlyOnHover,
+      chartRadius: config.chartRadius,
+      onAnimationComplete: config.onAnimationComplete,
+    );
+  }
+
+  /// Creates a [MaterialPieChart] from a JSON string.
+  factory MaterialPieChart.fromJsonString(String jsonString) {
+    final config = PieChartJsonConfig.fromJsonString(jsonString);
+    return MaterialPieChart(
+      data: config.getPieChartData(),
+      width: config.width,
+      height: config.height,
+      style: config.getPieChartStyle(),
+      padding: config.padding,
+      minSizePercent: config.minSizePercent,
+      interactive: config.interactive,
+      showLabelOnlyOnHover: config.showLabelOnlyOnHover,
+      chartRadius: config.chartRadius,
+      onAnimationComplete: config.onAnimationComplete,
+    );
+  }
+
+  /// Creates a [MaterialPieChart] from simple data arrays.
+  /// This is a convenience constructor for quick chart creation.
+  factory MaterialPieChart.fromData({
+    required List<String> labels,
+    required List<double> values,
+    List<Color>? colors,
+    Map<String, dynamic>? style,
+    double width = 600,
+    double height = 400,
+    double minSizePercent = 0.0,
+    EdgeInsets padding = const EdgeInsets.all(24),
+    bool interactive = true,
+    bool showLabelOnlyOnHover = false,
+    double chartRadius = double.maxFinite,
+    VoidCallback? onAnimationComplete,
+  }) {
+    final data = <PieChartData>[];
+
+    for (int i = 0; i < labels.length && i < values.length; i++) {
+      data.add(
+        PieChartData(
+          value: values[i],
+          label: labels[i],
+          color: colors != null && i < colors.length ? colors[i] : null,
+        ),
+      );
+    }
+
+    final chartStyle =
+        style != null ? PieChartStyle.fromJson(style) : const PieChartStyle();
+
+    return MaterialPieChart(
+      data: data,
+      width: width,
+      height: height,
+      style: chartStyle,
+      padding: padding,
+      minSizePercent: minSizePercent,
+      interactive: interactive,
+      showLabelOnlyOnHover: showLabelOnlyOnHover,
+      chartRadius: chartRadius,
+      onAnimationComplete: onAnimationComplete,
+    );
+  }
 
   @override
   State<MaterialPieChart> createState() => _MaterialPieChartState();
@@ -236,10 +315,12 @@ class _MaterialPieChartState extends State<MaterialPieChart>
                 // Get the index of the currently hovered segment based on mouse position.
                 final newIndex = _getHoveredSegment(event.localPosition);
                 // Update state only if the hovered segment has changed.
-                if (newIndex != _hoveredSegmentIndex) {
+                if (newIndex != null) {
                   setState(() => _hoveredSegmentIndex = newIndex);
+                  if (newIndex < widget.data.length) {
+                    widget.data[newIndex].onTap?.call();
+                  }
                 }
-                (widget.data[_hoveredSegmentIndex!].onTap ?? () {})();
               }
             : null,
         child: Container(
@@ -253,11 +334,14 @@ class _MaterialPieChartState extends State<MaterialPieChart>
             builder: (context, _) {
               return CustomPaint(
                 size: Size(
-                    widget.width, widget.height), // Size of the custom painter.
+                  widget.width,
+                  widget.height,
+                ), // Size of the custom painter.
                 painter: PieChartPainter(
                   data: widget.data, // Pass the data for pie chart segments.
                   sliceSizes: _setSizes(
-                      widget.data.fold(0.0, (sum, item) => sum + item.value)),
+                    widget.data.fold(0.0, (sum, item) => sum + item.value),
+                  ),
                   // Pass the sizes of the piechart slices
                   progress: _animation.value, // Pass the animation progress.
                   style: widget.style, // Pass the style configurations.

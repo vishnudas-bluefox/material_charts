@@ -2,7 +2,7 @@
 
 All notable changes to this project will be documented in this file.
 
-## [0.0.34] - 2025-01-XX
+## [0.0.35] - 2025-09-01
 
 ### Added
 
@@ -46,6 +46,60 @@ All notable changes to this project will be documented in this file.
 - **Compatibility**: Fully backward compatible with existing area chart implementations
 - **Migration**: Easy conversion from Plotly JSON configurations to area charts
 - **Error Handling**: Comprehensive validation for JSON inputs with graceful fallbacks
+
+## [0.0.34] - 2025-09-01
+
+### Added
+
+- **Pie Chart JSON Integration** - Comprehensive JSON support for pie charts with Plotly compatibility
+- **Multiple Factory Constructors** - Added `fromJson()`, `fromJsonString()`, and `fromData()` constructors for pie charts
+- **Advanced JSON Configuration** - Support for complex styling, animations, and layout via JSON
+- **Plotly Compatibility** - Seamless conversion from Plotly JSON configurations to pie charts
+- **Enhanced Interactive Features** - Configurable hover effects, label visibility, and chart radius via JSON
+- **Comprehensive Color Support** - Multiple color formats including hex, RGB, and RGBA parsing
+
+### Features
+
+- **JSON Format Support**:
+  - Simple format for basic pie charts
+  - Plotly-compatible format for existing configurations
+  - Advanced format with full customization options
+- **Factory Constructors**:
+  - `MaterialPieChart.fromJson()` - Create from JSON map
+  - `MaterialPieChart.fromJsonString()` - Create from JSON string
+  - `MaterialPieChart.fromData()` - Quick creation from arrays
+- **Styling via JSON**:
+  - Colors, animations, and layout configuration
+  - Individual slice colors and styling properties
+  - Chart alignment, legend positioning, and interactive options
+  - Label positioning (inside/outside) and connector line styling
+- **Interactive Features**:
+  - Configurable hover effects with segment highlighting
+  - Label visibility controls (show only on hover)
+  - Customizable chart radius and padding
+  - Tap callbacks for individual segments
+- **Data Format Flexibility**:
+  - Support for value/label arrays (simple format)
+  - Support for Plotly values/labels arrays format
+  - Automatic color parsing from hex, RGB, and RGBA formats
+  - Support for minimal size percentage configuration
+
+### Changed
+
+- **Pie Chart Architecture** - Enhanced for comprehensive JSON integration
+- **Data Parsing System** - Improved to handle multiple JSON data formats
+- **Style Configuration** - Extended to support full JSON-based customization
+- **Factory Constructor System** - Added multiple convenient constructors for different use cases
+- **Interactive System** - Enhanced hover detection and visual feedback
+
+### Technical Details
+
+- **Performance**: Optimized JSON parsing and chart rendering pipeline
+- **Compatibility**: Fully backward compatible with existing pie chart implementations
+- **Migration**: Easy conversion from existing pie chart implementations
+- **Error Handling**: Comprehensive validation for JSON inputs with graceful fallbacks
+- **Chart Alignment**: Support for 9 different chart alignment positions
+- **Legend Positioning**: Configurable legend placement (right/bottom)
 
 ## [0.0.33] - 2025-01-XX
 
