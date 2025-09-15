@@ -2,6 +2,57 @@
 
 All notable changes to this project will be documented in this file.
 
+## [0.0.36] - 2025-01-XX
+
+### Added
+
+- **Candlestick Chart JSON Integration** - Comprehensive JSON support for candlestick charts with Plotly compatibility
+- **Multiple Factory Constructors for Candlestick Charts** - Added `fromPlotlyJson()` and `fromPlotlyMap()` constructors
+- **Advanced JSON Configuration for Candlestick Charts** - Support for complex styling, animations, and layout via JSON
+- **Plotly Compatibility for Candlestick Charts** - Seamless conversion from Plotly JSON configurations to candlestick charts
+- **Enhanced Data Parsing for Candlestick Charts** - Support for multiple data formats including Plotly trace objects
+- **Interactive Features via JSON for Candlestick Charts** - Configure tooltips, animations, and styling through JSON
+- **Comprehensive Color Support** - Multiple color formats including hex, RGB, and RGBA parsing for candlestick styling
+
+### Features
+
+- **JSON Format Support for Candlestick Charts**:
+  - Plotly-compatible format for existing configurations
+  - Support for OHLC (Open, High, Low, Close) data arrays
+  - Advanced format with full customization options
+  - Volume data support for enhanced financial analysis
+- **Factory Constructors for Candlestick Charts**:
+  - `MaterialCandlestickChart.fromPlotlyJson()` - Create from JSON string
+  - `MaterialCandlestickChart.fromPlotlyMap()` - Create from JSON map
+- **Styling via JSON for Candlestick Charts**:
+  - Colors, animations, and layout configuration
+  - Individual bullish/bearish candlestick colors
+  - Grid lines, padding, and interactive options
+  - Tooltip styling and hover configuration
+  - Customizable wick and body styling
+- **Data Format Flexibility for Candlestick Charts**:
+  - Support for x/open/high/low/close arrays (Plotly format)
+  - Support for volume data arrays
+  - Automatic date parsing from strings, DateTime objects, and timestamps
+  - Automatic color parsing from hex, RGB, and RGBA formats
+  - Support for increasing/decreasing color configuration
+
+### Changed
+
+- **Candlestick Chart Architecture** - Enhanced for comprehensive JSON integration
+- **Data Parsing System** - Improved to handle Plotly JSON data formats for candlestick charts
+- **Style Configuration** - Extended to support full JSON-based customization for candlestick charts
+- **Factory Constructor System** - Added convenient constructors for Plotly data conversion
+- **Validation System** - Enhanced JSON validation with detailed error reporting
+
+### Technical Details
+
+- **Performance**: Optimized JSON parsing and candlestick chart rendering pipeline
+- **Compatibility**: Fully backward compatible with existing candlestick chart implementations
+- **Migration**: Easy conversion from Plotly JSON configurations to candlestick charts
+- **Error Handling**: Comprehensive validation for JSON inputs with graceful fallbacks
+- **Financial Data Support**: Enhanced support for financial data formats and volume information
+
 ## [0.0.35] - 2025-09-01
 
 ### Added
