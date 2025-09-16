@@ -2,6 +2,65 @@
 
 All notable changes to this project will be documented in this file.
 
+## [0.0.37] - 2025-01-XX
+
+### Added
+
+- **Gantt Chart JSON Integration** - Comprehensive JSON support for Gantt charts with Plotly compatibility
+- **Multiple Factory Constructors for Gantt Charts** - Added `fromJson()`, `fromJsonString()`, `fromData()`, and `fromPlotlyFigureFactory()` constructors
+- **Advanced JSON Configuration for Gantt Charts** - Support for complex styling, animations, and layout via JSON
+- **Plotly Compatibility for Gantt Charts** - Seamless conversion from Plotly JSON configurations to Gantt charts
+- **Enhanced Data Parsing for Gantt Charts** - Support for multiple data formats including Plotly trace objects
+- **Interactive Features via JSON for Gantt Charts** - Configure tooltips, animations, and styling through JSON
+- **Comprehensive Color Support** - Multiple color formats including hex, RGB, and RGBA parsing for Gantt styling
+
+### Features
+
+- **JSON Format Support for Gantt Charts**:
+  - Plotly-compatible format for existing configurations
+  - Support for task objects with Start/Finish dates
+  - Advanced format with full customization options
+  - Support for multiple field name variations (Task, Start, Finish, Resource, etc.)
+- **Factory Constructors for Gantt Charts**:
+  - `MaterialGanttChart.fromJson()` - Create from JSON map
+  - `MaterialGanttChart.fromJsonString()` - Create from JSON string
+  - `MaterialGanttChart.fromData()` - Quick creation from arrays
+  - `MaterialGanttChart.fromPlotlyFigureFactory()` - Direct Plotly data conversion
+- **Styling via JSON for Gantt Charts**:
+  - Colors, animations, and layout configuration
+  - Individual task colors and styling properties
+  - Grid lines, padding, and interactive options
+  - Tooltip styling and hover configuration
+  - Customizable connection lines and timeline styling
+- **Data Format Flexibility for Gantt Charts**:
+  - Support for multiple date formats (ISO, MM/dd/yyyy, dd/MM/yyyy, etc.)
+  - Support for Plotly figure factory format
+  - Automatic color parsing from hex, RGB, and RGBA formats
+  - Support for task descriptions, icons, and tap content
+- **Interactive Gantt Chart Features**:
+  - Animated timeline rendering with customizable curves
+  - Interactive task points with hover effects
+  - Detailed task information dialogs on tap
+  - Configurable connection lines between tasks
+  - Time grid and axis customization
+  - Responsive design for various screen sizes
+
+### Changed
+
+- **Gantt Chart Architecture** - Enhanced for comprehensive JSON integration
+- **Data Parsing System** - Improved to handle Plotly JSON data formats for Gantt charts
+- **Style Configuration** - Extended to support full JSON-based customization for Gantt charts
+- **Factory Constructor System** - Added convenient constructors for Plotly data conversion
+- **Validation System** - Enhanced JSON validation with detailed error reporting
+
+### Technical Details
+
+- **Performance**: Optimized JSON parsing and Gantt chart rendering pipeline
+- **Compatibility**: Fully backward compatible with existing Gantt chart implementations
+- **Migration**: Easy conversion from Plotly JSON configurations to Gantt charts
+- **Error Handling**: Comprehensive validation for JSON inputs with graceful fallbacks
+- **Project Management Support**: Enhanced support for project timeline visualization and task scheduling
+
 ## [0.0.36] - 2025-01-XX
 
 ### Added

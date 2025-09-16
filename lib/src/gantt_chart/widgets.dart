@@ -58,6 +58,166 @@ class MaterialGanttChart extends StatefulWidget {
     }
   }
 
+  /// Creates a [MaterialGanttChart] from JSON configuration.
+  /// Supports both simple and Plotly-compatible formats.
+  ///
+  /// Example Plotly JSON format:
+  /// ```json
+  /// {
+  ///   "data": [
+  ///     {
+  ///       "Task": "Task 1",
+  ///       "Start": "2024-01-01",
+  ///       "Finish": "2024-01-15",
+  ///       "Resource": "Team A"
+  ///     }
+  ///   ],
+  ///   "layout": {
+  ///     "title": "Project Timeline",
+  ///     "width": 800,
+  ///     "height": 600
+  ///   }
+  /// }
+  /// ```
+  factory MaterialGanttChart.fromJson(Map<String, dynamic> json) {
+    final config = GanttChartJsonConfig.fromJson(json);
+    return MaterialGanttChart(
+      data: config.getGanttChartData(),
+      width: config.width,
+      height: config.height,
+      style: config.getGanttChartStyle(),
+      interactive: config.interactive,
+      onAnimationComplete: config.onAnimationComplete,
+    );
+  }
+
+  /// Creates a [MaterialGanttChart] from a JSON string.
+  /// Supports both simple and Plotly-compatible formats.
+  factory MaterialGanttChart.fromJsonString(String jsonString) {
+    final config = GanttChartJsonConfig.fromJsonString(jsonString);
+    return MaterialGanttChart(
+      data: config.getGanttChartData(),
+      width: config.width,
+      height: config.height,
+      style: config.getGanttChartStyle(),
+      interactive: config.interactive,
+      onAnimationComplete: config.onAnimationComplete,
+    );
+  }
+
+  /// Creates a [MaterialGanttChart] from simple data arrays.
+  /// This is a convenience constructor for quick chart creation.
+  ///
+  /// Example usage:
+  /// ```dart
+  /// MaterialGanttChart.fromData(
+  ///   tasks: ['Task 1', 'Task 2', 'Task 3'],
+  ///   startDates: ['2024-01-01', '2024-01-10', '2024-01-20'],
+  ///   endDates: ['2024-01-15', '2024-01-25', '2024-02-05'],
+  ///   colors: [Colors.blue, Colors.red, Colors.green],
+  /// )
+  /// ```
+  factory MaterialGanttChart.fromData({
+    required List<String> tasks,
+    required List<String> startDates,
+    required List<String> endDates,
+    List<Color>? colors,
+    List<String>? descriptions,
+    Map<String, dynamic>? style,
+    double width = 800,
+    double height = 600,
+    bool interactive = true,
+    void Function(GanttData)? onPointTap,
+    void Function(GanttData)? onPointHover,
+    VoidCallback? onAnimationComplete,
+  }) {
+    if (tasks.length != startDates.length || tasks.length != endDates.length) {
+      throw GanttChartException(
+        'Tasks, start dates, and end dates arrays must have the same length',
+      );
+    }
+
+    final data = <GanttData>[];
+
+    for (int i = 0; i < tasks.length; i++) {
+      try {
+        final startDate = DateTime.parse(startDates[i]);
+        final endDate = DateTime.parse(endDates[i]);
+
+        data.add(
+          GanttData(
+            label: tasks[i],
+            startDate: startDate,
+            endDate: endDate,
+            color: colors != null && i < colors.length ? colors[i] : null,
+            description: descriptions != null && i < descriptions.length
+                ? descriptions[i]
+                : null,
+          ),
+        );
+      } catch (e) {
+        throw GanttChartException('Invalid date format in task ${i + 1}: $e');
+      }
+    }
+
+    final chartStyle = style != null
+        ? GanttChartStyle.fromJson(style)
+        : const GanttChartStyle();
+
+    return MaterialGanttChart(
+      data: data,
+      width: width,
+      height: height,
+      style: chartStyle,
+      interactive: interactive,
+      onPointTap: onPointTap,
+      onPointHover: onPointHover,
+      onAnimationComplete: onAnimationComplete,
+    );
+  }
+
+  /// Creates a [MaterialGanttChart] from Plotly figure factory format.
+  /// This matches the format used by plotly.figure_factory.create_gantt().
+  ///
+  /// Example usage:
+  /// ```dart
+  /// MaterialGanttChart.fromPlotlyFigureFactory([
+  ///   {
+  ///     'Task': 'Job A',
+  ///     'Start': '2024-01-01',
+  ///     'Finish': '2024-01-15',
+  ///     'Resource': 'Team 1'
+  ///   },
+  ///   {
+  ///     'Task': 'Job B',
+  ///     'Start': '2024-01-10',
+  ///     'Finish': '2024-01-25',
+  ///     'Resource': 'Team 2'
+  ///   }
+  /// ])
+  /// ```
+  factory MaterialGanttChart.fromPlotlyFigureFactory(
+    List<Map<String, dynamic>> plotlyData, {
+    Map<String, dynamic>? layout,
+    double? width,
+    double? height,
+    bool interactive = true,
+    void Function(GanttData)? onPointTap,
+    void Function(GanttData)? onPointHover,
+    VoidCallback? onAnimationComplete,
+  }) {
+    final jsonConfig = {'data': plotlyData, 'layout': layout ?? {}};
+
+    if (width != null) {
+      (jsonConfig['layout'] as Map<String, dynamic>)['width'] = width;
+    }
+    if (height != null) {
+      (jsonConfig['layout'] as Map<String, dynamic>)['height'] = height;
+    }
+
+    return MaterialGanttChart.fromJson(jsonConfig);
+  }
+
   @override
   State<MaterialGanttChart> createState() => _MaterialGanttChartState();
 }
@@ -98,6 +258,12 @@ class _MaterialGanttChartState extends State<MaterialGanttChart>
       });
 
     _controller.forward(); // Start the animation
+  }
+
+  @override
+  void dispose() {
+    _controller.dispose();
+    super.dispose();
   }
 
   @override
