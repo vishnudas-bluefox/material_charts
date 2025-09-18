@@ -26,6 +26,103 @@ class MaterialChartHollowSemiCircle extends BaseChart {
           'Hollow radius must be between 0 and 1',
         );
 
+  /// Creates a [MaterialChartHollowSemiCircle] from JSON configuration.
+  /// Supports both simple and Plotly-compatible formats.
+  ///
+  /// Example simple JSON:
+  /// ```json
+  /// {
+  ///   "percentage": 75,
+  ///   "size": 300,
+  ///   "hollowRadius": 0.5,
+  ///   "style": {
+  ///     "activeColor": "#4CAF50",
+  ///     "inactiveColor": "#E0E0E0",
+  ///     "showPercentageText": true,
+  ///     "showLegend": false
+  ///   }
+  /// }
+  /// ```
+  ///
+  /// Example Plotly JSON:
+  /// ```json
+  /// {
+  ///   "data": [
+  ///     {
+  ///       "type": "indicator",
+  ///       "mode": "gauge+number",
+  ///       "value": 75,
+  ///       "gauge": {
+  ///         "axis": {"range": [0, 100]},
+  ///         "bar": {"color": "darkblue"},
+  ///         "bgcolor": "lightgray",
+  ///         "hole": 0.6
+  ///       }
+  ///     }
+  ///   ],
+  ///   "layout": {
+  ///     "width": 400,
+  ///     "height": 200,
+  ///     "font": {"color": "black", "size": 14}
+  ///   }
+  /// }
+  /// ```
+  factory MaterialChartHollowSemiCircle.fromJson(Map<String, dynamic> json) {
+    final config = HollowSemiCircleChartJsonConfig.fromJson(json);
+    return MaterialChartHollowSemiCircle(
+      percentage: config.percentage,
+      size: config.size,
+      hollowRadius: config.hollowRadius,
+      style: config.getChartStyle(),
+      onAnimationComplete: config.onAnimationComplete,
+    );
+  }
+
+  /// Creates a [MaterialChartHollowSemiCircle] from a JSON string.
+  /// Supports both simple and Plotly-compatible formats.
+  factory MaterialChartHollowSemiCircle.fromJsonString(String jsonString) {
+    final config = HollowSemiCircleChartJsonConfig.fromJsonString(jsonString);
+    return MaterialChartHollowSemiCircle(
+      percentage: config.percentage,
+      size: config.size,
+      hollowRadius: config.hollowRadius,
+      style: config.getChartStyle(),
+      onAnimationComplete: config.onAnimationComplete,
+    );
+  }
+
+  /// Creates a [MaterialChartHollowSemiCircle] with simplified parameters.
+  /// This is a convenience constructor for quick chart creation.
+  factory MaterialChartHollowSemiCircle.simple({
+    required double percentage,
+    double size = 200,
+    double hollowRadius = 0.6,
+    Color activeColor = Colors.blue,
+    Color inactiveColor = const Color(0xFFE0E0E0),
+    Color? textColor,
+    bool showPercentageText = true,
+    bool showLegend = true,
+    Duration animationDuration = const Duration(milliseconds: 1500),
+    Curve animationCurve = Curves.easeInOut,
+    VoidCallback? onAnimationComplete,
+  }) {
+    return MaterialChartHollowSemiCircle(
+      percentage: percentage,
+      size: size,
+      hollowRadius: hollowRadius,
+      style: ChartStyle(
+        activeColor: activeColor,
+        inactiveColor: inactiveColor,
+        textColor: textColor,
+        animationDuration: animationDuration,
+        animationCurve: animationCurve,
+        showPercentageText: showPercentageText,
+        showLegend: showLegend,
+      ),
+      onAnimationComplete: onAnimationComplete,
+    );
+  }
+
   @override
   State<MaterialChartHollowSemiCircle> createState() =>
       _MaterialChartHollowSemiCircleState();

@@ -2,6 +2,64 @@
 
 All notable changes to this project will be documented in this file.
 
+## [0.0.38] - 2025-09-25
+
+### Added
+
+- **Hollow Semi-Circle Chart JSON Integration** - Comprehensive JSON support for hollow semi-circle charts with Plotly compatibility
+- **Multiple Factory Constructors for Hollow Semi-Circle Charts** - Added `fromJson()`, `fromJsonString()`, and `simple()` constructors
+- **Advanced JSON Configuration for Hollow Semi-Circle Charts** - Support for complex styling, animations, and layout via JSON
+- **Plotly Compatibility for Hollow Semi-Circle Charts** - Seamless conversion from Plotly JSON configurations to hollow semi-circle charts
+- **Enhanced Data Parsing for Hollow Semi-Circle Charts** - Support for multiple data formats including Plotly gauge objects
+- **Interactive Features via JSON for Hollow Semi-Circle Charts** - Configure animations, styling, and display options through JSON
+- **Comprehensive Color Support** - Multiple color formats including hex, RGB, and RGBA parsing for hollow semi-circle styling
+
+### Features
+
+- **JSON Format Support for Hollow Semi-Circle Charts**:
+  - Simple format for basic hollow semi-circle charts
+  - Plotly-compatible format for existing gauge configurations
+  - Advanced format with full customization options
+  - Support for gauge objects with axis ranges and hole properties
+- **Factory Constructors for Hollow Semi-Circle Charts**:
+  - `MaterialChartHollowSemiCircle.fromJson()` - Create from JSON map
+  - `MaterialChartHollowSemiCircle.fromJsonString()` - Create from JSON string
+  - `MaterialChartHollowSemiCircle.simple()` - Quick creation with simplified parameters
+- **Styling via JSON for Hollow Semi-Circle Charts**:
+  - Colors, animations, and layout configuration
+  - Active/inactive color customization
+  - Text styling and legend configuration
+  - Animation duration and curve customization
+  - Percentage text and legend visibility controls
+- **Data Format Flexibility for Hollow Semi-Circle Charts**:
+  - Support for direct percentage values (simple format)
+  - Support for Plotly gauge format with value/range properties
+  - Automatic percentage calculation from min/max ranges
+  - Support for hollow radius configuration via gauge hole property
+  - Automatic color parsing from hex, RGB, and RGBA formats
+- **Interactive Hollow Semi-Circle Chart Features**:
+  - Animated progress rendering with customizable curves
+  - Configurable percentage text display
+  - Legend support with customizable positioning
+  - Animation completion callbacks
+  - Responsive design for various screen sizes
+
+### Changed
+
+- **Hollow Semi-Circle Chart Architecture** - Enhanced for comprehensive JSON integration
+- **Data Parsing System** - Improved to handle Plotly JSON data formats for hollow semi-circle charts
+- **Style Configuration** - Extended to support full JSON-based customization for hollow semi-circle charts
+- **Factory Constructor System** - Added convenient constructors for Plotly data conversion
+- **Validation System** - Enhanced JSON validation with detailed error reporting
+
+### Technical Details
+
+- **Performance**: Optimized JSON parsing and hollow semi-circle chart rendering pipeline
+- **Compatibility**: Fully backward compatible with existing hollow semi-circle chart implementations
+- **Migration**: Easy conversion from Plotly JSON configurations to hollow semi-circle charts
+- **Error Handling**: Comprehensive validation for JSON inputs with graceful fallbacks
+- **Progress Visualization**: Enhanced support for progress indicators and gauge-style visualizations
+
 ## [0.0.37] - 2025-01-XX
 
 ### Added
