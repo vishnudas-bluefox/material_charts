@@ -3,11 +3,12 @@ import 'package:flutter/material.dart';
 import 'models.dart';
 import 'painter.dart';
 
-/// A stateful widget that represents a material design bar chart.
+/// A stateful widget that represents a material design bar chart with rotation support.
 ///
 /// This widget allows customization of the bar chart's appearance,
-/// interactions, and animations. It is capable of displaying data
-/// dynamically with a smooth animation.
+/// interactions, animations, and rotation. It is capable of displaying data
+/// dynamically with smooth animation and supports professional chart orientations
+/// like Plotly (vertical, horizontal, and custom rotations).
 class MaterialBarChart extends StatefulWidget {
   final List<BarChartData> data; // The data points for the bar chart
   final double width; // Width of the chart
@@ -37,7 +38,20 @@ class MaterialBarChart extends StatefulWidget {
   });
 
   /// Creates a [MaterialBarChart] from JSON configuration.
-  /// Supports both simple and Plotly-compatible formats.
+  /// Supports both simple and Plotly-compatible formats including rotation.
+  ///
+  /// Example JSON with rotation:
+  /// ```json
+  /// {
+  ///   "data": [
+  ///     {"x": "A", "y": 10},
+  ///     {"x": "B", "y": 20}
+  ///   ],
+  ///   "style": {
+  ///     "rotation": 90  // or use "orientation": "h" for Plotly compatibility
+  ///   }
+  /// }
+  /// ```
   factory MaterialBarChart.fromJson(Map<String, dynamic> json) {
     final config = BarChartJsonConfig.fromJson(json);
     return MaterialBarChart(
@@ -71,13 +85,84 @@ class MaterialBarChart extends StatefulWidget {
     );
   }
 
+  /// Creates a [MaterialBarChart] from Plotly-compatible data arrays.
+  /// Supports Plotly's orientation parameter ('v' or 'h').
+  ///
+  /// Example:
+  /// ```dart
+  /// MaterialBarChart.fromPlotly(
+  ///   x: ['A', 'B', 'C'],
+  ///   y: [10, 20, 15],
+  ///   orientation: 'h', // horizontal bars (90 degree rotation)
+  /// )
+  /// ```
+  factory MaterialBarChart.fromPlotly({
+    Key? key,
+    required List<String> x,
+    required List<double> y,
+    List<String>? colors,
+    String orientation = 'v', // 'v' for vertical, 'h' for horizontal
+    Map<String, dynamic>? style,
+    double width = 800,
+    double height = 400,
+    bool showGrid = true,
+    bool showValues = true,
+    EdgeInsets padding = const EdgeInsets.all(24),
+    int horizontalGridLines = 5,
+    bool interactive = true,
+    VoidCallback? onAnimationComplete,
+  }) {
+    final data = <BarChartData>[];
+
+    for (int i = 0; i < x.length; i++) {
+      Color? color;
+      if (colors != null && i < colors.length) {
+        color = BarChartData.parseColor(colors[i]);
+      }
+
+      data.add(BarChartData(value: y[i], label: x[i], color: color));
+    }
+
+    // Merge orientation with style
+    final styleMap =
+        style != null ? Map<String, dynamic>.from(style) : <String, dynamic>{};
+    styleMap['orientation'] = orientation;
+
+    final chartStyle = BarChartStyle.fromJson(styleMap);
+
+    return MaterialBarChart(
+      key: key,
+      data: data,
+      width: width,
+      height: height,
+      style: chartStyle,
+      showGrid: showGrid,
+      showValues: showValues,
+      padding: padding,
+      horizontalGridLines: horizontalGridLines,
+      interactive: interactive,
+      onAnimationComplete: onAnimationComplete,
+    );
+  }
+
   /// Creates a [MaterialBarChart] from simple data arrays.
-  /// This is a convenience constructor for quick chart creation.
+  /// This is a convenience constructor for quick chart creation with optional rotation.
+  ///
+  /// Example:
+  /// ```dart
+  /// MaterialBarChart.fromData(
+  ///   labels: ['A', 'B', 'C'],
+  ///   values: [10, 20, 15],
+  ///   rotation: 90, // Optional: rotate chart 90 degrees
+  /// )
+  /// ```
   factory MaterialBarChart.fromData({
+    Key? key,
     required List<String> labels,
     required List<double> values,
     List<String>? colors,
     Map<String, dynamic>? style,
+    double? rotation, // Custom rotation in degrees
     double width = 800,
     double height = 400,
     bool showGrid = true,
@@ -98,10 +183,17 @@ class MaterialBarChart extends StatefulWidget {
       data.add(BarChartData(value: values[i], label: labels[i], color: color));
     }
 
-    final chartStyle =
-        style != null ? BarChartStyle.fromJson(style) : const BarChartStyle();
+    // Merge rotation with style if provided
+    final styleMap =
+        style != null ? Map<String, dynamic>.from(style) : <String, dynamic>{};
+    if (rotation != null) {
+      styleMap['rotation'] = rotation;
+    }
+
+    final chartStyle = BarChartStyle.fromJson(styleMap);
 
     return MaterialBarChart(
+      key: key,
       data: data,
       width: width,
       height: height,
@@ -151,6 +243,18 @@ class _MaterialBarChartState extends State<MaterialBarChart>
   }
 
   @override
+  void didUpdateWidget(MaterialBarChart oldWidget) {
+    super.didUpdateWidget(oldWidget);
+
+    // Restart animation if data or style changes significantly
+    if (oldWidget.data != widget.data ||
+        oldWidget.style.rotation != widget.style.rotation) {
+      _controller.reset();
+      _controller.forward();
+    }
+  }
+
+  @override
   void dispose() {
     _controller.dispose(); // Dispose the animation controller
     super.dispose();
@@ -194,10 +298,6 @@ class _MaterialBarChartState extends State<MaterialBarChart>
   /// Handles hover events over the bar chart to update the hovered bar index.
   void _handleHover(PointerHoverEvent event) {
     if (!widget.interactive) return; // Exit if interaction is disabled
-
-    // The event.localPosition is relative to the MouseRegion (which covers the entire container)
-    // We need to check if it's within the chart area (excluding padding)
-    // Note: chartArea calculation removed as it wasn't being used
 
     setState(() => _hoverPosition = event.localPosition);
   }

@@ -82,7 +82,7 @@ class BarChartData {
 /// Configuration class for styling a bar chart.
 ///
 /// This class allows customization of various visual aspects of the
-/// bar chart, including colors, spacing, animations, and more.
+/// bar chart, including colors, spacing, animations, and rotation.
 class BarChartStyle {
   /// The color of the bars in the chart.
   final Color barColor;
@@ -119,6 +119,17 @@ class BarChartStyle {
   /// This is applicable only if [gradientEffect] is true.
   final List<Color>? gradientColors;
 
+  /// Rotation angle in degrees (0, 90, 180, 270, or any custom value).
+  /// 0 = default vertical bars
+  /// 90 = horizontal bars (similar to Plotly's orientation='h')
+  /// 180 = inverted vertical bars
+  /// 270 = horizontal bars (opposite direction)
+  final double rotation;
+
+  /// Chart orientation ('v' for vertical, 'h' for horizontal).
+  /// This is Plotly-compatible. 'h' automatically sets rotation to 90 degrees.
+  final String orientation;
+
   /// Creates an instance of [BarChartStyle] with customizable properties.
   ///
   /// The following parameters can be customized:
@@ -133,6 +144,8 @@ class BarChartStyle {
   /// - [animationCurve]: Curve used for the animation effect (default is easeInOut).
   /// - [gradientEffect]: Whether to apply a gradient effect (default is false).
   /// - [gradientColors]: List of colors for the gradient effect.
+  /// - [rotation]: Rotation angle in degrees (default is 0).
+  /// - [orientation]: Chart orientation 'v' or 'h' (default is 'v').
   const BarChartStyle({
     this.barColor = Colors.blue,
     this.gridColor = Colors.grey,
@@ -145,11 +158,24 @@ class BarChartStyle {
     this.animationCurve = Curves.easeInOut,
     this.gradientEffect = false,
     this.gradientColors,
+    this.rotation = 0.0,
+    this.orientation = 'v',
   });
 
   /// Creates a [BarChartStyle] instance from a JSON map.
   /// Supports both simple and Plotly-compatible formats.
   factory BarChartStyle.fromJson(Map<String, dynamic> json) {
+    // Parse orientation (Plotly compatibility)
+    String orientation = json['orientation']?.toString().toLowerCase() ?? 'v';
+
+    // Parse rotation - orientation takes precedence for Plotly compatibility
+    double rotation;
+    if (json['orientation'] != null && orientation == 'h') {
+      rotation = 90.0; // Plotly horizontal orientation
+    } else {
+      rotation = (json['rotation'] ?? 0.0).toDouble();
+    }
+
     return BarChartStyle(
       barColor: json['barColor'] != null
           ? BarChartData.parseColor(json['barColor'])
@@ -172,16 +198,18 @@ class BarChartStyle {
               : json['paper_bgcolor'] != null
                   ? BarChartData.parseColor(json['paper_bgcolor'])
                   : Colors.white,
-      labelStyle: _parseTextStyle(json['labelStyle'] ??
-          json['xaxis']?['tickfont'] ??
-          json['yaxis']?['tickfont']),
+      labelStyle: _parseTextStyle(
+        json['labelStyle'] ??
+            json['xaxis']?['tickfont'] ??
+            json['yaxis']?['tickfont'],
+      ),
       valueStyle: _parseTextStyle(
-          json['valueStyle'] ?? json['font'] ?? json['textfont']),
+        json['valueStyle'] ?? json['font'] ?? json['textfont'],
+      ),
       barSpacing: (json['barSpacing'] ?? json['bargap'] ?? 0.2).toDouble(),
       cornerRadius: () {
         final value =
             json['cornerRadius'] ?? json['marker']?['cornerradius'] ?? 4.0;
-
         return value.toDouble();
       }(),
       animationDuration: Duration(
@@ -191,7 +219,8 @@ class BarChartStyle {
             .toInt(),
       ),
       animationCurve: _parseCurve(
-          json['animationCurve'] ?? json['animation']?['curve'] ?? 'easeInOut'),
+        json['animationCurve'] ?? json['animation']?['curve'] ?? 'easeInOut',
+      ),
       gradientEffect: json['gradientEffect'] ??
           json['colorscale'] != null || json['marker']?['colorscale'] != null,
       gradientColors: json['gradientColors'] != null
@@ -203,6 +232,8 @@ class BarChartStyle {
               : json['marker']?['colorscale'] != null
                   ? _parseColorscale(json['marker']['colorscale'])
                   : null,
+      rotation: rotation,
+      orientation: orientation,
     );
   }
 
@@ -218,6 +249,8 @@ class BarChartStyle {
       'animationDuration': animationDuration.inMilliseconds,
       'animationCurve': _curveToString(animationCurve),
       'gradientEffect': gradientEffect,
+      'rotation': rotation,
+      'orientation': orientation,
       if (gradientColors != null)
         'gradientColors':
             gradientColors!.map((c) => BarChartData.colorToHex(c)).toList(),
@@ -271,8 +304,9 @@ class BarChartStyle {
     if (textStyle is Map<String, dynamic>) {
       return TextStyle(
         fontSize: (textStyle['size'] ?? textStyle['fontSize'] ?? 12).toDouble(),
-        fontWeight:
-            _parseFontWeight(textStyle['weight'] ?? textStyle['fontWeight']),
+        fontWeight: _parseFontWeight(
+          textStyle['weight'] ?? textStyle['fontWeight'],
+        ),
         color: textStyle['color'] != null
             ? BarChartData.parseColor(textStyle['color'])
             : null,
@@ -372,17 +406,20 @@ class BarChartJsonConfig {
         final marker = firstDataItem['marker'] as Map<String, dynamic>?;
         final colors = marker?['color'] as List?;
 
-        // Merge marker data into style for global properties like cornerradius
+        // Extract orientation from data (Plotly compatibility)
+        final orientation = firstDataItem['orientation'];
+        if (orientation != null) {
+          mergedStyle['orientation'] = orientation;
+        }
+
+        // Merge marker data into style for global properties
         if (marker != null) {
           mergedStyle['marker'] = marker;
         }
 
         // Convert Plotly format to individual data objects
         for (int i = 0; i < xValues.length && i < yValues.length; i++) {
-          final dataPoint = <String, dynamic>{
-            'x': xValues[i],
-            'y': yValues[i],
-          };
+          final dataPoint = <String, dynamic>{'x': xValues[i], 'y': yValues[i]};
 
           // Add color if available
           if (colors != null && i < colors.length) {

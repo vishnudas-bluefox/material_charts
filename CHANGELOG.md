@@ -2,6 +2,62 @@
 
 All notable changes to this project will be documented in this file.
 
+## [0.0.39] - 2025-10-07
+
+### Added
+
+- **Bar Chart Rotation Support** - Comprehensive rotation capabilities for bar charts at any angle
+- **Bar Chart Orientation Control** - Plotly-compatible orientation parameter ('v' for vertical, 'h' for horizontal)
+- **Horizontal Bar Charts** - Native support for horizontal bars via rotation or orientation
+- **Inverted Chart Modes** - Support for 180° and 270° rotations for inverted visualizations
+- **Smart Label Positioning** - Labels and values remain readable regardless of chart rotation
+
+### Features
+
+- **Rotation Control**:
+  - Rotation angle support at any degree (0, 90, 180, 270, or custom values)
+  - 0° = default vertical bars (bottom to top)
+  - 90° = horizontal bars (left to right)
+  - 180° = inverted vertical bars (top to bottom)
+  - 270° = horizontal bars (right to left)
+- **Orientation Parameter**:
+  - Plotly-compatible `orientation` property ('v' or 'h')
+  - 'h' orientation automatically sets rotation to 90 degrees
+  - Seamless conversion from Plotly horizontal bar charts
+- **Enhanced Factory Constructors**:
+  - `MaterialBarChart.fromPlotly()` now supports `orientation` parameter
+  - `MaterialBarChart.fromData()` now supports `rotation` parameter
+  - `MaterialBarChart.fromJson()` supports both rotation and orientation in JSON
+- **Smart Rendering**:
+  - Text labels remain horizontal and readable in all rotation modes
+  - Value labels automatically positioned based on orientation
+  - Grid lines adapt to horizontal/vertical orientation
+  - Hover effects work correctly in all orientations
+- **JSON Configuration**:
+  - Configure rotation via `"rotation": degrees` in style
+  - Configure orientation via `"orientation": "v"` or `"h"` (Plotly format)
+  - Orientation takes precedence over rotation for Plotly compatibility
+
+### Changed
+
+- **Bar Chart Architecture** - Enhanced painter system to support rotation and orientation
+- **Grid Line Rendering** - Adaptive grid lines that change orientation with chart rotation
+- **Label Positioning** - Improved label placement system for all rotation modes
+- **Hover Detection** - Updated hover logic to work correctly with horizontal and rotated bars
+- **Animation System** - Animation now restarts when rotation changes
+
+### Technical Details
+
+- **Performance**: Optimized rendering pipeline for rotated charts
+- **Compatibility**: Fully backward compatible - default rotation is 0° (vertical bars)
+- **Plotly Compatibility**: Full support for Plotly's orientation parameter
+- **Text Rendering**: All text elements (labels, values) remain horizontal for readability
+- **Hover Interaction**: Hover detection adapted for both horizontal and vertical orientations
+
+### Migration
+
+No breaking changes. Existing bar charts will continue to work without modification. To add rotation or horizontal orientation:
+
 ## [0.0.38] - 2025-09-25
 
 ### Added
